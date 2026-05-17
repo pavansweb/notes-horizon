@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { BookOpen, ChevronRight, Search, Menu, Sun, Moon, Star, CheckCircle, Printer, TerminalSquare, X } from 'lucide-react';
+import { BookOpen, ChevronRight, Search, Menu, Sun, Moon, Printer, TerminalSquare, X, ListTree, Clock } from 'lucide-react';
 import './App.css';
 
 interface NoteMetadata {
@@ -28,6 +28,24 @@ interface AIRequest {
   timestamp: string;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+
+const getTextFromChildren = (children: React.ReactNode): string =>
+  React.Children.toArray(children)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') return child.toString();
+      if (React.isValidElement<{ children?: React.ReactNode }>(child)) return getTextFromChildren(child.props.children);
+      return '';
+    })
+    .join('');
+
 const Logo = () => (
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="site-logo">
     <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" />
@@ -42,7 +60,10 @@ function App() {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'dark' ? 'dark' : 'light';
+  });
   const [activeSubject, setActiveSubject] = useState('Physics');
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -52,84 +73,73 @@ function App() {
   const [pendingRequests, setPendingRequests] = useState<AIRequest[]>([]);
   const [dashboardMessage, setDashboardMessage] = useState('');
 
-  // User Data State
-  const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
-  const [readNotes, setReadNotes] = useState<Set<string>>(new Set());
-
   useEffect(() => {
-    fetchNotesList();
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-    
-    // Load user data
-    const savedBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-    const savedReadNotes = JSON.parse(localStorage.getItem('readNotes') || '[]');
-    setBookmarks(new Set(savedBookmarks));
-    setReadNotes(new Set(savedReadNotes));
-  }, []);
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
-
-  const toggleBookmark = (id: string) => {
-    const newBookmarks = new Set(bookmarks);
-    if (newBookmarks.has(id)) newBookmarks.delete(id);
-    else newBookmarks.add(id);
-    setBookmarks(newBookmarks);
-    localStorage.setItem('bookmarks', JSON.stringify(Array.from(newBookmarks)));
-  };
-
-  const toggleReadStatus = (id: string) => {
-    const newReadNotes = new Set(readNotes);
-    if (newReadNotes.has(id)) newReadNotes.delete(id);
-    else newReadNotes.add(id);
-    setReadNotes(newReadNotes);
-    localStorage.setItem('readNotes', JSON.stringify(Array.from(newReadNotes)));
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  const fetchNotesList = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/notes');
-      setNotesList(response.data);
-      // Auto-select first note if none selected
-      if (response.data.length > 0 && !selectedNote) {
-        const firstPhysicsNote = response.data.find((n: NoteMetadata) => n.subject === 'Physics');
-        if (firstPhysicsNote) {
-          fetchNote(firstPhysicsNote.subject, firstPhysicsNote.id);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching notes list:', error);
-    }
-  };
-
-  const fetchNote = async (subject: string, id: string) => {
+  const fetchNote = useCallback(async (subject: string, id: string) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/notes/${subject}/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/notes/${encodeURIComponent(subject)}/${encodeURIComponent(id)}`);
       setSelectedNote(response.data);
+      setActiveSubject(subject);
+      
+      // Scroll to top of content area
+      const contentArea = document.querySelector('.content-area');
+      if (contentArea) contentArea.scrollTop = 0;
+      
       if (window.innerWidth <= 768) setSidebarOpen(false); // Auto close on mobile
     } catch (error) {
       console.error('Error fetching note:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const fetchNotesList = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/notes`);
+      setNotesList(response.data);
+      
+      // Initial auto-select
+      if (response.data.length > 0 && !selectedNote) {
+        const firstNote = response.data.find((n: NoteMetadata) => n.subject === activeSubject);
+        if (firstNote) {
+          fetchNote(firstNote.subject, firstNote.id);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching notes list:', error);
+    }
+  }, [fetchNote, selectedNote, activeSubject]);
+
+  useEffect(() => {
+    fetchNotesList();
+  }, [fetchNotesList]);
+
+  // Handle subject change: Auto-select first note of new subject
+  useEffect(() => {
+    if (notesList.length > 0) {
+      const firstNoteOfSubject = notesList.find(n => n.subject === activeSubject);
+      if (firstNoteOfSubject && selectedNote?.subject !== activeSubject) {
+        fetchNote(firstNoteOfSubject.subject, firstNoteOfSubject.id);
+      }
+    }
+  }, [activeSubject, notesList, fetchNote, selectedNote]);
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/requests');
+      const res = await axios.get(`${API_BASE_URL}/api/requests`);
       setPendingRequests(res.data);
     } catch (e) {
       console.error(e);
@@ -145,7 +155,7 @@ function App() {
     e.preventDefault();
     if (!newTopicInput.trim()) return;
     try {
-      await axios.post('http://localhost:5000/api/generate', {
+      await axios.post(`${API_BASE_URL}/api/generate`, {
         subject: activeSubject,
         topic: newTopicInput
       });
@@ -161,16 +171,33 @@ function App() {
 
   const subjects = ['Physics', 'Chemistry', 'Mathematics', 'JEE Main Syllabus', 'JEE Advanced Syllabus'];
   
-  const filteredNotes = notesList.filter(n => 
-    n.subject === activeSubject && 
-    n.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredNotes = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return notesList.filter((note) => {
+      const matchesSubject = query ? true : note.subject === activeSubject;
+      const matchesSearch = !query || [note.title, note.chapter, note.subject]
+        .join(' ')
+        .toLowerCase()
+        .includes(query);
 
-  // Calculate progress for subjects only
-  const isSyllabus = activeSubject.includes('Syllabus');
-  const subjectNotesCount = notesList.filter(n => n.subject === activeSubject).length;
-  const readSubjectNotesCount = notesList.filter(n => n.subject === activeSubject && readNotes.has(n.id)).length;
-  const progressPercentage = subjectNotesCount > 0 ? Math.round((readSubjectNotesCount / subjectNotesCount) * 100) : 0;
+      return matchesSubject && matchesSearch;
+    });
+  }, [activeSubject, notesList, searchQuery]);
+
+  const estimatedMinutes = selectedNote ? Math.max(1, Math.ceil(selectedNote.content.split(/\s+/).length / 180)) : 0;
+  
+  const contentHeadings = useMemo(() => {
+    if (!selectedNote) return [];
+    return selectedNote.content
+      .split('\n')
+      .map((line) => {
+        const match = /^(#{2,3})\s+(.+)$/.exec(line);
+        if (!match) return null;
+        const text = match[2].replace(/[*_`$]/g, '').trim();
+        return { id: slugify(text), text, level: match[1].length };
+      })
+      .filter(Boolean) as { id: string; text: string; level: number }[];
+  }, [selectedNote]);
 
   return (
     <div className="app-container">
@@ -186,7 +213,7 @@ function App() {
           <Search size={18} />
           <input 
             type="text" 
-            placeholder="Search topics..." 
+            placeholder="Search topics, chapters, subjects..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -200,7 +227,6 @@ function App() {
           </button>
         </div>
       </header>
-
 
       <nav className="sub-header no-print">
         <div className="subject-tabs">
@@ -217,21 +243,13 @@ function App() {
             </div>
           ))}
         </div>
-        {!isSyllabus && (
-          <div className="progress-container">
-            <span className="progress-text">{progressPercentage}% Completed</span>
-            <div className="progress-bar-bg">
-              <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
-            </div>
-          </div>
-        )}
       </nav>
 
       <div className="main-layout">
         <aside className={`sidebar no-print ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-content">
             <div className="subject-group">
-              <h3>{activeSubject} {isSyllabus ? '' : 'Chapters'}</h3>
+              <h3>{searchQuery.trim() ? 'Search results' : `${activeSubject} ${activeSubject.includes('Syllabus') ? '' : 'Chapters'}`}</h3>
               {filteredNotes.length === 0 ? (
                 <p className="no-results">No content found.</p>
               ) : (
@@ -244,14 +262,11 @@ function App() {
                     >
                       <div className="li-content">
                         <ChevronRight size={14} className="chevron" />
-                        <span className="note-title">{note.title}</span>
+                        <span className="note-title">
+                          {note.title}
+                          {searchQuery.trim() && <small>{note.subject}</small>}
+                        </span>
                       </div>
-                      {!isSyllabus && (
-                        <div className="li-icons">
-                          {bookmarks.has(note.id) && <Star size={14} className="icon-star" fill="currentColor" />}
-                          {readNotes.has(note.id) && <CheckCircle size={14} className="icon-check" />}
-                        </div>
-                      )}
                     </li>
                   ))}
                 </ul>
@@ -269,24 +284,6 @@ function App() {
                 <div className="note-header-top">
                   <span className="subject-badge">{selectedNote.subject}</span>
                   <div className="note-actions no-print">
-                    {!isSyllabus && (
-                      <>
-                        <button 
-                          className={`action-btn ${bookmarks.has(selectedNote.id) ? 'active-star' : ''}`}
-                          onClick={() => toggleBookmark(selectedNote.id)}
-                          title="Bookmark"
-                        >
-                          <Star size={18} fill={bookmarks.has(selectedNote.id) ? "currentColor" : "none"} />
-                        </button>
-                        <button 
-                          className={`action-btn ${readNotes.has(selectedNote.id) ? 'active-check' : ''}`}
-                          onClick={() => toggleReadStatus(selectedNote.id)}
-                          title="Mark as Read"
-                        >
-                          <CheckCircle size={18} />
-                        </button>
-                      </>
-                    )}
                     <button className="export-pdf-btn" onClick={handlePrint}>
                       <Printer size={16} />
                       Export PDF
@@ -294,12 +291,34 @@ function App() {
                   </div>
                 </div>
                 <h2>{selectedNote.title}</h2>
-                <p className="metadata">Last updated: {new Date(selectedNote.lastUpdated).toLocaleDateString()}</p>
+                <div className="metadata-row">
+                  <p className="metadata">Last updated: {new Date(selectedNote.lastUpdated).toLocaleDateString()}</p>
+                  <span><Clock size={14} /> {estimatedMinutes} min read</span>
+                </div>
               </div>
+              {contentHeadings.length > 0 && (
+                <nav className="toc no-print" aria-label="Table of contents">
+                  <div className="toc-title">
+                    <ListTree size={16} />
+                    On this note
+                  </div>
+                  <div className="toc-links">
+                    {contentHeadings.map((heading, index) => (
+                      <a key={`${heading.id}-${index}`} className={`toc-level-${heading.level}`} href={`#${heading.id}`}>
+                        {heading.text}
+                      </a>
+                    ))}
+                  </div>
+                </nav>
+              )}
               <div className="markdown-body">
                 <ReactMarkdown 
                   remarkPlugins={[remarkMath]} 
                   rehypePlugins={[rehypeKatex]}
+                  components={{
+                    h2: ({ children }) => <h2 id={slugify(getTextFromChildren(children))}>{children}</h2>,
+                    h3: ({ children }) => <h3 id={slugify(getTextFromChildren(children))}>{children}</h3>,
+                  }}
                 >
                   {selectedNote.content}
                 </ReactMarkdown>
@@ -382,4 +401,3 @@ function App() {
 }
 
 export default App;
-

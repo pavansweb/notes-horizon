@@ -1,6 +1,7 @@
 :root {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
+  --primary-soft: #eff6ff;
   --bg: #f8fafc;
   --sidebar-bg: #ffffff;
   --card-bg: #ffffff;
@@ -11,12 +12,14 @@
   --header-bg: #ffffff;
   --success: #10b981;
   --warning: #f59e0b;
+  --danger: #ef4444;
 }
 
 [data-theme='dark'] {
   --bg: #0f172a;
   --sidebar-bg: #1e293b;
   --card-bg: #1e293b;
+  --primary-soft: rgba(37, 99, 235, 0.16);
   --text-main: #f1f5f9;
   --text-muted: #94a3b8;
   --border: #334155;
@@ -42,6 +45,30 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  z-index: 1001;
+  transition: width 0.1s linear;
+}
+
+.focus-mode .header,
+.focus-mode .sub-header,
+.focus-mode .sidebar {
+  display: none;
+}
+
+.focus-mode .content-area {
+  padding: 28px;
+}
+
+.focus-mode .note-content {
+  max-width: 920px;
 }
 
 .header {
@@ -167,7 +194,7 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
 .theme-toggle {
@@ -236,6 +263,66 @@ body {
   padding: 24px;
 }
 
+.study-summary {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--primary);
+}
+
+.summary-card div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.summary-card strong {
+  color: var(--text-main);
+  font-size: 1.1rem;
+}
+
+.summary-card span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.filter-pills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.filter-pills button {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 7px 6px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+}
+
+.filter-pills button:hover,
+.filter-pills button.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
 .subject-group {
   margin-bottom: 24px;
 }
@@ -273,9 +360,22 @@ body {
 }
 
 .note-title {
+  display: flex;
+  flex-direction: column;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.note-title small {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+.subject-group li.active .note-title small {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .li-icons {
@@ -329,7 +429,7 @@ body {
   width: 100%;
   background: var(--card-bg);
   padding: 48px;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
@@ -412,8 +512,102 @@ body {
   color: var(--text-muted);
 }
 
+.metadata-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.metadata-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.note-progress-card {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.note-progress-card div:first-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.note-progress-card strong {
+  font-size: 1.35rem;
+  color: var(--text-main);
+}
+
+.note-progress-card span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.toc {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 28px;
+}
+
+.toc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.toc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toc a {
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  transition: all 0.2s;
+}
+
+.toc a:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.toc .toc-level-3 {
+  opacity: 0.86;
+}
+
 .markdown-body {
   color: var(--text-main);
+}
+
+.markdown-body h2,
+.markdown-body h3 {
+  scroll-margin-top: 24px;
 }
 
 .markdown-body h2 {
@@ -523,7 +717,7 @@ body {
 .modal-content {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 8px;
   width: 100%;
   max-width: 500px;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
@@ -772,5 +966,89 @@ body {
   }
 }
 
+@media (max-width: 920px) {
+  .header {
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .search-bar {
+    max-width: 260px;
+  }
+
+  .sub-header {
+    height: auto;
+    min-height: 48px;
+    gap: 12px;
+    align-items: stretch;
+    padding: 0 16px;
+    overflow-x: auto;
+  }
+
+  .subject-tabs {
+    gap: 18px;
+    min-width: max-content;
+  }
+
+  .progress-container {
+    display: none;
+  }
+
+  .content-area {
+    padding: 22px;
+  }
+
+  .note-content {
+    padding: 28px;
+  }
+
+  .note-header h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  .search-bar {
+    order: 3;
+    max-width: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 112px;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
+    box-shadow: var(--shadow);
+  }
+
+  .note-header-top,
+  .note-actions {
+    flex-wrap: wrap;
+  }
+
+  .note-progress-card {
+    grid-template-columns: 1fr;
+  }
+
+  .note-content {
+    padding: 20px;
+  }
+
+  .note-header h2 {
+    font-size: 1.65rem;
+  }
+
+  .export-pdf-btn {
+    padding: 8px 10px;
+  }
+}
 
 
