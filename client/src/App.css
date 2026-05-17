@@ -432,6 +432,9 @@ body {
   border-radius: 8px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .note-header {
@@ -603,6 +606,7 @@ body {
 
 .markdown-body {
   color: var(--text-main);
+  overflow: hidden;
 }
 
 .markdown-body h2,

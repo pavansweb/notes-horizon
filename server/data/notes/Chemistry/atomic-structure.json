@@ -1,0 +1,9 @@
+{
+  "id": "atomic-structure",
+  "title": "Atomic Structure",
+  "subject": "Chemistry",
+  "chapter": "Atomic Structure",
+  "content": "## Introduction to Atomic Structure\n\nThe atom is the basic unit of a chemical element. It consists of a central nucleus surrounded by electrons.\n\n### 1. Fundamental Particles\n\n| Particle | Discovery | Charge | Mass (kg) |\n|----------|-----------|--------|-----------|\n| Electron | J.J. Thomson | $-1.6 \\times 10^{-19}$ C | $9.1 \\times 10^{-31}$ |\n| Proton | E. Goldstein | $+1.6 \\times 10^{-19}$ C | $1.672 \\times 10^{-27}$ |\n| Neutron | J. Chadwick | $0$ | $1.675 \\times 10^{-27}$ |\n\n### 2. Bohr's Atomic Model\n\nBohr proposed that electrons revolve around the nucleus in fixed circular orbits called energy levels or shells.\n\n- **Angular Momentum Quantization:**\n  $$mvr = \\frac{nh}{2\\pi}$$\n  where $n = 1, 2, 3, \\dots$ is the principal quantum number.\n\n- **Energy of an Electron in $n$-th Orbit:**\n  $$E_n = -13.6 \\times \\frac{Z^2}{n^2} \\text{ eV/atom}$$\n\n### 3. Quantum Numbers\n\nTo describe an electron completely in an atom, four quantum numbers are used:\n\n1.  **Principal Quantum Number ($n$):** Defines the size and energy of the shell.\n2.  **Azimuthal Quantum Number ($l$):** Defines the shape of the orbital ($l = 0$ to $n-1$).\n3.  **Magnetic Quantum Number ($m$):** Defines the orientation of the orbital in space.\n4.  **Spin Quantum Number ($s$):** Defines the spin of the electron ($+1/2$ or $-1/2$).\n\n### 4. Pauli's Exclusion Principle\n\nNo two electrons in an atom can have the same set of all four quantum numbers.\n\n### 5. Hund's Rule of Maximum Multiplicity\n\nElectron pairing in orbitals of the same subshell does not take place until each orbital is singly occupied.",
+  "lastUpdated": "2026-05-17T12:00:00Z",
+  "sources": ["https://ncert.nic.in/textbook.php?kech1=2-9"]
+}
