@@ -1,0 +1,14 @@
+{
+  "id": "hydrocarbons-and-haloalkanes",
+  "title": "Hydrocarbons and Haloalkanes",
+  "subject": "Chemistry",
+  "chapter": "Organic Chemistry",
+  "content": "# Hydrocarbons and Haloalkanes\n\n## Quick Synopsis\n\nHydrocarbons introduce addition, substitution, elimination, and aromatic reactions. Haloalkanes connect structure to nucleophilic substitution and elimination mechanisms.\n\n## Must Know\n\n- Alkanes mainly undergo free-radical substitution.\n- Alkenes and alkynes undergo electrophilic addition.\n- Markovnikov and anti-Markovnikov additions depend on mechanism.\n- Benzene undergoes electrophilic aromatic substitution rather than addition under normal conditions.\n- Haloalkanes undergo SN1, SN2, E1, and E2 depending on substrate, nucleophile/base, solvent, and temperature.\n- Leaving group ability generally increases down halogen group.\n\n## Formulas / Rules\n\n- Hydrogen deficiency helps identify unsaturation and rings.\n- Saytzeff product is more substituted alkene in many eliminations.\n- Wurtz reaction couples alkyl halides with sodium in dry ether.\n- Friedel-Crafts uses Lewis acid catalysts such as AlCl3.\n\n## JEE Focus\n\n- Know ozonolysis products to locate double bonds.\n- Use peroxide effect only for HBr addition to alkene.\n- SN2 favors primary substrate, strong nucleophile, polar aprotic solvent.\n- SN1 favors stable carbocation and polar protic solvent.\n\n## Common Traps\n\n- Aryl halides resist SN1/SN2 due to partial double bond character and unstable phenyl cation.\n- Peroxide effect does not apply to HCl or HI.\n- Friedel-Crafts fails on strongly deactivated rings.\n- E2 needs anti-periplanar beta hydrogen in many cases.\n\n## 10-Minute Revision Checklist\n\n- Can you predict alkene addition products?\n- Can you identify aromatic substitution directing effects?\n- Can you choose SN1 vs SN2 vs E1 vs E2?\n- Can you solve ozonolysis questions?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 12
+}

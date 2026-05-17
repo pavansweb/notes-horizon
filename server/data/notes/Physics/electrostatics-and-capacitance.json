@@ -1,0 +1,14 @@
+{
+  "id": "electrostatics-and-capacitance",
+  "title": "Electrostatics and Capacitance",
+  "subject": "Physics",
+  "chapter": "Electricity",
+  "content": "# Electrostatics and Capacitance\n\n## Quick Synopsis\n\nElectrostatics deals with stationary charges, fields, potentials, and capacitors. Potential methods often simplify multi-charge and conductor problems.\n\n## Must Know\n\n- Electric field is force per unit positive charge.\n- Electric potential is work per unit charge; it is scalar.\n- Gauss law is powerful only when symmetry makes field constant on a Gaussian surface.\n- Conductors in electrostatic equilibrium have zero field inside and constant potential.\n- Capacitor stores energy in electric field.\n- Dielectrics increase capacitance by reducing effective electric field.\n\n## Formulas / Rules\n\n- Coulomb force: F = kq1q2/r².\n- Field due to point charge: E = kq/r².\n- Potential due to point charge: V = kq/r.\n- Gauss law: ∮E · dA = qenc/ε0.\n- Parallel plate capacitance: C = ε0A/d; with dielectric: C = κε0A/d.\n- Energy in capacitor: U = 1/2 CV² = Q²/2C = 1/2 QV.\n\n## JEE Focus\n\n- Use superposition for fields and potentials.\n- For conductors, charges reside on outer surface in electrostatic equilibrium unless cavities contain charge.\n- Series capacitors have same charge; parallel capacitors have same potential.\n- Use energy change to find force between capacitor plates.\n\n## Common Traps\n\n- Electric field can be zero where potential is not zero.\n- Potential can be zero where electric field is not zero.\n- Gauss law is always true but not always useful for finding E.\n- When battery remains connected, V is constant; when disconnected, Q is constant.\n\n## 10-Minute Revision Checklist\n\n- Can you compute field and potential for charge systems?\n- Can you apply Gauss law to sphere, shell, line, and plane?\n- Can you combine capacitors?\n- Can you handle dielectric insertion cases?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 10
+}

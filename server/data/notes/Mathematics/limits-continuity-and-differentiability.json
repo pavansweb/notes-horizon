@@ -1,0 +1,14 @@
+{
+  "id": "limits-continuity-and-differentiability",
+  "title": "Limits, Continuity and Differentiability",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Limits, Continuity and Differentiability\n\n## Quick Synopsis\n\nThis chapter is the gateway to calculus. Limits study approach behavior, continuity removes breaks, and differentiability measures local linearity.\n\n## Must Know\n\n- Limit can exist even if function value at that point is undefined.\n- Left-hand and right-hand limits must match for a two-sided limit.\n- Continuity requires limit equals function value.\n- Differentiability implies continuity, but continuity does not imply differentiability.\n- Standard limits and expansions speed up calculations.\n- Modulus, greatest integer, and piecewise functions require side analysis.\n\n## Formulas / Rules\n\n- lim x→0 sinx/x = 1.\n- lim x→0 (e^x - 1)/x = 1.\n- lim x→0 ln(1+x)/x = 1.\n- Derivative definition: f’(a) = lim h→0 [f(a+h)-f(a)]/h.\n- L’Hospital can be used for 0/0 or ∞/∞ forms where allowed.\n\n## JEE Focus\n\n- Use series approximations for small x.\n- For piecewise functions, impose continuity and differentiability conditions at joining points.\n- Use rationalization for radical limits.\n- Check cusp/corner for non-differentiability.\n\n## Common Traps\n\n- 0/0 form does not mean limit is zero.\n- A function can be discontinuous at isolated points.\n- Greatest integer function has jumps at integers.\n- Modulus functions may create corners.\n\n## 10-Minute Revision Checklist\n\n- Can you evaluate standard limits?\n- Can you test continuity at a point?\n- Can you test differentiability of piecewise functions?\n- Can you handle modulus and GIF limits?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}

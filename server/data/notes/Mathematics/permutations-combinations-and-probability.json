@@ -1,0 +1,14 @@
+{
+  "id": "permutations-combinations-and-probability",
+  "title": "Permutations, Combinations and Probability",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Permutations, Combinations and Probability\n\n## Quick Synopsis\n\nCounting is about whether order matters and whether repetition is allowed. Probability adds event logic and conditional thinking.\n\n## Must Know\n\n- Permutation means arrangement; combination means selection.\n- Complement counting often simplifies restrictions.\n- Identical objects require division by factorials of repeated counts.\n- Conditional probability updates sample space.\n- Independent events satisfy P(A ∩ B) = P(A)P(B).\n- Bayes theorem reverses conditional probability using partitions.\n\n## Formulas / Rules\n\n- nPr = n!/(n-r)!; nCr = n!/[r!(n-r)!].\n- Circular permutations of n distinct objects = (n-1)! around a circle.\n- P(A ∪ B) = P(A) + P(B) - P(A ∩ B).\n- P(A|B) = P(A ∩ B)/P(B).\n- Bayes: P(Ai|B) = P(Ai)P(B|Ai) / ΣP(Aj)P(B|Aj).\n- Binomial probability: P(X=r) = nCr p^r q^(n-r).\n\n## JEE Focus\n\n- Break problems into cases only when cases are disjoint.\n- Use gap method for non-adjacent arrangements.\n- Use inclusion-exclusion for at least/onto/distribution problems.\n- Convert probability to favorable count over total count when outcomes are equally likely.\n\n## Common Traps\n\n- Do not multiply cases that are alternatives; add them.\n- Arrangement around necklace may need reflection adjustment, unlike circular table.\n- Independence and mutual exclusiveness are different.\n- Conditional probability denominator is the condition event.\n\n## 10-Minute Revision Checklist\n\n- Can you decide permutation vs combination?\n- Can you handle identical objects?\n- Can you use conditional probability?\n- Can you apply binomial distribution?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 4
+}

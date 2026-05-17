@@ -1,0 +1,14 @@
+{
+  "id": "coordination-compounds",
+  "title": "Coordination Compounds",
+  "subject": "Chemistry",
+  "chapter": "Inorganic Chemistry",
+  "content": "# Coordination Compounds\n\n## Quick Synopsis\n\nCoordination chemistry combines nomenclature, isomerism, bonding, magnetism, and colour. It is one of the most scoring inorganic chapters when rules are clear.\n\n## Must Know\n\n- Central metal atom/ion is surrounded by ligands through coordinate bonds.\n- Coordination number counts donor atoms bonded to metal.\n- Ligands can be monodentate, bidentate, polydentate, neutral, anionic, or cationic.\n- Oxidation state is found by charge balance.\n- Geometrical and optical isomerism are important for square planar and octahedral complexes.\n- Crystal field splitting explains colour and magnetic behaviour.\n\n## Formulas / Rules\n\n- Spin-only magnetic moment: μ = sqrt(n(n+2)) BM.\n- CFSE depends on electron occupancy in t2g and eg orbitals for octahedral complexes.\n- For tetrahedral complexes, Δt ≈ 4/9 Δo.\n- Effective atomic number: EAN = Z - oxidation state + donated electrons.\n\n## JEE Focus\n\n- Practice IUPAC naming order: ligands alphabetically, then metal with oxidation state.\n- Know strong-field and weak-field ligands from spectrochemical series.\n- Identify high-spin vs low-spin d-electron configurations.\n- Chelating ligands increase complex stability.\n\n## Common Traps\n\n- Alphabetical order ignores prefixes like di, tri, bis.\n- Coordination number is not always equal to oxidation state.\n- Tetrahedral complexes are generally high spin.\n- Square planar d8 complexes are often diamagnetic.\n\n## 10-Minute Revision Checklist\n\n- Can you name and write formula of complexes?\n- Can you calculate oxidation state and coordination number?\n- Can you identify isomerism?\n- Can you predict magnetic moment?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 9
+}

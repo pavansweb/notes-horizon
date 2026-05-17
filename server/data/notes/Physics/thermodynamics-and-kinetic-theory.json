@@ -1,0 +1,14 @@
+{
+  "id": "thermodynamics-and-kinetic-theory",
+  "title": "Thermodynamics and Kinetic Theory",
+  "subject": "Physics",
+  "chapter": "Heat and Thermodynamics",
+  "content": "# Thermodynamics and Kinetic Theory\n\n## Quick Synopsis\n\nThermodynamics tracks heat, work, internal energy, and efficiency without needing microscopic details. Kinetic theory connects gas pressure and temperature to molecular motion.\n\n## Must Know\n\n- Internal energy of ideal gas depends only on temperature.\n- Heat supplied can change internal energy and/or do work.\n- Isothermal process has constant temperature; adiabatic process has no heat exchange.\n- Second law limits conversion of heat into work.\n- Kinetic theory explains pressure from molecular collisions.\n- Degrees of freedom determine molar heat capacities.\n\n## Formulas / Rules\n\n- First law: ΔQ = ΔU + W by gas.\n- Ideal gas: PV = nRT.\n- Work in isobaric process: W = PΔV.\n- Isothermal work: W = nRT ln(V2/V1).\n- Adiabatic: PV^γ = constant; TV^(γ-1) = constant.\n- Average kinetic energy per molecule: 3/2 kT.\n- RMS speed: vrms = sqrt(3RT/M).\n\n## JEE Focus\n\n- Use PV diagrams: work is area under curve.\n- For cyclic process, ΔU = 0 and net heat equals net work.\n- Carnot efficiency depends only on reservoir temperatures in kelvin.\n- Use Cp - Cv = R and γ = Cp/Cv for ideal gases.\n\n## Common Traps\n\n- Temperature must be in kelvin for thermodynamic formulas.\n- Adiabatic does not mean isothermal.\n- Heat is path function; internal energy is state function.\n- Free expansion of ideal gas has zero work and no temperature change.\n\n## 10-Minute Revision Checklist\n\n- Can you identify process from PV graph?\n- Can you compute work and heat in isothermal/adiabatic/isobaric paths?\n- Can you use degrees of freedom for Cv and Cp?\n- Can you calculate engine efficiency?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 8
+}

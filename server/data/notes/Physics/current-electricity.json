@@ -1,0 +1,14 @@
+{
+  "id": "current-electricity",
+  "title": "Current Electricity",
+  "subject": "Physics",
+  "chapter": "Electricity",
+  "content": "# Current Electricity\n\n## Quick Synopsis\n\nCurrent electricity converts circuits into equations using Ohm’s law, Kirchhoff laws, and network reduction. Measurement devices and bridges are common JEE scoring areas.\n\n## Must Know\n\n- Current is rate of flow of charge; conventional current direction is opposite electron drift.\n- Resistance depends on material, length, area, and temperature.\n- Kirchhoff junction law comes from charge conservation.\n- Kirchhoff loop law comes from energy conservation.\n- Ideal ammeter has zero resistance; ideal voltmeter has infinite resistance.\n- Balanced Wheatstone bridge has no current through galvanometer branch.\n\n## Formulas / Rules\n\n- I = nqAvd.\n- Ohm law: V = IR.\n- Resistance: R = ρL/A.\n- Series: Req = R1 + R2 + ...; parallel: 1/Req = 1/R1 + 1/R2 + ...\n- Power: P = VI = I²R = V²/R.\n- Cell terminal voltage while discharging: V = E - Ir.\n- Wheatstone balance: P/Q = R/S.\n\n## JEE Focus\n\n- Reduce symmetry circuits by identifying equal-potential points.\n- Use loop currents when direct reduction fails.\n- For meter bridge and potentiometer, understand balance condition rather than memorizing only formula.\n- Check whether source internal resistance is included.\n\n## Common Traps\n\n- Potential difference across ideal wire is zero.\n- A voltmeter changes circuit if resistance is not very high.\n- Equivalent resistance depends on terminal pair chosen.\n- Power rating questions require checking both voltage and resistance constraints.\n\n## 10-Minute Revision Checklist\n\n- Can you solve multi-loop circuits?\n- Can you identify balanced bridge?\n- Can you include internal resistance?\n- Can you convert galvanometer to ammeter/voltmeter?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 11
+}

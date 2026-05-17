@@ -1,10 +1,33 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { BookOpen, ChevronRight, Search, Menu, Sun, Moon, Printer, TerminalSquare, X, ListTree, Clock } from 'lucide-react';
+import {
+  BadgeCheck,
+  BookOpen,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Copy,
+  Eye,
+  ListTree,
+  Menu,
+  Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Printer,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  Star,
+  Sun,
+  TerminalSquare,
+  X,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
 import './App.css';
 
 interface NoteMetadata {
@@ -12,12 +35,24 @@ interface NoteMetadata {
   title: string;
   subject: string;
   chapter: string;
+  order?: number;
+}
+
+interface SyllabusChapter {
+  title: string;
+  topics: string[];
+}
+
+interface SyllabusSection {
+  subject: string;
+  chapters: SyllabusChapter[];
 }
 
 interface Note extends NoteMetadata {
   content: string;
   lastUpdated: string;
   sources: string[];
+  syllabus?: SyllabusSection[];
 }
 
 interface AIRequest {
@@ -29,6 +64,13 @@ interface AIRequest {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
+const STORAGE_KEYS = {
+  theme: 'notes-horizon-theme',
+  favorites: 'notes-horizon-favorites',
+  completed: 'notes-horizon-completed',
+  fontScale: 'notes-horizon-font-scale',
+};
 
 const slugify = (value: string) =>
   value
@@ -46,28 +88,34 @@ const getTextFromChildren = (children: React.ReactNode): string =>
     })
     .join('');
 
-const Logo = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="site-logo">
-    <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" />
-    <path d="M8 16C8 11.5817 11.5817 8 16 8C20.4183 8 24 11.5817 24 16" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" />
-    <path d="M16 16L16 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-    <circle cx="16" cy="16" r="3" fill="var(--primary)" />
-  </svg>
-);
+const readStoredList = (key: string) => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
+const noteKey = (note: Pick<NoteMetadata, 'subject' | 'id'>) => `${note.subject}/${note.id}`;
 
 function App() {
   const [notesList, setNotesList] = useState<NoteMetadata[]>([]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [focusMode, setFocusMode] = useState(false);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [fontScale, setFontScale] = useState(() => Number(localStorage.getItem(STORAGE_KEYS.fontScale)) || 1);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || localStorage.getItem('theme');
     return savedTheme === 'dark' ? 'dark' : 'light';
   });
   const [activeSubject, setActiveSubject] = useState('Physics');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Modal & Dashboard State
+  const [syllabusQuery, setSyllabusQuery] = useState('');
+  const [favorites, setFavorites] = useState<string[]>(() => readStoredList(STORAGE_KEYS.favorites));
+  const [completed, setCompleted] = useState<string[]>(() => readStoredList(STORAGE_KEYS.completed));
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [newTopicInput, setNewTopicInput] = useState('');
   const [pendingRequests, setPendingRequests] = useState<AIRequest[]>([]);
@@ -75,17 +123,34 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem(STORAGE_KEYS.theme, theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-  };
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(favorites));
+  }, [favorites]);
 
-  const handlePrint = () => {
-    window.print();
-  };
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify(completed));
+  }, [completed]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.fontScale, String(fontScale));
+  }, [fontScale]);
+
+  useEffect(() => {
+    const contentArea = document.querySelector('.content-area');
+    if (!contentArea) return;
+
+    const updateProgress = () => {
+      const maxScroll = contentArea.scrollHeight - contentArea.clientHeight;
+      setReadingProgress(maxScroll > 0 ? Math.round((contentArea.scrollTop / maxScroll) * 100) : 0);
+    };
+
+    updateProgress();
+    contentArea.addEventListener('scroll', updateProgress);
+    return () => contentArea.removeEventListener('scroll', updateProgress);
+  }, [selectedNote]);
 
   const fetchNote = useCallback(async (subject: string, id: string) => {
     setLoading(true);
@@ -93,12 +158,12 @@ function App() {
       const response = await axios.get(`${API_BASE_URL}/api/notes/${encodeURIComponent(subject)}/${encodeURIComponent(id)}`);
       setSelectedNote(response.data);
       setActiveSubject(subject);
-      
-      // Scroll to top of content area
+      setReadingProgress(0);
+
       const contentArea = document.querySelector('.content-area');
       if (contentArea) contentArea.scrollTop = 0;
-      
-      if (window.innerWidth <= 768) setSidebarOpen(false); // Auto close on mobile
+
+      if (window.innerWidth <= 760) setSidebarOpen(false);
     } catch (error) {
       console.error('Error fetching note:', error);
     } finally {
@@ -108,41 +173,45 @@ function App() {
 
   const fetchNotesList = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/notes`);
-      setNotesList(response.data);
-      
-      // Initial auto-select
+      const response = await axios.get<NoteMetadata[]>(`${API_BASE_URL}/api/notes`);
+      setNotesList(
+        response.data.sort((a, b) => {
+          if (a.subject !== b.subject) return SUBJECTS.indexOf(a.subject) - SUBJECTS.indexOf(b.subject);
+          return (a.order || 999) - (b.order || 999) || a.title.localeCompare(b.title);
+        }),
+      );
+
       if (response.data.length > 0 && !selectedNote) {
-        const firstNote = response.data.find((n: NoteMetadata) => n.subject === activeSubject);
-        if (firstNote) {
-          fetchNote(firstNote.subject, firstNote.id);
-        }
+        const firstNote = response.data.find((note) => note.subject === activeSubject) || response.data[0];
+        fetchNote(firstNote.subject, firstNote.id);
       }
     } catch (error) {
       console.error('Error fetching notes list:', error);
     }
-  }, [fetchNote, selectedNote, activeSubject]);
+  }, [activeSubject, fetchNote, selectedNote]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotesList();
   }, [fetchNotesList]);
 
-  // Handle subject change: Auto-select first note of new subject
   useEffect(() => {
-    if (notesList.length > 0) {
-      const firstNoteOfSubject = notesList.find(n => n.subject === activeSubject);
-      if (firstNoteOfSubject && selectedNote?.subject !== activeSubject) {
-        fetchNote(firstNoteOfSubject.subject, firstNoteOfSubject.id);
-      }
-    }
-  }, [activeSubject, notesList, fetchNote, selectedNote]);
+    setSyllabusQuery('');
+  }, [selectedNote?.id]);
+
+  useEffect(() => {
+    if (notesList.length === 0 || selectedNote?.subject === activeSubject || searchQuery.trim()) return;
+    const firstNoteOfSubject = notesList.find((note) => note.subject === activeSubject);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (firstNoteOfSubject) fetchNote(firstNoteOfSubject.subject, firstNoteOfSubject.id);
+  }, [activeSubject, fetchNote, notesList, searchQuery, selectedNote]);
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/requests`);
-      setPendingRequests(res.data);
-    } catch (e) {
-      console.error(e);
+      const response = await axios.get<AIRequest[]>(`${API_BASE_URL}/api/requests`);
+      setPendingRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
     }
   };
 
@@ -151,41 +220,56 @@ function App() {
     fetchRequests();
   };
 
-  const handleSubmitRequest = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitRequest = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!newTopicInput.trim()) return;
+
     try {
       await axios.post(`${API_BASE_URL}/api/generate`, {
         subject: activeSubject,
-        topic: newTopicInput
+        topic: newTopicInput.trim(),
       });
       setNewTopicInput('');
-      setDashboardMessage('Topic queued! Tell the Gemini CLI to fulfill pending requests.');
+      setDashboardMessage('Topic queued for generation.');
       fetchRequests();
-      setTimeout(() => setDashboardMessage(''), 4000);
-    } catch (e) {
-      console.error(e);
-      setDashboardMessage('Failed to queue request.');
+      setTimeout(() => setDashboardMessage(''), 3500);
+    } catch (error) {
+      console.error('Error queueing request:', error);
+      setDashboardMessage('Could not queue this topic.');
     }
   };
 
-  const subjects = ['Physics', 'Chemistry', 'Mathematics', 'JEE Main Syllabus', 'JEE Advanced Syllabus'];
-  
+  const subjectCounts = useMemo(
+    () =>
+      SUBJECTS.reduce<Record<string, number>>((counts, subject) => {
+        counts[subject] = notesList.filter((note) => note.subject === subject).length;
+        return counts;
+      }, {}),
+    [notesList],
+  );
+
   const filteredNotes = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return notesList.filter((note) => {
       const matchesSubject = query ? true : note.subject === activeSubject;
-      const matchesSearch = !query || [note.title, note.chapter, note.subject]
-        .join(' ')
-        .toLowerCase()
-        .includes(query);
+      const matchesSearch =
+        !query ||
+        [note.title, note.chapter, note.subject]
+          .join(' ')
+          .toLowerCase()
+          .includes(query);
 
       return matchesSubject && matchesSearch;
     });
   }, [activeSubject, notesList, searchQuery]);
 
+  const currentKey = selectedNote ? noteKey(selectedNote) : '';
+  const currentIsFavorite = currentKey ? favorites.includes(currentKey) : false;
+  const currentIsCompleted = currentKey ? completed.includes(currentKey) : false;
+  const completedInSubject = notesList.filter((note) => note.subject === activeSubject && completed.includes(noteKey(note))).length;
+  const activeSubjectTotal = subjectCounts[activeSubject] || 0;
   const estimatedMinutes = selectedNote ? Math.max(1, Math.ceil(selectedNote.content.split(/\s+/).length / 180)) : 0;
-  
+
   const contentHeadings = useMemo(() => {
     if (!selectedNote) return [];
     return selectedNote.content
@@ -199,104 +283,240 @@ function App() {
       .filter(Boolean) as { id: string; text: string; level: number }[];
   }, [selectedNote]);
 
+  const filteredSyllabus = useMemo(() => {
+    if (!selectedNote?.syllabus) return [];
+    const query = syllabusQuery.trim().toLowerCase();
+
+    return selectedNote.syllabus
+      .map((section) => ({
+        ...section,
+        chapters: section.chapters
+          .map((chapter) => {
+            const chapterMatches = chapter.title.toLowerCase().includes(query);
+            const topics = query
+              ? chapter.topics.filter((topic) => chapterMatches || topic.toLowerCase().includes(query))
+              : chapter.topics;
+
+            return { ...chapter, topics, chapterMatches };
+          })
+          .filter((chapter) => !query || chapter.chapterMatches || chapter.topics.length > 0),
+      }))
+      .filter((section) => section.chapters.length > 0);
+  }, [selectedNote, syllabusQuery]);
+
+  const toggleListItem = (key: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+    setter((items) => (items.includes(key) ? items.filter((item) => item !== key) : [...items, key]));
+  };
+
+  const copyCurrentLink = async () => {
+    if (!selectedNote) return;
+    const link = `${window.location.origin}${window.location.pathname}#${slugify(selectedNote.title)}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      setDashboardMessage('Note link copied.');
+      setTimeout(() => setDashboardMessage(''), 2200);
+    } catch (error) {
+      console.error('Clipboard failed:', error);
+    }
+  };
+
   return (
-    <div className="app-container">
+    <div className={`app-container ${focusMode ? 'focus-mode' : ''}`}>
+      <div className="reading-progress" style={{ width: `${readingProgress}%` }} />
+
       <header className="header no-print">
         <div className="logo-section">
-          <Menu className="menu-icon" onClick={() => setSidebarOpen(!sidebarOpen)} />
-          <div className="logo-container">
-            <Logo />
-            <h1>Notes Horizon</h1>
+          <button className="icon-btn menu-button" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Toggle sidebar">
+            <Menu size={20} />
+          </button>
+          <div className="brand-mark">
+            <div className="brand-icon">
+              <BookOpen size={20} />
+            </div>
+            <div>
+              <h1>Notes Horizon</h1>
+              <span>JEE study workspace</span>
+            </div>
           </div>
         </div>
-        <div className="search-bar">
+
+        <label className="search-bar">
           <Search size={18} />
-          <input 
-            type="text" 
-            placeholder="Search topics, chapters, subjects..." 
+          <input
+            type="text"
+            placeholder="Search topics, chapters, subjects"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(event) => setSearchQuery(event.target.value)}
           />
-        </div>
+        </label>
+
         <div className="header-actions">
-          <button className="theme-toggle" onClick={handleOpenDashboard} title="AI Auto-Scraper Dashboard">
-            <TerminalSquare size={20} />
+          <button className="icon-btn" onClick={handleOpenDashboard} title="Generation queue" aria-label="Generation queue">
+            <TerminalSquare size={19} />
           </button>
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          <button className="icon-btn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} title="Toggle theme" aria-label="Toggle theme">
+            {theme === 'light' ? <Moon size={19} /> : <Sun size={19} />}
           </button>
         </div>
       </header>
 
-      <nav className="sub-header no-print">
-        <div className="subject-tabs">
-          {subjects.map(subject => (
-            <div 
-              key={subject} 
-              className={`subject-nav-item ${activeSubject === subject ? 'active' : ''}`}
-              onClick={() => {
-                setActiveSubject(subject);
-                setSearchQuery('');
-              }}
-            >
-              {subject}
-            </div>
-          ))}
-        </div>
+      <nav className="subject-rail no-print" aria-label="Subjects">
+        {SUBJECTS.map((subject) => (
+          <button
+            key={subject}
+            className={`subject-pill ${activeSubject === subject ? 'active' : ''}`}
+            onClick={() => {
+              setActiveSubject(subject);
+              setSearchQuery('');
+            }}
+          >
+            <span>{subject}</span>
+            <strong>{subjectCounts[subject] || 0}</strong>
+          </button>
+        ))}
       </nav>
 
       <div className="main-layout">
         <aside className={`sidebar no-print ${sidebarOpen ? 'open' : ''}`}>
-          <div className="sidebar-content">
-            <div className="subject-group">
-              <h3>{searchQuery.trim() ? 'Search results' : `${activeSubject} ${activeSubject.includes('Syllabus') ? '' : 'Chapters'}`}</h3>
-              {filteredNotes.length === 0 ? (
-                <p className="no-results">No content found.</p>
-              ) : (
-                <ul>
-                  {filteredNotes.map(note => (
-                    <li 
-                      key={note.id} 
-                      className={selectedNote?.id === note.id ? 'active' : ''}
-                      onClick={() => fetchNote(note.subject, note.id)}
-                    >
-                      <div className="li-content">
-                        <ChevronRight size={14} className="chevron" />
-                        <span className="note-title">
-                          {note.title}
-                          {searchQuery.trim() && <small>{note.subject}</small>}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+          <div className="sidebar-panel">
+            <section className="study-overview">
+              <div>
+                <span>Current subject</span>
+                <strong>{activeSubject}</strong>
+              </div>
+              <div className="overview-grid">
+                <div>
+                  <BookOpen size={16} />
+                  <strong>{activeSubjectTotal}</strong>
+                  <span>notes</span>
+                </div>
+                <div>
+                  <CheckCircle2 size={16} />
+                  <strong>{completedInSubject}</strong>
+                  <span>done</span>
+                </div>
+                <div>
+                  <Star size={16} />
+                  <strong>{favorites.length}</strong>
+                  <span>saved</span>
+                </div>
+              </div>
+            </section>
+
+            <div className="sidebar-heading">
+              <div>
+                <span>{searchQuery.trim() ? 'Search results' : 'Library'}</span>
+                <strong>{filteredNotes.length} items</strong>
+              </div>
+              <button className="icon-btn compact" onClick={() => setSidebarOpen(false)} aria-label="Collapse sidebar">
+                <PanelLeftClose size={17} />
+              </button>
             </div>
+
+            {filteredNotes.length === 0 ? (
+              <p className="no-results">No matching notes found.</p>
+            ) : (
+              <ul className="note-list">
+                {filteredNotes.map((note) => {
+                  const key = noteKey(note);
+                  return (
+                    <li key={key}>
+                      <button className={`note-row ${selectedNote?.id === note.id ? 'active' : ''}`} onClick={() => fetchNote(note.subject, note.id)}>
+                        <ChevronRight size={15} className="chevron" />
+                        <span>
+                          <strong>{note.title}</strong>
+                          <small>{searchQuery.trim() ? note.subject : note.chapter}</small>
+                        </span>
+                        <span className="note-state">
+                          {favorites.includes(key) && <Star size={13} />}
+                          {completed.includes(key) && <BadgeCheck size={14} />}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </aside>
 
+        {!sidebarOpen && (
+          <button className="sidebar-reopen no-print" onClick={() => setSidebarOpen(true)} aria-label="Open sidebar">
+            <PanelLeftOpen size={18} />
+          </button>
+        )}
+
         <main className="content-area">
           {loading ? (
-            <div className="loader">Loading...</div>
+            <div className="loader">
+              <Sparkles size={32} />
+              <p>Loading note...</p>
+            </div>
           ) : selectedNote ? (
-            <article className="note-content">
-              <div className="note-header">
-                <div className="note-header-top">
-                  <span className="subject-badge">{selectedNote.subject}</span>
-                  <div className="note-actions no-print">
-                    <button className="export-pdf-btn" onClick={handlePrint}>
-                      <Printer size={16} />
-                      Export PDF
-                    </button>
-                  </div>
+            <article className="note-content" style={{ '--note-font-scale': fontScale } as React.CSSProperties}>
+              <div className="note-toolbar no-print">
+                <div className="toolbar-group">
+                  <button className={`tool-button ${currentIsFavorite ? 'active' : ''}`} onClick={() => toggleListItem(currentKey, setFavorites)}>
+                    <Star size={16} />
+                    Save
+                  </button>
+                  <button className={`tool-button ${currentIsCompleted ? 'active success' : ''}`} onClick={() => toggleListItem(currentKey, setCompleted)}>
+                    <CheckCircle2 size={16} />
+                    Done
+                  </button>
+                  <button className="tool-button" onClick={copyCurrentLink}>
+                    <Copy size={16} />
+                    Copy
+                  </button>
                 </div>
-                <h2>{selectedNote.title}</h2>
-                <div className="metadata-row">
-                  <p className="metadata">Last updated: {new Date(selectedNote.lastUpdated).toLocaleDateString()}</p>
-                  <span><Clock size={14} /> {estimatedMinutes} min read</span>
+                <div className="toolbar-group">
+                  <button className="icon-btn compact" onClick={() => setFontScale(Math.max(0.9, Number((fontScale - 0.05).toFixed(2))))} aria-label="Decrease text size">
+                    <ZoomOut size={17} />
+                  </button>
+                  <button className="icon-btn compact" onClick={() => setFontScale(Math.min(1.2, Number((fontScale + 0.05).toFixed(2))))} aria-label="Increase text size">
+                    <ZoomIn size={17} />
+                  </button>
+                  <button className="icon-btn compact" onClick={() => setFocusMode(!focusMode)} aria-label="Focus mode">
+                    <Eye size={17} />
+                  </button>
+                  <button className="icon-btn compact" onClick={() => window.print()} aria-label="Export PDF">
+                    <Printer size={17} />
+                  </button>
                 </div>
               </div>
-              {contentHeadings.length > 0 && (
+
+              <header className="note-header">
+                <div className="note-kicker">
+                  <span>{selectedNote.subject}</span>
+                  <span>{selectedNote.chapter}</span>
+                </div>
+                <h2 id={slugify(selectedNote.title)}>{selectedNote.title}</h2>
+                <div className="metadata-row">
+                  <span>
+                    <Clock size={14} /> {estimatedMinutes} min read
+                  </span>
+                  <span>Updated {new Date(selectedNote.lastUpdated).toLocaleDateString()}</span>
+                  <span>{readingProgress}% read</span>
+                </div>
+              </header>
+
+              {selectedNote.syllabus ? (
+                <section className="syllabus-browser no-print">
+                  <label className="syllabus-search">
+                    <Search size={18} />
+                    <input
+                      type="text"
+                      placeholder="Search chapter or topic in this syllabus"
+                      value={syllabusQuery}
+                      onChange={(event) => setSyllabusQuery(event.target.value)}
+                    />
+                  </label>
+                  <div className="syllabus-summary">
+                    <span>{filteredSyllabus.reduce((total, section) => total + section.chapters.length, 0)} chapters shown</span>
+                    <span>{filteredSyllabus.reduce((total, section) => total + section.chapters.reduce((sum, chapter) => sum + chapter.topics.length, 0), 0)} topics</span>
+                  </div>
+                </section>
+              ) : contentHeadings.length > 0 ? (
                 <nav className="toc no-print" aria-label="Table of contents">
                   <div className="toc-title">
                     <ListTree size={16} />
@@ -310,24 +530,64 @@ function App() {
                     ))}
                   </div>
                 </nav>
+              ) : null}
+
+              {selectedNote.syllabus ? (
+                <div className="syllabus-content">
+                  <div className="markdown-body syllabus-intro">
+                    <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                      {selectedNote.content}
+                    </ReactMarkdown>
+                  </div>
+                  {filteredSyllabus.length === 0 ? (
+                    <p className="no-results">No chapter or topic matches this search.</p>
+                  ) : (
+                    filteredSyllabus.map((section) => (
+                      <section className="syllabus-section" key={section.subject}>
+                        <h3>{section.subject}</h3>
+                        <div className="chapter-accordion">
+                          {section.chapters.map((chapter, index) => (
+                            <details key={`${section.subject}-${chapter.title}`} className="chapter-card" open={Boolean(syllabusQuery.trim()) || index === 0}>
+                              <summary>
+                                <span>{chapter.title}</span>
+                                <strong>{chapter.topics.length} topics</strong>
+                              </summary>
+                              <ul>
+                                {chapter.topics.map((topic) => (
+                                  <li key={topic}>{topic}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          ))}
+                        </div>
+                      </section>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div className="markdown-body">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      h2: ({ children }) => <h2 id={slugify(getTextFromChildren(children))}>{children}</h2>,
+                      h3: ({ children }) => <h3 id={slugify(getTextFromChildren(children))}>{children}</h3>,
+                    }}
+                  >
+                    {selectedNote.content}
+                  </ReactMarkdown>
+                </div>
               )}
-              <div className="markdown-body">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkMath]} 
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    h2: ({ children }) => <h2 id={slugify(getTextFromChildren(children))}>{children}</h2>,
-                    h3: ({ children }) => <h3 id={slugify(getTextFromChildren(children))}>{children}</h3>,
-                  }}
-                >
-                  {selectedNote.content}
-                </ReactMarkdown>
-              </div>
+
               <footer className="note-footer no-print">
-                <h4>Sources:</h4>
+                <h4>Sources</h4>
                 <ul>
-                  {selectedNote.sources.map((source, i) => (
-                    <li key={i}><a href={source} target="_blank" rel="noreferrer">{source}</a></li>
+                  {selectedNote.sources.map((source, index) => (
+                    <li key={`${source}-${index}`}>
+                      <a href={source} target="_blank" rel="noreferrer">
+                        {source}
+                      </a>
+                    </li>
                   ))}
                 </ul>
               </footer>
@@ -335,63 +595,79 @@ function App() {
           ) : (
             <div className="empty-state no-print">
               <BookOpen size={48} />
-              <p>Select a topic or syllabus to start</p>
+              <p>Select a note to start studying.</p>
             </div>
           )}
         </main>
       </div>
 
+      {dashboardMessage && <div className="global-toast no-print">{dashboardMessage}</div>}
+
       {isDashboardOpen && (
-        <div className="modal-overlay">
+        <div className="modal-overlay no-print">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>AI Auto-Scraper Dashboard</h2>
-              <button className="close-btn" onClick={() => setIsDashboardOpen(false)}><X size={20} /></button>
+              <div>
+                <span>Generation queue</span>
+                <h2>Request a new note</h2>
+              </div>
+              <button className="icon-btn compact" onClick={() => setIsDashboardOpen(false)} aria-label="Close dashboard">
+                <X size={20} />
+              </button>
             </div>
             <div className="modal-body">
               <div className="dashboard-info">
-                <p>Enter a topic below. The AI will research, format with LaTeX, and inject the notes into your library.</p>
+                <SlidersHorizontal size={18} />
+                <p>Queue topics for the local note generator, then refresh the library when generation is complete.</p>
               </div>
-              
-              <form onSubmit={handleSubmitRequest} className="request-form">
-                <div className="form-group">
-                  <label>Subject</label>
-                  <select value={activeSubject} onChange={(e) => setActiveSubject(e.target.value)}>
-                    {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Topic Name</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g., Thermodynamics, Organic Chemistry Basics" 
-                    value={newTopicInput}
-                    onChange={(e) => setNewTopicInput(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="primary-btn">Queue Generation</button>
-              </form>
-              
-              {dashboardMessage && <div className="dashboard-toast">{dashboardMessage}</div>}
 
-              <div className="pending-requests">
-                <h3>Pending Queue ({pendingRequests.length})</h3>
+              <form onSubmit={handleSubmitRequest} className="request-form">
+                <label className="form-group">
+                  <span>Subject</span>
+                  <select value={activeSubject} onChange={(event) => setActiveSubject(event.target.value)}>
+                    {SUBJECTS.map((subject) => (
+                      <option key={subject} value={subject}>
+                        {subject}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="form-group">
+                  <span>Topic name</span>
+                  <input
+                    type="text"
+                    placeholder="e.g. Rotational motion"
+                    value={newTopicInput}
+                    onChange={(event) => setNewTopicInput(event.target.value)}
+                  />
+                </label>
+                <button type="submit" className="primary-btn">
+                  <Sparkles size={17} />
+                  Queue generation
+                </button>
+              </form>
+
+              <section className="pending-requests">
+                <div className="queue-heading">
+                  <h3>Pending queue</h3>
+                  <span>{pendingRequests.length}</span>
+                </div>
                 {pendingRequests.length === 0 ? (
                   <p className="empty-queue">No topics in queue.</p>
                 ) : (
                   <ul>
-                    {pendingRequests.map(req => (
-                      <li key={req.id}>
+                    {pendingRequests.map((request) => (
+                      <li key={request.id}>
                         <div className="req-info">
-                          <span className="req-subject">{req.subject}</span>
-                          <span className="req-topic">{req.topic}</span>
+                          <span className="req-subject">{request.subject}</span>
+                          <span className="req-topic">{request.topic}</span>
                         </div>
-                        <span className={`status-badge ${req.status}`}>{req.status}</span>
+                        <span className={`status-badge ${request.status}`}>{request.status}</span>
                       </li>
                     ))}
                   </ul>
                 )}
-              </div>
+              </section>
             </div>
           </div>
         </div>

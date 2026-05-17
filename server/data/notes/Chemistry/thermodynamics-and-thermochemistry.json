@@ -1,0 +1,14 @@
+{
+  "id": "thermodynamics-and-thermochemistry",
+  "title": "Thermodynamics and Thermochemistry",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Thermodynamics and Thermochemistry\n\n## Quick Synopsis\n\nChemical thermodynamics predicts heat changes and spontaneity. JEE focuses on enthalpy cycles, entropy, Gibbs energy, and equilibrium connection.\n\n## Must Know\n\n- System, surroundings, state functions, and path functions must be distinguished.\n- Enthalpy is heat content at constant pressure.\n- Hess law allows addition of reaction enthalpies.\n- Entropy measures dispersal of energy and disorder in a thermodynamic sense.\n- Gibbs free energy decides spontaneity at constant T and P.\n- Standard Gibbs energy links to equilibrium constant.\n\n## Formulas / Rules\n\n- First law: ΔU = q + w using chemistry sign convention.\n- At constant pressure: qp = ΔH.\n- ΔH = ΔU + ΔngRT for ideal gases.\n- ΔG = ΔH - TΔS.\n- ΔG° = -RT lnK.\n- q = mcΔT for calorimetry.\n\n## JEE Focus\n\n- Use bond enthalpies for approximate reaction enthalpy.\n- Use formation enthalpies: ΔHrxn = sum products - sum reactants.\n- Spontaneity changes with temperature depending on signs of ΔH and ΔS.\n- Born-Haber style cycles require careful sign tracking.\n\n## Common Traps\n\n- Negative ΔG means spontaneous, not necessarily fast.\n- Exothermic reactions are not always spontaneous at all temperatures.\n- Entropy can decrease for system if surroundings compensate.\n- Heat and work are not state functions.\n\n## 10-Minute Revision Checklist\n\n- Can you compute ΔH using Hess law?\n- Can you predict spontaneity from ΔH and ΔS?\n- Can you connect ΔG° to K?\n- Can you handle calorimetry problems?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 5
+}

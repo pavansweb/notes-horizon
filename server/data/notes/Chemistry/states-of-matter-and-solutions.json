@@ -1,0 +1,14 @@
+{
+  "id": "states-of-matter-and-solutions",
+  "title": "States of Matter and Solutions",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# States of Matter and Solutions\n\n## Quick Synopsis\n\nGases, liquids, and solutions connect microscopic interactions with macroscopic properties. Colligative properties depend on number of solute particles, not identity.\n\n## Must Know\n\n- Ideal gas behavior assumes negligible molecular volume and no intermolecular forces.\n- Real gases deviate at high pressure and low temperature.\n- Critical constants describe liquefaction behavior.\n- Raoult law applies to ideal solutions.\n- Colligative properties include relative lowering of vapour pressure, elevation of boiling point, depression of freezing point, and osmotic pressure.\n- van’t Hoff factor corrects for association and dissociation.\n\n## Formulas / Rules\n\n- Ideal gas: PV = nRT.\n- van der Waals: (P + an²/V²)(V - nb) = nRT.\n- Dalton law: Ptotal = sum partial pressures.\n- Raoult law: pA = xA pA°.\n- ΔTb = iKb m; ΔTf = iKf m.\n- Osmotic pressure: π = iMRT.\n\n## JEE Focus\n\n- Use compressibility factor Z = PV/nRT to judge deviation.\n- For volatile liquid mixtures, use partial vapour pressures.\n- For electrolytes, include i in colligative property formulas.\n- Normality/molarity dilution questions often combine with solutions.\n\n## Common Traps\n\n- Colligative properties use molality for temperature changes, not molarity.\n- Positive deviation and negative deviation from Raoult law have opposite interaction explanations.\n- Osmotic pressure is especially useful for molar mass of polymers.\n- Association lowers particle count; dissociation raises it.\n\n## 10-Minute Revision Checklist\n\n- Can you calculate partial pressures?\n- Can you apply van der Waals corrections conceptually?\n- Can you solve molar mass from colligative properties?\n- Can you interpret van’t Hoff factor?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 4
+}

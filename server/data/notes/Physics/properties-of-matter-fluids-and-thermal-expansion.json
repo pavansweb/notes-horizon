@@ -1,0 +1,14 @@
+{
+  "id": "properties-of-matter-fluids-and-thermal-expansion",
+  "title": "Properties of Matter, Fluids and Thermal Expansion",
+  "subject": "Physics",
+  "chapter": "Mechanics and Heat",
+  "content": "# Properties of Matter, Fluids and Thermal Expansion\n\n## Quick Synopsis\n\nThis area covers elasticity, fluid pressure, buoyancy, viscosity, surface tension, and expansion. Questions are usually direct but require careful units and assumptions.\n\n## Must Know\n\n- Stress is restoring force per area; strain is fractional deformation.\n- Young, bulk, and shear moduli measure resistance to length, volume, and shape changes.\n- Pressure in a static fluid increases with depth.\n- Buoyant force equals weight of displaced fluid.\n- Viscosity causes drag in fluids; terminal velocity occurs when net force becomes zero.\n- Surface tension acts like force per unit length and causes excess pressure across curved surfaces.\n\n## Formulas / Rules\n\n- Young modulus Y = stress/strain = (F/A)/(ΔL/L).\n- Fluid pressure: P = P0 + ρgh.\n- Buoyant force: FB = ρfluid Vdisplaced g.\n- Stoke drag: F = 6πηrv; terminal velocity for small sphere: vt = 2r²(ρ - σ)g / 9η.\n- Excess pressure: drop = 2T/R; soap bubble = 4T/R.\n- Linear expansion: ΔL = αLΔT.\n\n## JEE Focus\n\n- Use Pascal law for hydraulic lift questions.\n- Use Bernoulli only for steady, incompressible, non-viscous streamline flow.\n- In capillarity, decide rise/fall from contact angle.\n- For composite rods, enforce equal stress/strain constraints depending on arrangement.\n\n## Common Traps\n\n- Pressure is scalar even though force is vector.\n- Upthrust depends on displaced fluid, not object density directly.\n- Bernoulli is not valid across turbulent or highly viscous regions.\n- A soap bubble has two surfaces; a liquid drop has one.\n\n## 10-Minute Revision Checklist\n\n- Can you solve floating body fraction submerged?\n- Can you apply Bernoulli with continuity?\n- Can you calculate elastic elongation?\n- Can you distinguish drop and bubble excess pressure?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 7
+}

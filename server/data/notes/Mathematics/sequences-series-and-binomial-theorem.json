@@ -1,0 +1,14 @@
+{
+  "id": "sequences-series-and-binomial-theorem",
+  "title": "Sequences, Series and Binomial Theorem",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Sequences, Series and Binomial Theorem\n\n## Quick Synopsis\n\nSequences and series train pattern recognition. Binomial theorem is used for coefficients, approximations, divisibility, and greatest-term questions.\n\n## Must Know\n\n- AP has constant difference; GP has constant ratio; HP reciprocals form AP.\n- Arithmetic-geometric series often needs multiply-subtract trick.\n- Telescoping series cancels intermediate terms.\n- Binomial expansion gives coefficient and term structure.\n- General term is the key to finding specific powers.\n- Greatest term questions compare consecutive terms.\n\n## Formulas / Rules\n\n- AP nth term: an = a + (n - 1)d; sum Sn = n/2[2a + (n - 1)d].\n- GP nth term: ar^(n-1); sum finite = a(r^n - 1)/(r - 1).\n- Infinite GP sum = a/(1-r), |r| < 1.\n- (x + y)^n = Σ nCr x^(n-r)y^r.\n- General term Tr+1 = nCr x^(n-r)y^r.\n- nCr = nC(n-r).\n\n## JEE Focus\n\n- Use sigma notation transformations for sums.\n- For coefficient of x^k, write general term and equate exponent.\n- Use ratio Tr+1/Tr for greatest term.\n- Know expansions for negative/fractional indices when |x| < 1.\n\n## Common Traps\n\n- Infinite GP formula needs |r| < 1.\n- Term number and r index differ by 1 in binomial general term.\n- Middle term differs for odd/even n.\n- Do not use AP sum formula for non-arithmetic sequences.\n\n## 10-Minute Revision Checklist\n\n- Can you identify AP/GP/HP?\n- Can you telescope sums?\n- Can you find coefficient in binomial expansion?\n- Can you find greatest term?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 3
+}

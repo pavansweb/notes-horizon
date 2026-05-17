@@ -1,0 +1,14 @@
+{
+  "id": "gravitation",
+  "title": "Gravitation",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Gravitation\n\n## Quick Synopsis\n\nGravitation combines inverse-square force, field, potential, and orbital motion. It is formula-light but concept-heavy, especially signs of potential energy and satellite motion.\n\n## Must Know\n\n- Gravitational force is attractive and follows inverse-square law.\n- Field is force per unit mass; potential is potential energy per unit mass.\n- Potential is negative when zero is chosen at infinity.\n- Inside a uniform spherical shell, gravitational field is zero and potential is constant.\n- Orbital speed comes from gravity providing centripetal force.\n- Escape speed is independent of launch direction if air resistance is ignored.\n\n## Formulas / Rules\n\n- F = GMm/r².\n- g = GM/r² outside spherical mass.\n- Potential: V = -GM/r; potential energy: U = -GMm/r.\n- Orbital speed: v = sqrt(GM/r).\n- Escape speed: ve = sqrt(2GM/R).\n- Kepler: T² ∝ r³ for circular/elliptic orbits around same central mass.\n\n## JEE Focus\n\n- Use energy conservation for escape and changing orbit problems.\n- For satellites, total energy E = -GMm/2r in circular orbit.\n- Variation of g with altitude: g decreases roughly as 1/(R+h)².\n- Variation of g with depth inside Earth is approximately linear: gd = g(1 - d/R).\n\n## Common Traps\n\n- A satellite in orbit is continuously falling; apparent weight can be zero.\n- Potential is scalar; field is vector.\n- Escape velocity from Earth does not depend on projectile mass.\n- Increasing orbital radius decreases speed but increases total energy.\n\n## 10-Minute Revision Checklist\n\n- Can you derive orbital and escape speeds?\n- Can you use potential energy signs correctly?\n- Can you handle g variation with height and depth?\n- Can you compare energy of different circular orbits?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}

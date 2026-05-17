@@ -1,0 +1,14 @@
+{
+  "id": "p-block-d-block-and-f-block-elements",
+  "title": "p-Block, d-Block and f-Block Elements",
+  "subject": "Chemistry",
+  "chapter": "Inorganic Chemistry",
+  "content": "# p-Block, d-Block and f-Block Elements\n\n## Quick Synopsis\n\nBlock chemistry is trend-based plus facts about important compounds. Focus on oxidation states, anomalous behaviour, colours, magnetic properties, and reactions of key compounds.\n\n## Must Know\n\n- p-block elements show inert pair effect down heavier groups.\n- Second-period elements often behave anomalously due to small size and no d orbitals.\n- Transition metals show variable oxidation states, coloured ions, complex formation, and catalytic activity.\n- Lanthanide contraction affects size and chemistry of d-block elements after lanthanoids.\n- Oxidising/reducing behaviour changes with oxidation state stability.\n- Important compounds of nitrogen, oxygen, halogens, sulphur, and transition metals are frequently tested.\n\n## Formulas / Rules\n\n- Magnetic moment: μ = sqrt(n(n+2)) BM for spin-only cases.\n- Oxidation state sum equals total charge.\n- Disproportionation: same element undergoes oxidation and reduction simultaneously.\n\n## JEE Focus\n\n- Memorize trends for hydrides, oxides, halides, acidic/basic character.\n- Know KMnO4 and K2Cr2O7 reactions in acidic/basic/neutral media.\n- Compare stability of oxidation states across transition series.\n- Understand colour from d-d transitions and charge transfer.\n\n## Common Traps\n\n- Not all d-block elements are transition elements in every oxidation state.\n- Inert pair effect increases down group 13-16.\n- F has only -1 oxidation state in compounds.\n- Lanthanides commonly show +3 oxidation state.\n\n## 10-Minute Revision Checklist\n\n- Can you rank acidic/basic character of oxides?\n- Can you write key oxyacid trends?\n- Can you balance KMnO4/K2Cr2O7 redox reactions?\n- Can you explain colour and magnetism of transition ions?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 10
+}

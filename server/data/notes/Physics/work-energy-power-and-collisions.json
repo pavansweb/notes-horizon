@@ -1,0 +1,14 @@
+{
+  "id": "work-energy-power-and-collisions",
+  "title": "Work, Energy, Power and Collisions",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Work, Energy, Power and Collisions\n\n## Quick Synopsis\n\nEnergy methods bypass force-time details when forces are conservative or work is easier to compute. Collisions require momentum first, energy only when elastic.\n\n## Must Know\n\n- Work is force component along displacement integrated over displacement.\n- Conservative forces have path-independent work and associated potential energy.\n- Work-energy theorem works for all net work, including friction.\n- Mechanical energy is conserved only when non-conservative work is zero.\n- Power is rate of doing work or F · v.\n- In collisions, linear momentum is conserved if external impulse is negligible.\n\n## Formulas / Rules\n\n- W = ∫ F · ds; for constant force W = Fs cosθ.\n- K = 1/2 mv²; gravitational U = mgh near Earth; spring U = 1/2 kx².\n- Work-energy theorem: Wnet = ΔK.\n- Power: P = dW/dt = F · v.\n- Coefficient of restitution: e = relative speed of separation / relative speed of approach.\n\n## JEE Focus\n\n- Use energy for springs, variable forces, vertical circles, and smooth tracks.\n- Use impulse-momentum for explosions and collisions.\n- For rough surfaces, include work done by friction as negative unless friction assists motion.\n- In elastic collision of equal masses in 1D, velocities exchange.\n\n## Common Traps\n\n- Momentum conservation does not imply kinetic energy conservation.\n- Normal force may do work if point of contact moves, as in wedge problems.\n- Friction can convert mechanical energy into heat; it is not always μmg times total distance unless N is constant.\n- Potential energy reference level is arbitrary; differences matter.\n\n## 10-Minute Revision Checklist\n\n- Can you identify conservative and non-conservative forces?\n- Can you solve spring-block energy problems?\n- Can you apply coefficient of restitution?\n- Can you distinguish impulse from force?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 4
+}

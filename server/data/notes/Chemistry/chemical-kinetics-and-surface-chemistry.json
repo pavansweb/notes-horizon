@@ -1,0 +1,14 @@
+{
+  "id": "chemical-kinetics-and-surface-chemistry",
+  "title": "Chemical Kinetics and Surface Chemistry",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Chemical Kinetics and Surface Chemistry\n\n## Quick Synopsis\n\nKinetics tells how fast reactions occur and what affects rate. Surface chemistry covers adsorption, catalysis, and colloids, which are often direct but detail-heavy.\n\n## Must Know\n\n- Rate law is experimentally determined and may not match stoichiometric coefficients.\n- Order is sum of powers in rate law; molecularity applies to elementary steps.\n- Integrated rate laws describe concentration versus time.\n- Activation energy controls temperature dependence of rate.\n- Adsorption is surface accumulation; physisorption and chemisorption differ.\n- Catalyst changes pathway and lowers activation energy without changing equilibrium constant.\n\n## Formulas / Rules\n\n- Rate = k[A]^m[B]^n.\n- First order: k = (2.303/t) log(a/(a-x)).\n- First-order half-life: t1/2 = 0.693/k.\n- Zero-order: [A] = [A]0 - kt.\n- Arrhenius: k = Ae^(-Ea/RT).\n- log(k2/k1) = Ea/2.303R (1/T1 - 1/T2).\n\n## JEE Focus\n\n- Identify order from units of rate constant.\n- Use half-life dependence to infer order.\n- For parallel/series reactions, compare rate constants conceptually.\n- Know coagulation, Hardy-Schulze rule, emulsions, and protective colloids.\n\n## Common Traps\n\n- Order can be zero or fractional; molecularity cannot.\n- A catalyst speeds forward and reverse reactions equally at equilibrium.\n- First-order half-life is independent of initial concentration.\n- Chemisorption is usually specific and can have activation energy.\n\n## 10-Minute Revision Checklist\n\n- Can you use integrated rate law?\n- Can you find order from data?\n- Can you apply Arrhenius equation?\n- Can you distinguish physisorption and chemisorption?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 8
+}

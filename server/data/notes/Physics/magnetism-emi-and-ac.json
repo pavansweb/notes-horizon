@@ -1,0 +1,14 @@
+{
+  "id": "magnetism-emi-and-ac",
+  "title": "Magnetism, EMI and AC",
+  "subject": "Physics",
+  "chapter": "Magnetism",
+  "content": "# Magnetism, EMI and AC\n\n## Quick Synopsis\n\nMagnetism links moving charges and currents to magnetic fields. EMI is about induced emf opposing flux change. AC circuits require impedance and phase thinking.\n\n## Must Know\n\n- Magnetic force on charge is perpendicular to velocity and magnetic field.\n- Biot-Savart and Ampere laws find magnetic fields due to currents.\n- Moving coil galvanometer works on torque on current loop.\n- Faraday law gives induced emf from changing magnetic flux.\n- Lenz law gives direction: induced effect opposes the cause.\n- In AC, resistor, inductor, and capacitor differ by phase relation between voltage and current.\n\n## Formulas / Rules\n\n- Lorentz force: F = q(v × B).\n- Force on wire: F = I(L × B).\n- Field near long straight wire: B = μ0I/2πr.\n- Field at centre of circular loop: B = μ0I/2R.\n- Faraday law: ε = -dΦ/dt.\n- Inductive reactance XL = ωL; capacitive reactance XC = 1/ωC.\n- LCR impedance: Z = sqrt(R² + (XL - XC)²).\n- Resonance: ω0 = 1/sqrt(LC).\n\n## JEE Focus\n\n- Use right-hand rule for field direction and force direction.\n- For charged particle in uniform B, circular radius r = mv/qB.\n- In EMI rods, use motional emf ε = Blv when geometry fits.\n- At LCR resonance, current is maximum and circuit behaves resistive.\n\n## Common Traps\n\n- Magnetic force does no work on a moving point charge.\n- Flux depends on area vector orientation.\n- Lenz law direction is about opposing change, not opposing flux itself.\n- Capacitor current leads voltage; inductor current lags voltage.\n\n## 10-Minute Revision Checklist\n\n- Can you calculate B due to wire/loop/solenoid?\n- Can you handle particle motion in B field?\n- Can you find induced current direction?\n- Can you solve basic LCR resonance questions?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 12
+}

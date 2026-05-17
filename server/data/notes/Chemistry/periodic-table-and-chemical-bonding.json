@@ -1,0 +1,14 @@
+{
+  "id": "periodic-table-and-chemical-bonding",
+  "title": "Periodic Table and Chemical Bonding",
+  "subject": "Chemistry",
+  "chapter": "Inorganic Chemistry",
+  "content": "# Periodic Table and Chemical Bonding\n\n## Quick Synopsis\n\nPeriodicity predicts properties across the table, while bonding explains molecular shape, polarity, and stability. This is central to inorganic and organic reasoning.\n\n## Must Know\n\n- Atomic size decreases across a period and increases down a group generally.\n- Ionisation enthalpy, electron gain enthalpy, and electronegativity show periodic trends with exceptions.\n- Ionic bonding depends on lattice energy and hydration/solvation energy.\n- Covalent bonding is explained by orbital overlap and electron sharing.\n- VSEPR predicts geometry from electron-pair repulsion.\n- Hybridisation explains shape but does not by itself prove bonding.\n\n## Formulas / Rules\n\n- Formal charge = valence electrons - nonbonding electrons - bonding electrons/2.\n- Bond order in MOT = (bonding electrons - antibonding electrons)/2.\n- Dipole moment μ = q × r.\n- Born-Haber cycle uses Hess law for lattice enthalpy.\n\n## JEE Focus\n\n- Memorize common geometries: linear, trigonal planar, tetrahedral, trigonal bipyramidal, octahedral.\n- Use lone-pair count to predict shape distortions.\n- Compare bond angle using hybridisation, lone pairs, and electronegativity.\n- Use MOT for O2, O2+, O2-, N2, and B2 magnetic behavior.\n\n## Common Traps\n\n- Electron geometry and molecular shape can differ.\n- High electronegativity does not always mean strongest bond.\n- Resonance structures are not rapidly flipping structures; real structure is hybrid.\n- Dipole moment can be zero due to symmetry even if bonds are polar.\n\n## 10-Minute Revision Checklist\n\n- Can you rank periodic properties with exceptions?\n- Can you draw Lewis structures?\n- Can you predict shape and hybridisation?\n- Can you apply MOT bond order and magnetism?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 3
+}

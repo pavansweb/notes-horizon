@@ -1,0 +1,14 @@
+{
+  "id": "indefinite-and-definite-integration",
+  "title": "Indefinite and Definite Integration",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Indefinite and Definite Integration\n\n## Quick Synopsis\n\nIntegration reverses differentiation and measures accumulation. JEE integration requires pattern recognition, substitution, parts, partial fractions, and definite properties.\n\n## Must Know\n\n- Indefinite integral represents a family of antiderivatives.\n- Substitution simplifies composite functions.\n- Integration by parts handles product-like expressions.\n- Partial fractions work for rational functions.\n- Definite integral is signed area and has strong symmetry properties.\n- Improper-looking integrals may need careful domain handling.\n\n## Formulas / Rules\n\n- ∫x^n dx = x^(n+1)/(n+1) + C, n ≠ -1.\n- ∫1/x dx = ln|x| + C.\n- ∫e^x dx = e^x + C.\n- ∫sinx dx = -cosx + C; ∫cosx dx = sinx + C.\n- By parts: ∫u dv = uv - ∫v du.\n- Definite property: ∫a^b f(x)dx = ∫a^b f(a+b-x)dx.\n\n## JEE Focus\n\n- Use ILATE priority for choosing first function in by-parts, but verify practicality.\n- For symmetric limits, odd functions integrate to zero over [-a,a].\n- Use t = tan(x/2) only when standard trig methods fail.\n- Area questions need upper curve minus lower curve, not blind integral.\n\n## Common Traps\n\n- Do not forget constant C in indefinite integrals.\n- ln|x|, not ln x, for ∫1/x dx over real intervals.\n- Definite integral can be negative if function is below x-axis.\n- Substitution in definite integrals requires changing limits or back-substitution.\n\n## 10-Minute Revision Checklist\n\n- Can you identify substitution?\n- Can you integrate rational functions?\n- Can you apply definite integral properties?\n- Can you calculate area between curves?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 8
+}

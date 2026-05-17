@@ -1,0 +1,14 @@
+{
+  "id": "alcohols-phenols-ethers-and-carbonyl-compounds",
+  "title": "Alcohols, Phenols, Ethers and Carbonyl Compounds",
+  "subject": "Chemistry",
+  "chapter": "Organic Chemistry",
+  "content": "# Alcohols, Phenols, Ethers and Carbonyl Compounds\n\n## Quick Synopsis\n\nOxygen-containing organic compounds dominate reaction-based JEE organic chemistry. Key skills are oxidation-reduction, nucleophilic addition, acidity, and named reactions.\n\n## Must Know\n\n- Alcohol acidity is lower than phenol because phenoxide is resonance stabilized.\n- Alcohols undergo substitution, elimination, esterification, and oxidation.\n- Phenols undergo electrophilic substitution strongly at ortho and para positions.\n- Ethers are relatively inert but cleave with strong acids like HI.\n- Aldehydes and ketones undergo nucleophilic addition at carbonyl carbon.\n- Aldehydes are generally more reactive than ketones toward nucleophilic addition.\n\n## Formulas / Rules\n\n- Lucas test distinguishes alcohol classes by turbidity rate.\n- Aldol reaction requires alpha hydrogen.\n- Cannizzaro reaction occurs for aldehydes without alpha hydrogen.\n- Tollens and Fehling tests oxidise aldehydes but usually not ketones.\n- Carboxylic acid derivatives reactivity: acid chloride > anhydride > ester ≈ acid > amide.\n\n## JEE Focus\n\n- Memorize oxidation outcomes for primary, secondary, and tertiary alcohols.\n- Use alpha hydrogen to decide aldol vs Cannizzaro.\n- Practice Grignard additions to aldehydes, ketones, esters, and CO2.\n- Know haloform reaction for methyl ketones and ethanol/secondary alcohol precursors.\n\n## Common Traps\n\n- Phenol is acidic but weaker than carboxylic acid.\n- Ketones can give iodoform only if methyl ketone group is present.\n- Grignard reagents are destroyed by water, alcohols, acids, and other protic sources.\n- Ethers with HI cleave depending on substrate stability and SN1/SN2 path.\n\n## 10-Minute Revision Checklist\n\n- Can you compare alcohol and phenol acidity?\n- Can you predict carbonyl addition products?\n- Can you identify aldol/Cannizzaro/iodoform conditions?\n- Can you solve Grignard synthesis problems?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 13
+}

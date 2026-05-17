@@ -1,0 +1,14 @@
+{
+  "id": "trigonometry-and-inverse-trigonometry",
+  "title": "Trigonometry and Inverse Trigonometry",
+  "subject": "Mathematics",
+  "chapter": "Trigonometry",
+  "content": "# Trigonometry and Inverse Trigonometry\n\n## Quick Synopsis\n\nTrigonometry supports calculus, coordinate geometry, vectors, and complex numbers. The key is identities, equations, ranges, and transformations.\n\n## Must Know\n\n- Basic identities connect sin, cos, tan, cot, sec, and cosec.\n- Compound angle and multiple angle formulas are essential.\n- Trigonometric equations have general solutions, not just principal values.\n- Inverse trigonometric functions have restricted domains and ranges.\n- Properties of triangles connect sides, angles, circumradius, inradius, and area.\n- Transformations convert sums to products and products to sums.\n\n## Formulas / Rules\n\n- sin²x + cos²x = 1.\n- sin(A±B) = sinAcosB ± cosAsinB.\n- cos(A±B) = cosAcosB ∓ sinAsinB.\n- sin2x = 2sinxcosx; cos2x = cos²x - sin²x.\n- a/sinA = b/sinB = c/sinC = 2R.\n- Area Δ = 1/2 bc sinA = abc/4R = rs.\n\n## JEE Focus\n\n- Use range restrictions before simplifying inverse trig expressions.\n- For equations, derive general solution and then apply interval.\n- Use t = tan(x/2) for rational expressions in sin and cos.\n- In triangle problems, combine sine rule, cosine rule, and area formulas.\n\n## Common Traps\n\n- sin inverse(sin x) is not always x.\n- Squaring trigonometric equations may introduce extra roots.\n- General solution changes with quadrant.\n- Inverse trig principal values must stay in defined range.\n\n## 10-Minute Revision Checklist\n\n- Can you solve trig equations in an interval?\n- Can you simplify inverse trig expressions with range checks?\n- Can you use triangle formulas?\n- Can you transform sums/products quickly?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 13
+}

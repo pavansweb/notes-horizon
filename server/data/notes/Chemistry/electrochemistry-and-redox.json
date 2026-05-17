@@ -1,0 +1,14 @@
+{
+  "id": "electrochemistry-and-redox",
+  "title": "Electrochemistry and Redox",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Electrochemistry and Redox\n\n## Quick Synopsis\n\nElectrochemistry links redox reactions with electrical work. It includes oxidation number, galvanic cells, electrolysis, conductance, and Nernst equation.\n\n## Must Know\n\n- Oxidation is loss of electrons; reduction is gain of electrons.\n- Anode is where oxidation occurs; cathode is where reduction occurs.\n- In galvanic cells, anode is negative and cathode is positive.\n- Cell potential measures tendency of redox reaction.\n- Nernst equation adjusts potential for non-standard concentrations.\n- Electrolysis amount deposited depends on charge passed and n-factor.\n\n## Formulas / Rules\n\n- ΔG° = -nFE°cell.\n- Ecell = Ecathode - Eanode.\n- Nernst at 298 K: E = E° - (0.0591/n) log Q.\n- Charge Q = It.\n- Faraday law: mass deposited = Eeq It / F.\n- Molar conductivity Λm = κ × 1000 / M.\n\n## JEE Focus\n\n- Balance redox reactions by ion-electron method.\n- Use reduction potentials as listed; reverse sign when reversing half reaction.\n- For concentration cells, standard emf is zero.\n- Kohlrausch law helps weak electrolyte dissociation.\n\n## Common Traps\n\n- Do not multiply electrode potential by stoichiometric coefficient.\n- In electrolytic cell, signs of electrodes differ from galvanic convention.\n- Salt bridge maintains electroneutrality; it does not supply electrons.\n- Conductivity decreases on dilution, molar conductivity increases.\n\n## 10-Minute Revision Checklist\n\n- Can you identify anode/cathode?\n- Can you use Nernst equation?\n- Can you calculate electrolysis mass?\n- Can you connect E°cell with ΔG° and K?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 7
+}

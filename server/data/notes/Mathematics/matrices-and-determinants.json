@@ -1,0 +1,14 @@
+{
+  "id": "matrices-and-determinants",
+  "title": "Matrices and Determinants",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Matrices and Determinants\n\n## Quick Synopsis\n\nMatrices organize linear transformations and systems of equations. Determinants decide invertibility, area/volume scaling, and solvability.\n\n## Must Know\n\n- Matrix multiplication is generally not commutative.\n- Identity matrix acts like multiplicative identity.\n- Determinant changes sign on row interchange and scales with row multiplication.\n- A square matrix is invertible if determinant is non-zero.\n- Adjoint method gives inverse for small matrices.\n- System of linear equations can have unique, no, or infinitely many solutions.\n\n## Formulas / Rules\n\n- A inverse = adj(A)/|A| if |A| ≠ 0.\n- |AB| = |A||B|.\n- |A^T| = |A|.\n- For 2x2 matrix [[a,b],[c,d]], determinant = ad - bc.\n- Cramer rule: xi = Δi/Δ when Δ ≠ 0.\n\n## JEE Focus\n\n- Use row/column operations to simplify determinants.\n- For equations, compare rank or determinant conditions.\n- Know properties of symmetric and skew-symmetric matrices.\n- Use determinant zero for collinearity of points or dependent vectors.\n\n## Common Traps\n\n- AB = 0 does not always imply A = 0 or B = 0 for matrices.\n- Only square matrices have determinants.\n- A matrix with zero determinant has no inverse.\n- Row operation effects on determinant must be tracked.\n\n## 10-Minute Revision Checklist\n\n- Can you multiply matrices correctly?\n- Can you evaluate determinants using properties?\n- Can you find inverse?\n- Can you solve linear equations with determinants?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 5
+}

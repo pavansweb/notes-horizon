@@ -1,0 +1,14 @@
+{
+  "id": "kinematics",
+  "title": "Kinematics",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Kinematics\n\n## Quick Synopsis\n\nKinematics describes motion without asking why it happens. The core skill is choosing variables and axes so that displacement, velocity, and acceleration become simple relations.\n\n## Must Know\n\n- For constant acceleration, use equations of motion only along one axis at a time.\n- Velocity is slope of x-t graph; acceleration is slope of v-t graph; displacement is area under v-t graph.\n- Projectile motion separates into uniform horizontal motion and uniformly accelerated vertical motion.\n- Relative velocity is velocity of one body measured from another: vAB = vA - vB.\n- In circular motion, velocity is tangential and centripetal acceleration is toward the centre.\n- Non-uniform circular motion has both radial and tangential acceleration.\n\n## Formulas / Rules\n\n- v = u + at; s = ut + 1/2 at²; v² = u² + 2as.\n- Projectile range on level ground: R = u² sin2θ / g.\n- Maximum height: H = u² sin²θ / 2g; time of flight: T = 2u sinθ / g.\n- Centripetal acceleration: ar = v²/r = ω²r.\n- Relative velocity: vrel = vobject - vobserver.\n\n## JEE Focus\n\n- For graphs, read slope and area before writing equations.\n- In projectile questions, split initial velocity into u cosθ and u sinθ immediately.\n- Use relative motion for rain-man, river-boat, collision approach, and moving platform questions.\n- For constrained motion, differentiate length constraints carefully.\n\n## Common Traps\n\n- Distance and displacement are not the same.\n- Average speed and magnitude of average velocity differ unless motion is straight without reversal.\n- At the highest point of projectile, vertical velocity is zero but acceleration is still g downward.\n- Centripetal acceleration changes direction even when speed is constant.\n\n## 10-Minute Revision Checklist\n\n- Can you solve one-dimensional motion from x-t and v-t graphs?\n- Can you derive projectile range and height?\n- Can you set up relative velocity in vector form?\n- Can you handle circular motion acceleration components?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 2
+}

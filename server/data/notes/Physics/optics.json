@@ -1,0 +1,14 @@
+{
+  "id": "optics",
+  "title": "Optics",
+  "subject": "Physics",
+  "chapter": "Optics",
+  "content": "# Optics\n\n## Quick Synopsis\n\nRay optics uses geometry and sign conventions; wave optics uses interference, diffraction, and polarisation. JEE often mixes conceptual diagrams with formulas.\n\n## Must Know\n\n- Reflection and refraction follow Fermat-style path laws and Snell’s law.\n- Spherical mirrors and lenses use consistent sign convention.\n- Total internal reflection requires denser-to-rarer travel and angle greater than critical angle.\n- Interference needs coherent sources with stable phase difference.\n- Diffraction becomes significant when aperture size is comparable to wavelength.\n- Polarisation proves transverse nature of light.\n\n## Formulas / Rules\n\n- Snell law: n1 sin i = n2 sin r.\n- Mirror/lens formula: 1/f = 1/v + 1/u with sign convention.\n- Lens maker: 1/f = (μ - 1)(1/R1 - 1/R2).\n- Power of lens: P = 1/f in metre.\n- YDSE fringe width: β = λD/d.\n- Single slit minima: a sinθ = nλ.\n- Brewster law: tan iB = μ.\n\n## JEE Focus\n\n- Draw ray diagrams before sign convention calculations.\n- For lens combinations in contact, powers add.\n- In YDSE, path difference determines bright/dark condition.\n- For prism, minimum deviation formula links refractive index with A and δm.\n\n## Common Traps\n\n- Do not mix Cartesian and other sign conventions.\n- Virtual image distance signs depend on chosen convention.\n- Coherence is necessary for sustained interference.\n- Fringe width is independent of fringe order in ideal YDSE.\n\n## 10-Minute Revision Checklist\n\n- Can you solve mirror/lens image position problems?\n- Can you apply total internal reflection?\n- Can you calculate YDSE fringe width and shift?\n- Can you identify diffraction minima?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 13
+}

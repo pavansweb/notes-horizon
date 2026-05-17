@@ -1,0 +1,14 @@
+{
+  "id": "differential-equations",
+  "title": "Differential Equations",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Differential Equations\n\n## Quick Synopsis\n\nDifferential equations relate a function to its derivatives. JEE focuses on formation and solving first-order first-degree equations.\n\n## Must Know\n\n- Order is highest derivative order; degree is power of highest derivative after removing radicals/fractions in derivatives.\n- Formation of differential equation eliminates arbitrary constants.\n- Variable separable equations can be rearranged as f(y)dy = g(x)dx.\n- Homogeneous equations use y = vx or x = vy substitution.\n- Linear differential equation has form dy/dx + Py = Q.\n- Solution includes arbitrary constant for first-order equations.\n\n## Formulas / Rules\n\n- Linear DE integrating factor: IF = e^(∫P dx).\n- Solution: y(IF) = ∫Q(IF) dx + C.\n- Variable separable: ∫f(y)dy = ∫g(x)dx + C.\n- Homogeneous substitution: y = vx, dy/dx = v + x dv/dx.\n\n## JEE Focus\n\n- Identify type before solving.\n- For orthogonal trajectories, replace slope m by -1/m.\n- Eliminate constants by differentiating enough times.\n- Check whether equation is linear in y or x; sometimes dx/dy form is easier.\n\n## Common Traps\n\n- Degree is undefined if equation is not polynomial in derivatives.\n- Do not apply linear form when P and Q are not functions of independent variable only.\n- Homogeneous in DE means same degree in x,y, not same as homogeneous linear equation.\n- For family of curves with two constants, differentiate twice.\n\n## 10-Minute Revision Checklist\n\n- Can you find order and degree?\n- Can you form DE from a family?\n- Can you solve variable separable equations?\n- Can you solve linear first-order DE?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 9
+}

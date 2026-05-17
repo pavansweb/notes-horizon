@@ -1,0 +1,14 @@
+{
+  "id": "sets-relations-and-functions",
+  "title": "Sets, Relations and Functions",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Sets, Relations and Functions\n\n## Quick Synopsis\n\nThis chapter defines mathematical objects and mappings. JEE uses it in inverse functions, domain-range, composition, and counting relation types.\n\n## Must Know\n\n- Set operations include union, intersection, difference, complement, and Cartesian product.\n- Relations are subsets of Cartesian product.\n- Reflexive, symmetric, transitive relations define equivalence relations.\n- Functions require every input to have exactly one output.\n- One-one, onto, bijective, composite, and inverse functions are central.\n- Domain restrictions are critical for logarithmic, radical, rational, and trigonometric functions.\n\n## Formulas / Rules\n\n- n(A ∪ B) = n(A) + n(B) - n(A ∩ B).\n- Number of relations from A to B = 2^(mn) if |A| = m and |B| = n.\n- Number of functions from A to B = n^m.\n- If f is bijective, f inverse exists.\n- (f ∘ g)(x) = f(g(x)).\n\n## JEE Focus\n\n- Find domain before simplifying expressions.\n- For inverse, check one-one nature and range.\n- Use graphs for greatest integer, fractional part, modulus, and signum functions.\n- Composition order matters.\n\n## Common Traps\n\n- Every function is a relation, but every relation is not a function.\n- Inverse relation may exist but inverse function needs bijection.\n- Squaring both sides can introduce extraneous roots.\n- Range after composition may be smaller than apparent codomain.\n\n## 10-Minute Revision Checklist\n\n- Can you find domain and range?\n- Can you test one-one and onto?\n- Can you form inverse functions?\n- Can you count relations/functions?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 1
+}

@@ -1,0 +1,14 @@
+{
+  "id": "amines-biomolecules-and-polymers",
+  "title": "Amines, Biomolecules and Polymers",
+  "subject": "Chemistry",
+  "chapter": "Organic Chemistry",
+  "content": "# Amines, Biomolecules and Polymers\n\n## Quick Synopsis\n\nAmines combine basicity, diazonium chemistry, and aromatic substitution. Biomolecules and polymers are mostly direct but require clean classification.\n\n## Must Know\n\n- Amines are basic due to nitrogen lone pair.\n- Basicity depends on +I effect, resonance, steric hindrance, and solvation.\n- Aniline is less basic than aliphatic amines due to resonance delocalisation.\n- Diazonium salts are useful intermediates for substituted aromatic compounds.\n- Carbohydrates are polyhydroxy aldehydes or ketones or their derivatives.\n- Proteins are polymers of amino acids linked by peptide bonds.\n- Polymers are classified by source, structure, polymerisation mode, and intermolecular forces.\n\n## Formulas / Rules\n\n- Hinsberg test distinguishes primary, secondary, and tertiary amines.\n- Diazotisation: aniline + NaNO2/HCl at 0-5°C gives benzene diazonium chloride.\n- Peptide bond: -CO-NH- linkage.\n- Addition polymerisation uses unsaturated monomers; condensation polymerisation eliminates small molecules.\n\n## JEE Focus\n\n- Know diazonium replacement reactions: Sandmeyer, Gattermann, hydrolysis, reduction, coupling.\n- Compare amine basicity in gas phase and aqueous phase carefully.\n- Memorize reducing/non-reducing sugars and common disaccharides.\n- Know examples: nylon-6, nylon-6,6, Buna-S, Buna-N, neoprene, terylene, bakelite.\n\n## Common Traps\n\n- Aromatic amines are less basic than ammonia in many cases.\n- Tertiary amines do not form stable diazonium salts like primary aromatic amines.\n- Sucrose is non-reducing; glucose and fructose are reducing.\n- All polymers are macromolecules, but not all macromolecules are synthetic polymers.\n\n## 10-Minute Revision Checklist\n\n- Can you rank amine basicity?\n- Can you use diazonium salts in synthesis?\n- Can you classify carbohydrates and proteins?\n- Can you identify polymer monomers and type?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 14
+}

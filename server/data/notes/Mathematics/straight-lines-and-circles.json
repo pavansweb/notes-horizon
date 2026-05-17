@@ -1,0 +1,14 @@
+{
+  "id": "straight-lines-and-circles",
+  "title": "Straight Lines and Circles",
+  "subject": "Mathematics",
+  "chapter": "Coordinate Geometry",
+  "content": "# Straight Lines and Circles\n\n## Quick Synopsis\n\nCoordinate geometry translates geometry into algebra. Straight lines and circles form the foundation for conics and many calculus-geometry mixed problems.\n\n## Must Know\n\n- Line equations appear in slope-intercept, two-point, intercept, normal, and general forms.\n- Distance from point to line and angle between lines are frequent.\n- Circle equation depends on centre and radius.\n- Tangent to circle is perpendicular to radius at point of contact.\n- Power of point helps with tangents and secants.\n- Family of lines/circles handles parameter-based geometry.\n\n## Formulas / Rules\n\n- Slope between two points: m = (y2-y1)/(x2-x1).\n- Line: y - y1 = m(x - x1).\n- Distance from point to Ax+By+C=0: |Ax1+By1+C|/sqrt(A²+B²).\n- Circle: (x-h)² + (y-k)² = r².\n- General circle: x² + y² + 2gx + 2fy + c = 0; centre (-g,-f), radius sqrt(g²+f²-c).\n- Tangent at (x1,y1) to x²+y²+2gx+2fy+c=0: xx1+yy1+g(x+x1)+f(y+y1)+c=0.\n\n## JEE Focus\n\n- Use parametric point on line/circle for shortest route problems.\n- Convert general circle to centre-radius form.\n- Use pair of lines angle formulas when equation is second degree homogeneous.\n- For chord of contact and polar, use T=0 form.\n\n## Common Traps\n\n- Vertical line slope is undefined.\n- Radius is positive; check g²+f²-c.\n- Tangents from external point are equal in length.\n- A line can intersect, touch, or miss a circle based on distance from centre.\n\n## 10-Minute Revision Checklist\n\n- Can you switch line forms?\n- Can you calculate distance and angle?\n- Can you find circle centre/radius?\n- Can you write tangent/chord equations?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 10
+}

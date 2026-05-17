@@ -1,0 +1,14 @@
+{
+  "id": "modern-physics-and-semiconductors",
+  "title": "Modern Physics and Semiconductors",
+  "subject": "Physics",
+  "chapter": "Modern Physics",
+  "content": "# Modern Physics and Semiconductors\n\n## Quick Synopsis\n\nModern physics is high scoring because formulas are compact and concepts are standard. Focus on photoelectric effect, Bohr model, nuclear physics, de Broglie waves, and semiconductor devices.\n\n## Must Know\n\n- Photoelectric emission requires frequency above threshold.\n- Stopping potential depends on frequency, not intensity.\n- Bohr model explains hydrogen-like spectra using quantized angular momentum.\n- de Broglie wavelength applies to matter waves.\n- Radioactive decay is exponential and characterized by half-life.\n- Semiconductor conductivity increases with temperature; doping creates p-type and n-type materials.\n\n## Formulas / Rules\n\n- Photoelectric equation: hf = φ + Kmax.\n- de Broglie wavelength: λ = h/p.\n- Bohr radius: rn ∝ n²/Z; energy En = -13.6 Z²/n² eV.\n- Photon energy: E = hc/λ.\n- Radioactive decay: N = N0e^(-λt); half-life T1/2 = ln2/λ.\n- Mass-energy: E = Δmc².\n\n## JEE Focus\n\n- Convert eV and joule correctly.\n- Hydrogen-like ions use Z² scaling for energy and 1/Z scaling for radius.\n- Use Q-value from mass defect for nuclear reactions.\n- Know diode forward/reverse bias and basic logic gates.\n\n## Common Traps\n\n- Increasing intensity increases photoelectron current, not maximum kinetic energy.\n- Work function is material dependent.\n- Half-life is independent of initial amount.\n- In p-type semiconductor, holes are majority carriers, but material remains neutral.\n\n## 10-Minute Revision Checklist\n\n- Can you solve stopping potential questions?\n- Can you compute spectral transition energy?\n- Can you apply decay law and half-life?\n- Can you identify logic gate truth tables?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 14
+}

@@ -1,0 +1,14 @@
+{
+  "id": "conic-sections",
+  "title": "Conic Sections",
+  "subject": "Mathematics",
+  "chapter": "Coordinate Geometry",
+  "content": "# Conic Sections\n\n## Quick Synopsis\n\nConics are locus curves defined by focus-directrix or standard equations. JEE focuses on standard forms, tangents, normals, chords, and parametric points.\n\n## Must Know\n\n- Parabola has eccentricity 1.\n- Ellipse has eccentricity less than 1; hyperbola has eccentricity greater than 1.\n- Standard orientation matters for formula selection.\n- Parametric forms simplify tangents and normals.\n- Auxiliary circle helps ellipse geometry.\n- Rectangular hyperbola xy = c² has special tangent/normal properties.\n\n## Formulas / Rules\n\n- Parabola y² = 4ax; focus (a,0), directrix x = -a.\n- Ellipse x²/a² + y²/b² = 1; b² = a²(1-e²).\n- Hyperbola x²/a² - y²/b² = 1; b² = a²(e²-1).\n- Tangent to parabola y²=4ax at t: ty = x + at².\n- Tangent to ellipse at (x1,y1): xx1/a² + yy1/b² = 1.\n- Tangent to hyperbola at (x1,y1): xx1/a² - yy1/b² = 1.\n\n## JEE Focus\n\n- Memorize standard parametric points for parabola, ellipse, hyperbola.\n- Use chord with given midpoint via T = S1 method.\n- For pair of tangents from point, use combined equation SS1 = T².\n- Compare eccentricity to identify conic quickly.\n\n## Common Traps\n\n- Major axis changes formula if b > a.\n- Asymptotes are approached but not touched at infinity.\n- Normal formulas differ from tangent formulas.\n- Do not mix horizontal and vertical parabola formulas.\n\n## 10-Minute Revision Checklist\n\n- Can you identify conic from equation?\n- Can you write tangent/normal?\n- Can you use parametric coordinates?\n- Can you solve chord of contact and midpoint chord questions?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 11
+}

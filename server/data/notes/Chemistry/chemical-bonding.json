@@ -1,9 +1,0 @@
-{
-  "id": "chemical-bonding-basics",
-  "title": "Chemical Bonding: Basics",
-  "subject": "Chemistry",
-  "chapter": "Chemical Bonding",
-  "content": "# Chemical Bonding\n\nChemical bonding refers to the formation of a chemical bond between two or more atoms, molecules, or ions to give rise to a chemical compound.\n\n## 1. Octet Rule\nAtoms tend to gain, lose or share electrons to have eight electrons in their outer shell.\n\n## 2. Types of Bonds\n- **Ionic Bond:** Complete transfer of electrons.\n- **Covalent Bond:** Sharing of electrons.\n- **Coordinate Bond:** Special type of covalent bond where both electrons come from one atom.\n\n## 3. VSEPR Theory\nPredicts the geometry of individual molecules from the number of electron pairs surrounding their central atoms.",
-  "lastUpdated": "2026-05-17T15:00:00Z",
-  "sources": ["https://ncert.nic.in"]
-}

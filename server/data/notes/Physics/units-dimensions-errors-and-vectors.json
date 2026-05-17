@@ -1,0 +1,14 @@
+{
+  "id": "units-dimensions-errors-and-vectors",
+  "title": "Units, Dimensions, Errors and Vectors",
+  "subject": "Physics",
+  "chapter": "Basic Physics",
+  "content": "# Units, Dimensions, Errors and Vectors\n\n## Quick Synopsis\n\nThis chapter builds the language of physics: units, dimensional consistency, error handling, and vector operations. JEE frequently uses it inside mechanics, electricity, waves, and modern physics questions rather than as isolated theory.\n\n## Must Know\n\n- SI base units and common derived units: newton, joule, watt, pascal, volt, tesla, weber.\n- Dimensions of force, energy, power, pressure, charge, potential, resistance, capacitance, magnetic field, and Planck constant.\n- Dimensional analysis checks homogeneity, derives proportional dependence, and converts units, but cannot determine dimensionless constants.\n- Absolute, relative, and percentage error; error propagation in sums, differences, products, quotients, and powers.\n- Vectors need magnitude and direction; components make most mechanics and electromagnetism problems algebraic.\n- Dot product gives projection/work/flux; cross product gives area/torque/angular momentum/magnetic force direction.\n\n## Formulas / Rules\n\n- If z = x ± y, then absolute error: Δz = Δx + Δy.\n- If z = x^a y^b / w^c, then relative error: Δz/z = aΔx/x + bΔy/y + cΔw/w.\n- A · B = AB cosθ; A × B = AB sinθ n-hat.\n- Vector magnitude in components: |A| = sqrt(Ax² + Ay² + Az²).\n- Unit vector along A: A-hat = A / |A|.\n\n## JEE Focus\n\n- Use dimensions to eliminate options quickly.\n- Keep significant figures only at the final step unless a question specifically asks intermediate rounding.\n- Resolve vectors along smart axes: incline, radial-tangential, or field direction.\n- In cross products, first decide direction using right-hand rule before substituting numbers.\n\n## Common Traps\n\n- Dimensional correctness does not prove a formula is correct.\n- Percentage error in a power multiplies by the absolute value of that power.\n- A vector can have zero component along one axis without being zero.\n- Dot product is scalar; cross product is vector.\n\n## 10-Minute Revision Checklist\n\n- Can you write dimensions of all major constants?\n- Can you propagate errors for products and powers?\n- Can you resolve a vector on an inclined plane?\n- Can you identify whether a physics expression needs dot or cross product?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 1
+}

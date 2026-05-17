@@ -1,0 +1,14 @@
+{
+  "id": "vectors-and-three-dimensional-geometry",
+  "title": "Vectors and Three-Dimensional Geometry",
+  "subject": "Mathematics",
+  "chapter": "Vector and 3D",
+  "content": "# Vectors and Three-Dimensional Geometry\n\n## Quick Synopsis\n\nVectors and 3D geometry test spatial thinking. They are formula-friendly and scoring if direction ratios, products, lines, planes, and distances are clear.\n\n## Must Know\n\n- Vector addition and scalar multiplication describe geometry compactly.\n- Dot product measures projection and angle.\n- Cross product gives area vector perpendicular to two vectors.\n- A line in 3D needs a point and direction vector.\n- A plane needs a point and normal vector.\n- Shortest distance between skew lines is along common perpendicular.\n\n## Formulas / Rules\n\n- a · b = |a||b|cosθ.\n- |a × b| = |a||b|sinθ.\n- Scalar triple product [abc] = a · (b × c).\n- Line: r = a + λb.\n- Plane: n · (r - a) = 0.\n- Distance from point to plane ax+by+cz+d=0: |ax1+by1+cz1+d|/sqrt(a²+b²+c²).\n\n## JEE Focus\n\n- Use dot product for perpendicularity and projection.\n- Use cross product for area and common perpendicular direction.\n- For coplanarity, scalar triple product is zero.\n- Convert symmetric and vector forms of line/plane fluently.\n\n## Common Traps\n\n- Direction ratios need not be unit vectors.\n- Skew lines are non-parallel and non-intersecting.\n- Angle between planes equals angle between normals.\n- Angle between line and plane is complement of angle between line and plane normal.\n\n## 10-Minute Revision Checklist\n\n- Can you compute dot/cross/triple products?\n- Can you write line and plane equations?\n- Can you find distances in 3D?\n- Can you test coplanarity?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 12
+}

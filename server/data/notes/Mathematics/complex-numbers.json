@@ -1,9 +1,0 @@
-{
-  "id": "complex-numbers",
-  "title": "Complex Numbers",
-  "subject": "Mathematics",
-  "chapter": "Complex Numbers",
-  "content": "## Definition of Complex Numbers\n\nA number of the form $z = a + ib$, where $a$ and $b$ are real numbers and $i = \\sqrt{-1}$, is called a complex number.\n\n- $a$ is the **Real Part**, denoted as $\\text{Re}(z)$.\n- $b$ is the **Imaginary Part**, denoted as $\\text{Im}(z)$.\n\n### 1. Operations on Complex Numbers\n\nIf $z_1 = a + ib$ and $z_2 = c + id$:\n\n- **Addition:** $z_1 + z_2 = (a+c) + i(b+d)$\n- **Multiplication:** $z_1 z_2 = (ac - bd) + i(ad + bc)$\n\n### 2. Modulus and Conjugate\n\n- **Modulus:** $|z| = \\sqrt{a^2 + b^2}$\n- **Conjugate:** $\\bar{z} = a - ib$\n\n### 3. Euler's Form\n\nA complex number can also be represented as:\n$$z = r e^{i\\theta}$$\nwhere $r = |z|$ and $\\theta = \\text{arg}(z)$.\n\n### 4. De Moivre's Theorem\n\nFor any integer $n$:\n$$(\\cos\\theta + i\\sin\\theta)^n = \\cos(n\\theta) + i\\sin(n\\theta)$$\n\n### 5. Cube Roots of Unity\n\nThe roots of $x^3 - 1 = 0$ are $1, \\omega, \\omega^2$, where:\n- $\\omega = \\frac{-1 + i\\sqrt{3}}{2}$\n- $1 + \\omega + \\omega^2 = 0$\n- $\\omega^3 = 1$",
-  "lastUpdated": "2026-05-17T12:10:00Z",
-  "sources": ["https://en.wikipedia.org/wiki/Complex_number"]
-}

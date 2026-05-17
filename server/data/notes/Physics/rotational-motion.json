@@ -1,0 +1,14 @@
+{
+  "id": "rotational-motion",
+  "title": "Rotational Motion",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Rotational Motion\n\n## Quick Synopsis\n\nRotational motion mirrors linear motion: torque replaces force, angular momentum replaces momentum, and moment of inertia replaces mass. JEE often mixes rotation with translation and energy.\n\n## Must Know\n\n- Torque is the turning effect of force about an axis.\n- Moment of inertia depends on mass distribution and axis.\n- Rolling without slipping links translational and rotational variables.\n- Angular momentum is conserved if net external torque about the chosen point is zero.\n- Pure rotation uses rotational kinetic energy; rolling has both translational and rotational kinetic energy.\n- Instantaneous centre of rotation helps solve rolling velocity problems.\n\n## Formulas / Rules\n\n- τ = r × F; |τ| = rF sinθ.\n- τnet = Iα for fixed-axis rotation.\n- L = Iω for rigid body about symmetry axis; Krot = 1/2 Iω².\n- Rolling without slipping: vCM = Rω and aCM = Rα.\n- Parallel axis theorem: I = ICM + Md²; perpendicular axis theorem for lamina: Iz = Ix + Iy.\n\n## JEE Focus\n\n- Pick torque axis to eliminate unknown forces.\n- For rolling down incline, combine force equation, torque equation, and no-slip constraint.\n- Use energy for rolling if friction is static and does no net work.\n- Know standard moments of inertia for ring, disc, rod, sphere, and cylinder.\n\n## Common Traps\n\n- Static friction may provide torque without dissipating energy in pure rolling.\n- Torque depends on chosen origin.\n- Angular momentum can be conserved about one point but not another.\n- Moment of inertia is not just mass; distribution matters.\n\n## 10-Minute Revision Checklist\n\n- Can you derive acceleration of rolling body on incline?\n- Can you use angular momentum conservation?\n- Can you apply parallel-axis theorem correctly?\n- Can you locate instantaneous centre for rolling?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 5
+}

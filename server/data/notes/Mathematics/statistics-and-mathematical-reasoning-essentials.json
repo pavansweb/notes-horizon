@@ -1,0 +1,14 @@
+{
+  "id": "statistics-and-mathematical-reasoning-essentials",
+  "title": "Statistics and Mathematical Reasoning Essentials",
+  "subject": "Mathematics",
+  "chapter": "Statistics",
+  "content": "# Statistics and Mathematical Reasoning Essentials\n\n## Quick Synopsis\n\nStatistics is often straightforward scoring material in JEE Main. Mathematical reasoning is less emphasized in recent Main patterns but logic basics still help in proof-style thinking.\n\n## Must Know\n\n- Mean measures central value; variance and standard deviation measure spread.\n- Grouped data requires class marks and frequency weighting.\n- Mean deviation can be taken about mean or median.\n- Variance is mean of squared deviation.\n- Logical statements have truth values.\n- Implication, converse, inverse, and contrapositive have different meanings.\n\n## Formulas / Rules\n\n- Mean: xbar = Σfixi / Σfi.\n- Variance: σ² = Σfi(xi - xbar)² / Σfi.\n- Standard deviation: σ = sqrt(variance).\n- Combined mean: (n1m1 + n2m2)/(n1+n2).\n- Contrapositive of p implies q is not q implies not p.\n\n## JEE Focus\n\n- Use shortcut method for variance in grouped data.\n- Check whether question asks population or sample style formula; JEE usually uses population form.\n- For logic, truth tables avoid confusion.\n- Statistics questions are calculation-heavy; keep arithmetic clean.\n\n## Common Traps\n\n- Standard deviation is never negative.\n- Mean deviation and standard deviation are different.\n- Converse of a true implication need not be true.\n- Median is often better for skewed data but formula questions specify method.\n\n## 10-Minute Revision Checklist\n\n- Can you compute mean and variance for grouped data?\n- Can you use combined mean?\n- Can you construct truth tables?\n- Can you identify contrapositive correctly?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 14
+}

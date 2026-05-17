@@ -1,0 +1,14 @@
+{
+  "id": "general-organic-chemistry-and-isomerism",
+  "title": "General Organic Chemistry and Isomerism",
+  "subject": "Chemistry",
+  "chapter": "Organic Chemistry",
+  "content": "# General Organic Chemistry and Isomerism\n\n## Quick Synopsis\n\nGOC is the logic engine of organic chemistry. It covers electronic effects, acidity/basicity, intermediates, mechanisms, and isomerism.\n\n## Must Know\n\n- Inductive, resonance, hyperconjugation, and electromeric effects control stability and reactivity.\n- Carbocations, carbanions, and free radicals have different stability orders.\n- Aromaticity requires cyclic, planar, conjugated system with 4n+2 π electrons.\n- Acidity increases with stability of conjugate base.\n- Basicity depends on availability of lone pair and solvent effects.\n- Structural, geometrical, and optical isomerism are all JEE relevant.\n\n## Formulas / Rules\n\n- Degree of unsaturation: DBE = C - H/2 + N/2 + 1, adjusted for halogens as H.\n- Aromatic Huckel rule: 4n + 2 π electrons.\n- Anti-aromatic systems have 4n π electrons if cyclic, planar, and conjugated.\n\n## JEE Focus\n\n- Rank stability: benzylic/allylic resonance-stabilized intermediates are favored.\n- Use resonance first, then inductive effect for acidity/basicity comparisons.\n- Find chiral centres and plane of symmetry for optical activity.\n- Mechanism questions usually depend on intermediate stability and leaving group ability.\n\n## Common Traps\n\n- More resonance structures do not always mean equal contribution.\n- A molecule with chiral centres can be optically inactive if meso.\n- Aromaticity requires planarity.\n- Electron-withdrawing groups increase acidity but decrease basicity in many cases.\n\n## 10-Minute Revision Checklist\n\n- Can you compare acidity and basicity?\n- Can you identify aromatic/antiaromatic/non-aromatic species?\n- Can you rank carbocation/carbanion/radical stability?\n- Can you count stereoisomers?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 11
+}

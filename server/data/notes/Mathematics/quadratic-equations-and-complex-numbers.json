@@ -1,0 +1,14 @@
+{
+  "id": "quadratic-equations-and-complex-numbers",
+  "title": "Quadratic Equations and Complex Numbers",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Quadratic Equations and Complex Numbers\n\n## Quick Synopsis\n\nQuadratics and complex numbers are algebra staples. JEE asks root location, parameter ranges, modulus-argument geometry, and transformations in the Argand plane.\n\n## Must Know\n\n- Discriminant controls nature of roots.\n- Sum and product of roots connect coefficients to roots.\n- Location of roots uses sign of quadratic at points plus vertex position.\n- Complex number z = x + iy corresponds to point (x, y).\n- Modulus is distance from origin; argument is angle from positive real axis.\n- Conjugate helps rationalize and handle modulus.\n\n## Formulas / Rules\n\n- Roots of ax² + bx + c = 0: x = (-b ± sqrt(b² - 4ac))/2a.\n- α + β = -b/a; αβ = c/a.\n- |z| = sqrt(x² + y²); arg z = tan inverse(y/x) with quadrant.\n- z zbar = |z|².\n- Polar form: z = r(cosθ + i sinθ).\n- De Moivre: [r(cosθ + i sinθ)]^n = r^n(cos nθ + i sin nθ).\n\n## JEE Focus\n\n- For parameter questions, combine discriminant and interval conditions.\n- Use completing square to locate quadratic range.\n- Use geometry for |z - a| = constant circles and |z - a| = |z - b| perpendicular bisectors.\n- Roots of unity form regular polygons on unit circle.\n\n## Common Traps\n\n- Argument is multi-valued; principal argument has specified range.\n- Discriminant ≥ 0 gives real roots but not necessarily roots in required interval.\n- Modulus inequalities represent regions, not just equations.\n- i powers cycle every 4.\n\n## 10-Minute Revision Checklist\n\n- Can you solve root location problems?\n- Can you use Vieta relations?\n- Can you convert rectangular and polar form?\n- Can you interpret complex equations geometrically?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 2
+}

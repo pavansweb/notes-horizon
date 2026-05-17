@@ -1,0 +1,14 @@
+{
+  "id": "oscillations-and-waves",
+  "title": "Oscillations and Waves",
+  "subject": "Physics",
+  "chapter": "Waves",
+  "content": "# Oscillations and Waves\n\n## Quick Synopsis\n\nOscillations describe repeated motion around equilibrium, while waves transfer energy through space. JEE tests equations, phase, resonance, standing waves, and Doppler effect.\n\n## Must Know\n\n- SHM requires acceleration proportional and opposite to displacement.\n- Phase tells the state of oscillation more completely than displacement alone.\n- Energy in SHM alternates between kinetic and potential.\n- Mechanical waves require a medium; speed depends on medium properties.\n- Standing waves form due to superposition of opposite travelling waves.\n- Doppler effect depends on relative motion of source, observer, and medium.\n\n## Formulas / Rules\n\n- SHM: x = A sin(ωt + φ); a = -ω²x.\n- Spring block: T = 2πsqrt(m/k); simple pendulum: T = 2πsqrt(l/g).\n- SHM energy: E = 1/2 kA².\n- Wave speed: v = fλ.\n- String speed: v = sqrt(T/μ).\n- Open pipe harmonics: fn = nv/2L; closed pipe: fn = (2n-1)v/4L.\n\n## JEE Focus\n\n- Use phase difference to compare displacement, velocity, and acceleration.\n- For standing waves, identify nodes and antinodes before applying length conditions.\n- Beat frequency equals absolute difference of frequencies.\n- Apply Doppler sign convention consistently from relative approach/recession.\n\n## Common Traps\n\n- Velocity is maximum at mean position, not extreme position.\n- Acceleration is maximum at extremes in SHM.\n- Wave particles oscillate; they do not travel with wave speed.\n- Closed pipe supports only odd harmonics.\n\n## 10-Minute Revision Checklist\n\n- Can you derive SHM from force equation?\n- Can you identify node-antinode patterns?\n- Can you calculate beat frequency?\n- Can you apply Doppler effect with moving source and observer?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 9
+}

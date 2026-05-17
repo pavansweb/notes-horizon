@@ -1,9 +1,0 @@
-{
-  "id": "sets-and-relations",
-  "title": "Sets and Relations",
-  "subject": "Mathematics",
-  "chapter": "Sets",
-  "content": "# Sets and Relations\n\n## 1. Sets\nA set is a well-defined collection of objects.\n- **Representation:** Roster form or Set-builder form.\n- **Types:** Empty set, Finite/Infinite sets, Equal sets, Subsets.\n\n## 2. Relations\nA relation $R$ from a non-empty set $A$ to a non-empty set $B$ is a subset of the Cartesian product $A \\times B$.",
-  "lastUpdated": "2026-05-17T15:00:00Z",
-  "sources": ["https://ncert.nic.in"]
-}

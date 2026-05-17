@@ -1,0 +1,14 @@
+{
+  "id": "laws-of-motion-and-friction",
+  "title": "Laws of Motion and Friction",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Laws of Motion and Friction\n\n## Quick Synopsis\n\nNewton’s laws convert forces into acceleration. Most JEE problems are won by drawing correct free-body diagrams and choosing axes that reduce components.\n\n## Must Know\n\n- First law defines inertia; second law gives net external force as rate of change of momentum.\n- Third-law pairs act on different bodies and never cancel on the same free-body diagram.\n- Normal reaction adjusts according to constraints; it is not always equal to mg.\n- Static friction is self-adjusting up to limiting value; kinetic friction has nearly fixed magnitude μkN.\n- Pseudo force appears in non-inertial frames and is opposite to frame acceleration.\n- Circular motion needs net inward force, not a separate mysterious centripetal force.\n\n## Formulas / Rules\n\n- Fnet = ma for constant mass.\n- Static friction: fs ≤ μsN; limiting friction: flim = μsN.\n- Kinetic friction: fk = μkN.\n- Banking without friction: tanθ = v²/rg.\n- Pulley-string constraint: same string has same tension in ideal cases and related accelerations.\n\n## JEE Focus\n\n- Draw one FBD per body, not one diagram for the full system unless using system equations.\n- For wedges and lifts, decide whether ground frame or accelerated frame is cleaner.\n- Check impending motion direction before assigning static friction direction.\n- In connected bodies, write constraint equations before solving force equations.\n\n## Common Traps\n\n- Friction can act in the direction of motion if it opposes relative slipping.\n- Action-reaction forces never act on the same object.\n- Tension can differ across a massive pulley or non-ideal string.\n- Maximum static friction is not always acting.\n\n## 10-Minute Revision Checklist\n\n- Can you draw a correct FBD for blocks, pulleys, inclines, and wedges?\n- Can you determine friction direction?\n- Can you solve lift and pseudo-force questions?\n- Can you use circular motion force balance?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 3
+}

@@ -1,0 +1,14 @@
+{
+  "id": "differentiation-and-applications-of-derivatives",
+  "title": "Differentiation and Applications of Derivatives",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Differentiation and Applications of Derivatives\n\n## Quick Synopsis\n\nDifferentiation gives slope and rate of change. Applications include tangents, normals, monotonicity, maxima-minima, and approximation.\n\n## Must Know\n\n- Derivative rules include product, quotient, chain, implicit, parametric, and logarithmic differentiation.\n- Tangent slope at a point is derivative value.\n- Normal slope is negative reciprocal of tangent slope when tangent is not vertical.\n- Increasing/decreasing nature depends on sign of derivative.\n- Local maxima/minima occur where derivative changes sign or endpoints matter.\n- Second derivative helps classify concavity and extrema.\n\n## Formulas / Rules\n\n- d/dx x^n = nx^(n-1).\n- d/dx sinx = cosx; d/dx cosx = -sinx.\n- d/dx e^x = e^x; d/dx ln x = 1/x.\n- Product: (uv)’ = u’v + uv’.\n- Chain: d/dx f(g(x)) = f’(g(x))g’(x).\n- Tangent: y - y1 = f’(x1)(x - x1).\n\n## JEE Focus\n\n- Use logarithmic differentiation for variable powers and products.\n- For maxima-minima, include boundary points in closed intervals.\n- Use derivative sign chart, not just f’ = 0.\n- Mean value theorem problems often require checking continuity and differentiability conditions.\n\n## Common Traps\n\n- Critical point does not guarantee extremum.\n- Derivative zero can indicate point of inflection.\n- Inverse trigonometric derivatives need domain awareness.\n- Normal to vertical tangent is horizontal.\n\n## 10-Minute Revision Checklist\n\n- Can you differentiate implicit and parametric functions?\n- Can you write tangent/normal equations?\n- Can you determine monotonicity?\n- Can you solve optimization problems?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 7
+}

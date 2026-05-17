@@ -1,0 +1,14 @@
+{
+  "id": "chemical-and-ionic-equilibrium",
+  "title": "Chemical and Ionic Equilibrium",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Chemical and Ionic Equilibrium\n\n## Quick Synopsis\n\nEquilibrium is the state where forward and reverse rates are equal. Ionic equilibrium applies the same ideas to acids, bases, salts, buffers, and precipitation.\n\n## Must Know\n\n- Equilibrium constant depends only on temperature.\n- Reaction quotient predicts direction of shift.\n- Le Chatelier principle predicts response to disturbance.\n- Weak acids and weak bases partially ionize.\n- Buffers resist pH change using weak acid/base and conjugate partner.\n- Solubility product predicts precipitation.\n\n## Formulas / Rules\n\n- Kp = Kc(RT)^Δn for gaseous equilibria.\n- pH = -log[H+]; pOH = -log[OH-]; pH + pOH = 14 at 25°C.\n- Weak acid: [H+] ≈ sqrt(KaC).\n- Weak base: [OH-] ≈ sqrt(KbC).\n- Henderson-Hasselbalch: pH = pKa + log([salt]/[acid]).\n- Ksp from ionic concentration product at saturation.\n\n## JEE Focus\n\n- Make ICE tables for equilibrium composition.\n- Ignore x only after checking approximation validity.\n- Use common ion effect for solubility reduction.\n- For polyprotic systems, first ionisation often dominates.\n\n## Common Traps\n\n- Catalyst does not change equilibrium constant.\n- Solids and pure liquids do not appear in K expression.\n- Dilution affects ionic equilibria and degree of dissociation.\n- pH of salt solutions depends on hydrolysis.\n\n## 10-Minute Revision Checklist\n\n- Can you write Kc and Kp correctly?\n- Can you calculate pH of weak acid/base?\n- Can you solve buffer pH?\n- Can you predict precipitation using Ksp?\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}
