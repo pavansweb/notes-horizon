@@ -24,9 +24,18 @@ Notes are stored in JSON format with the following schema:
 
 ## AI Instructions for Content Generation
 1. **Research:** Use web search to find authoritative JEE resources (NCERT, coaching materials, etc.).
-2. **Synthesis:** Create comprehensive, exam-oriented notes.
-3. **Formatting:** Use Markdown. Always use LaTeX for mathematical formulas and chemical equations.
-4. **Storage:** Save the output as a new JSON file in `server/data/notes/{subject}/{id}.json`.
+2. **Synthesis:** Create comprehensive, exam-oriented notes using a hierarchical structure.
+3. **Structure:**
+    - **# Title**
+    - **## Synopsis**: A high-level introduction to the chapter.
+    - **## Topic Breakdown**: Nested headers (###, ####) covering every major and minor concept.
+    - **## Formulas & Laws**: All mathematical and chemical expressions MUST use LaTeX ($...$ or $$...$$).
+    - **## JEE Focus & Common Traps**: Strategic advice for the exam.
+    - **## Subject Specifics**:
+        - **Physics**: Include a "Diagrams" section with descriptive placeholders or Mermaid diagrams.
+        - **Mathematics (Coordinate Geometry)**: Include a "Simulators" section with descriptions or links to interactive tools like Desmos/GeoGebra.
+4. **Formatting:** Use Markdown and LaTeX exclusively for technical content.
+5. **Storage:** Save as JSON in `server/data/notes/{subject}/{id}.json`.
 
 ## Development Roadmap
 - [ ] Phase 1: Basic Scaffolding (Server & Client)
