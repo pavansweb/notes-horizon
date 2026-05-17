@@ -1,0 +1,13 @@
+{
+  "id": "alternating-current",
+  "title": "Alternating Current",
+  "subject": "Physics",
+  "chapter": "Magnetism",
+  "content": "# Alternating Current (AC)\n\n## Topic Breakdown\n### 1. Basic AC Concepts\n#### 1.1 Average and RMS values\n- $I_{avg} = \\frac{2I_0}{\\pi} \\approx 0.637 I_0$ (over half cycle).\n- $I_{rms} = \\frac{I_0}{\\sqrt{2}} \\approx 0.707 I_0$.\n\n#### 1.2 Phasors\n- Representation of sinusoidal quantities as rotating vectors.\n\n### 2. AC Circuits\n#### 2.1 Pure R, L, and C Circuits\n- Pure R: $V$ and $I$ in phase.\n- Pure L: $V$ leads $I$ by $\\pi/2$. Reactance $X_L = \\omega L$.\n- Pure C: $V$ lags $I$ by $\\pi/2$. Reactance $X_C = \\frac{1}{\\omega C}$.\n\n#### 2.2 Series LCR Circuit\n- Impedance $Z = \\sqrt{R^2 + (X_L - X_C)^2}$.\n- Phase angle $\\tan \\phi = \\frac{X_L - X_C}{R}$.\n- **Resonance:** occurs when $X_L = X_C \\Rightarrow \\omega_0 = \\frac{1}{\\sqrt{LC}}$.\n\n### 3. Power and Devices\n#### 3.1 Power in AC\n- Average Power $P_{avg} = V_{rms} I_{rms} \\cos \\phi$.\n- $\\cos \\phi$ is the Power Factor.\n- Wattless current: when $\\phi = \\pi/2$.\n\n#### 3.2 Transformers\n- Step-up and Step-down.\n- Ideal transformer: $\\frac{V_s}{V_p} = \\frac{N_s}{N_p} = \\frac{I_p}{I_s}$.\n\n## Formulas & Laws\n- **Impedance:** $Z = \\sqrt{R^2 + (\\omega L - 1/\\omega C)^2}$\n- **Resonant Frequency:** $f_0 = \\frac{1}{2\\pi\\sqrt{LC}}$\n- **Q-factor:** $Q = \\frac{\\omega_0 L}{R}$\n\n## JEE Focus & Common Traps\n- **Resonance:** At resonance, $Z = R$ (minimum) and $I$ is maximum.\n- **RMS vs Peak:** Always check which value is given in the problem statement.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 14
+}

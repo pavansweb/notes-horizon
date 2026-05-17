@@ -1,0 +1,13 @@
+{
+  "id": "trigonometric-functions",
+  "title": "Trigonometric Functions & Identities",
+  "subject": "Mathematics",
+  "chapter": "Trigonometry",
+  "content": "# Trigonometric Functions and Identities\n\n## Topic Breakdown\n### 1. Fundamental Identities\n- **Pythagorean:** $\\sin^2 \\theta + \\cos^2 \\theta = 1$, $1 + \\tan^2 \\theta = \\sec^2 \\theta$.\n- **Compound Angles:** $\\sin(A \\pm B) = \\sin A \\cos B \\pm \\cos A \\sin B$.\n\n### 2. Multiple & Sub-multiple Angles\n- **Double Angle:** $\\sin 2\\theta = 2\\sin \\theta \\cos \\theta$; $\\cos 2\\theta = \\cos^2 \\theta - \\sin^2 \\theta$.\n- **Half Angle:** $\\tan \\frac{\\theta}{2} = \\sqrt{\\frac{1-\\cos \\theta}{1+\\cos \\theta}}$.\n\n### 3. Trigonometric Equations\n- $\\sin \\theta = \\sin \\alpha \\Rightarrow \\theta = n\\pi + (-1)^n \\alpha$.\n- $\\cos \\theta = \\cos \\alpha \\Rightarrow \\theta = 2n\\pi \\pm \\alpha$.\n- $\\tan \\theta = \\tan \\alpha \\Rightarrow \\theta = n\\pi + \\alpha$.\n\n## Formulas & Laws\n- **Sum to Product:** $\\sin C + \\sin D = 2 \\sin \\frac{C+D}{2} \\cos \\frac{C-D}{2}$.\n- **Product to Sum:** $2 \\sin A \\cos B = \\sin(A+B) + \\sin(A-B)$.\n\n## JEE Focus & Common Traps\n- **General Solutions:** Always check the given range $[0, 2\\pi]$ vs the general solution.\n- **Maximum/Minimum:** $a \\cos \\theta + b \\sin \\theta$ lies between $[-\\sqrt{a^2+b^2}, \\sqrt{a^2+b^2}]$.\n\n## Typed Problems (JEE Main PYQ Based)\n\n### Type 1: General Solution of Trig Equations\n**Q1.** Solve $\\sin^2 \\theta - 2 \\cos \\theta + 1/4 = 0$.\n**Concept:** Convert to quadratic in $\\cos \\theta$.\n**Solution:**\n1. $(1 - \\cos^2 \\theta) - 2 \\cos \\theta + 1/4 = 0 \\implies \\cos^2 \\theta + 2 \\cos \\theta - 5/4 = 0$.\n2. $4 \\cos^2 \\theta + 8 \\cos \\theta - 5 = 0$.\n3. $(2 \\cos \\theta + 5)(2 \\cos \\theta - 1) = 0$.\n4. $\\cos \\theta = 1/2$ (since $\\cos \\theta \\neq -5/2$).\n5. $\\theta = 2n\\pi \\pm \\pi/3$.\n\n### Type 2: Transformation Formulae\n**Q1.** Value of $\\sin 20^\\circ \\sin 40^\\circ \\sin 60^\\circ \\sin 80^\\circ$?\n**Concept:** $\\sin \\theta \\sin(60-\\theta) \\sin(60+\\theta) = \\frac{1}{4} \\sin 3\\theta$.\n**Solution:**\n1. $\\sin 60^\\circ \\times (\\sin 20^\\circ \\sin 40^\\circ \\sin 80^\\circ)$.\n2. $\\frac{\\sqrt{3}}{2} \\times \\frac{1}{4} \\sin(3 \\times 20^\\circ) = \\frac{\\sqrt{3}}{2} \\times \\frac{1}{4} \\frac{\\sqrt{3}}{2} = 3/16$.\n",
+  "lastUpdated": "2026-05-17T15:12:59Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 13
+}

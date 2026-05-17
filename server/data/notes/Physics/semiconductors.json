@@ -1,0 +1,14 @@
+{
+  "id": "semiconductors",
+  "title": "Semiconductors",
+  "subject": "Physics",
+  "chapter": "Modern Physics",
+  "content": "# Semiconductors\n\n## Topic Breakdown\n### 1. Band Theory of Solids\n- Energy bands: Valence band, conduction band, and energy gap ($E_g$).\n- Classification: Conductors, Semiconductors, and Insulators.\n\n### 2. Doping and Carriers\n- **Intrinsic Semiconductors**: Pure Si/Ge.\n- **Extrinsic Semiconductors**: n-type (Pentavalent) and p-type (Trivalent).\n- **Mass Action Law**: $n_e n_h = n_i^2$.\n\n### 3. Junction Devices\n- **p-n Junction Diode**: Formation of depletion layer and barrier potential.\n- **Biasing**: Forward and Reverse bias characteristics.\n- **Applications**: Rectifiers (Half-wave and Full-wave), Zener diode as a voltage regulator.\n\n### 4. Logic Gates\n- OR, AND, NOT, NAND, and NOR gates; Truth tables and Boolean algebra.\n\n## Formulas & Laws\n- **Mass Action Law:** $n_e n_h = n_i^2$\n- **Diode Current (Qualitative):** Increases exponentially in forward bias.\n\n## JEE Focus & Common Traps\n- **Diode Idealization:** Unless specified, assume diodes are ideal ($0\\text{V}$ drop in forward, $\\infty$ resistance in reverse).\n- **Logic Gates:** NAND and NOR are universal gates. Use De Morgan's Laws for simplification.\n- **Temperature Effect:** Conductivity of semiconductors INCREASES with temperature (unlike metals).\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 14
+}

@@ -1,0 +1,13 @@
+{
+  "id": "moving-charges-and-magnetism",
+  "title": "Moving Charges and Magnetism",
+  "subject": "Physics",
+  "chapter": "Magnetism",
+  "content": "# Moving Charges and Magnetism\n\n## Topic Breakdown\n### 1. Magnetic Force\n#### 1.1 Lorentz Force\n- Force on a charge $q$ moving with velocity $\\vec{v}$ in magnetic field $\\vec{B}$: $\\vec{F} = q(\\vec{v} \\times \\vec{B})$.\n- Combined Electric and Magnetic fields (Velocity Selector).\n\n#### 1.2 Motion in Uniform Magnetic Field\n- Helical motion and Circular motion ($r = \\frac{mv}{qB}$).\n\n### 2. Magnetic Field Sources\n#### 2.1 Biot-Savart Law\n- Magnetic field due to a small current element: $d\\vec{B} = \\frac{\\mu_0}{4\\pi} \\frac{I d\\vec{l} \\times \\hat{r}}{r^2}$.\n- Applications: Straight wire, Circular loop at center and axis.\n\n#### 2.2 Ampere's Circuital Law\n- $\\oint \\vec{B} \\cdot d\\vec{l} = \\mu_0 I_{enclosed}$.\n- Applications: Infinite straight wire, Solenoid, Toroid.\n\n### 3. Current Loop and Dipoles\n#### 3.1 Force between Parallel Currents\n- Definition of Ampere.\n#### 3.2 Torque on a Current Loop\n- $\\vec{\\tau} = \\vec{M} \\times \\vec{B}$ where $\\vec{M} = NI\\vec{A}$.\n\n## Formulas & Laws\n- **Biot-Savart Law:** $d\\vec{B} = \\frac{\\mu_0}{4\\pi} \\frac{I d\\vec{l} \\times \\hat{r}}{r^2}$\n- **Magnetic Force:** $\\vec{F} = q(\\vec{v} \\times \\vec{B})$\n- **Ampere's Law:** $\\oint \\vec{B} \\cdot d\\vec{l} = \\mu_0 I$\n\n## JEE Focus & Common Traps\n- **Right Hand Rule:** Ensure you correctly identify the direction of the cross product.\n- **Cyclotron frequency:** Independent of the speed and radius of the particle.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 12
+}

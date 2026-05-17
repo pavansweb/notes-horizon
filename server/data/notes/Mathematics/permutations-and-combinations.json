@@ -1,0 +1,14 @@
+{
+  "id": "permutations-and-combinations",
+  "title": "Permutations and Combinations",
+  "subject": "Mathematics",
+  "chapter": "Algebra",
+  "content": "# Permutations and Combinations\n\n## Topic Breakdown\n### 1. Fundamental Principles of Counting\n- **Addition Rule (OR)**: If a task can be done in $m$ ways and another in $n$ ways (mutually exclusive), then either can be done in $m+n$ ways.\n- **Multiplication Rule (AND)**: If a task can be done in $m$ ways and followed by another in $n$ ways, then both can be done in $m \\times n$ ways.\n\n### 2. Permutations (Arrangements)\n- **Linear Permutations**: $n$ distinct objects taken $r$ at a time: $^n P_r = \\frac{n!}{(n-r)!}$.\n- **Repeated Objects**: $\\frac{n!}{p!q!r!}$ where $p, q, r$ are frequencies of identical objects.\n- **Circular Permutations**: $(n-1)!$ for $n$ distinct objects.\n\n### 3. Combinations (Selections)\n- **Selections**: $n$ distinct objects taken $r$ at a time: $^n C_r = \\frac{n!}{r!(n-r)!}$.\n- **Properties**: $^n C_r = ^n C_{n-r}$ and $^n C_r + ^n C_{r-1} = ^{n+1} C_r$.\n\n### 4. Advanced Techniques\n- **Beggar's Method**: Ways to distribute $n$ identical items to $r$ distinct groups is $^{n+r-1} C_{r-1}$.\n- **Derangements**: Number of ways to arrange $n$ objects such that none are in their original place.\n\n## Formulas & Laws\n- **$^n P_r = \\frac{n!}{(n-r)!}$\n- **$^n C_r = \\frac{n!}{r!(n-r)!}$\n- **Circular Permutations:** $(n-1)!$\n- **Identical Distribution:** $^{n+r-1} C_{r-1}$\n\n## JEE Focus & Common Traps\n- **Arrangement vs. Selection:** \"Permutations\" implies order matters; \"Combinations\" implies order doesn't matter.\n- **Identical Objects:** Always divide by factorials of frequencies for permutations of words like \"BANANA\".\n- **Geometry Problems:** Number of triangles from $n$ points ($^n C_3 - ^m C_3$ if $m$ points are collinear).\n\n## Typed Problems (JEE Main PYQ Based)\n\n### Type 1: Rank of a Word\n**Q1.** Find the rank of the word 'MOTHER' in dictionary order.\n**Concept:** Systematic counting of words starting with letters preceding M.\n**Solution:**\n1. Letters in order: E, H, M, O, R, T.\n2. Starting with E: $5! = 120$.\n3. Starting with H: $5! = 120$.\n4. Starting with ME, MH: $2 \\times 4! = 48$.\n5. Starting with MOE, MOH, MOR: $3 \\times 3! = 18$.\n6. Starting with MOT: MOTHER is the first word ($1$).\n7. Total rank calculation: $120+120+24+24+6+6+6+2 = 308$.\n",
+  "lastUpdated": "2026-05-17T15:12:59Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 4
+}

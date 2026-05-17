@@ -1,0 +1,13 @@
+{
+  "id": "indefinite-integration",
+  "title": "Indefinite Integration",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Indefinite Integration\n\n## Topic Breakdown\n### 1. Basic Methods\n#### 1.1 Standard Formulas\n- Polynomial: $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$\n- Logarithmic: $\\int \\frac{1}{x} dx = \\ln|x| + C$\n- Exponential: $\\int e^x dx = e^x + C$\n\n#### 1.2 Integration by Substitution\n- Used when the integrand contains a function and its derivative: $\\int f(g(x))g'(x) dx$. Let $g(x) = t$.\n\n### 2. Advanced Techniques\n#### 2.1 Integration by Parts\n- Formula: $\\int u v dx = u \\int v dx - \\int [u' \\int v dx] dx$\n- Use **ILATE** rule to choose $u$: **I**nverse, **L**ogarithmic, **A**lgebraic, **T**rigonometric, **E**xponential.\n\n#### 2.2 Integration of Rational Functions\n- Method of Partial Fractions for $\\frac{P(x)}{Q(x)}$.\n\n#### 2.3 Special Integrals\n- $\\int \\frac{dx}{x^2 + a^2} = \\frac{1}{a} \\tan^{-1} \\left( \\frac{x}{a} \\right) + C$\n- $\\int \\frac{dx}{\\sqrt{a^2 - x^2}} = \\sin^{-1} \\left( \\frac{x}{a} \\right) + C$\n\n## Formulas & Laws\n- **Power Rule:** $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C \\quad (n \\neq -1)$\n- **Logarithmic Rule:** $\\int \\frac{1}{x} dx = \\ln|x| + C$\n- **Integration by Parts:** $\\int u v dx = u \\int v dx - \\int (u' \\int v dx) dx$\n\n## JEE Focus & Common Traps\n- **Constant of Integration:** Always include $+ C$ for indefinite integrals.\n- **Substitution:** Choose $t$ such that $dt$ simplifies the remaining part of the integral.\n\n## Typed Problems (JEE Main PYQ Based)\n\n### Type 1: Integration of Form $\\int e^x (f(x) + f'(x)) dx$\n**Q1.** Evaluate $\\int e^x \\left(\\frac{1}{x} - \\frac{1}{x^2}\\right) dx$.\n**Concept:** $\\int e^x (f(x) + f'(x)) dx = e^x f(x) + C$.\n**Solution:**\n1. Let $f(x) = 1/x$. Then $f'(x) = -1/x^2$.\n2. Result is $e^x (1/x) + C$.\n\n### Type 2: Trigonometric Substitution\n**Q1.** Evaluate $\\int \\frac{dx}{\\sin x + \\cos x}$.\n**Concept:** Use $\\sin x + \\cos x = \\sqrt{2} \\sin(x + \\pi/4)$.\n**Solution:**\n1. $I = \\frac{1}{\\sqrt{2}} \\int \\csc(x + \\pi/4) dx$.\n2. $I = \\frac{1}{\\sqrt{2}} \\ln |\\tan(\\frac{x}{2} + \\frac{\\pi}{8})| + C$.\n",
+  "lastUpdated": "2026-05-17T15:12:59Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 8
+}

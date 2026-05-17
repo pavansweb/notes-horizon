@@ -1,0 +1,14 @@
+{
+  "id": "ionic-equilibrium",
+  "title": "Ionic Equilibrium",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Ionic Equilibrium\n\n## Topic Breakdown\n### 1. Acids, Bases and Salts\n- Arrhenius, Bronsted-Lowry, and Lewis concepts.\n- Dissociation constants ($K_a$ and $K_b$) and Degree of Dissociation ($\\alpha$).\n\n### 2. pH Scale and Hydrolysis of Salts\n- Auto-ionization of water ($K_w = [H^+][OH^-]$).\n- pH of different salt solutions: Strong Acid-Strong Base, Strong Acid-Weak Base, etc.\n\n### 3. Buffer Solutions\n- Acidic Buffers (Weak Acid + Salt with Strong Base).\n- Basic Buffers (Weak Base + Salt with Strong Acid).\n\n### 4. Solubility Product ($K_{sp}$)\n- Relation between solubility ($S$) and $K_{sp}$.\n- Condition for precipitation: Ionic Product ($IP$) $> K_{sp}$.\n\n## Formulas & Laws\n- **pH and pOH:** $pH = -\\log[H^+]$, $pOH = -\\log[OH^-]$, $pH + pOH = 14$ (at 298 K)\n- **Ostwald's Dilution Law:** $\\alpha = \\sqrt{\\frac{K}{C}}$ (for weak electrolytes)\n- **Henderson-Hasselbalch Equation:** $pH = pK_a + \\log \\frac{[\\text{Salt}]}{[\\text{Acid}]}$ (for acidic buffer)\n- **Solubility Product ($A_xB_y$):** $K_{sp} = x^x y^y S^{x+y}$\n\n## JEE Focus & Common Traps\n- **Common Ion Effect:** Solubility of a salt decreases in the presence of a common ion. Use this for selective precipitation problems.\n- **Buffer Action:** Buffers are most effective when $pH = pK_a$ (i.e., $[\\text{Salt}] = [\\text{Acid}]$). The buffer range is typically $pK_a \\pm 1$.\n- **Approximate Calculations:** When $\\alpha < 0.05$ (or $5\\%$), $1 - \\alpha \\approx 1$. Always verify this after calculation.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}

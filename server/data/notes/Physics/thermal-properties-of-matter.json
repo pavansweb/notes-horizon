@@ -1,0 +1,14 @@
+{
+  "id": "thermal-properties-of-matter",
+  "title": "Thermal Properties of Matter",
+  "subject": "Physics",
+  "chapter": "Thermal Physics",
+  "content": "# Thermal Properties of Matter\n\n## Topic Breakdown\n### 1. Thermal Expansion\n#### 1.1 Expansion in Solids\n- **Linear ($\\alpha$), Superficial ($\\beta$), and Volumetric ($\\gamma$) Coefficients**.\n- Relation: $\\alpha = \\beta/2 = \\gamma/3$.\n#### 1.2 Expansion in Liquids\n- **Apparent vs. Real Expansion**.\n- Anomalous expansion of water (maximum density at $4^\\circ\\text{C}$).\n\n### 2. Calorimetry (Overview)\n- **Heat Capacity and Specific Heat**.\n- **Principle of Calorimetry**: Heat lost by hot body = Heat gained by cold body.\n- **Latent Heat**: Heat required for phase change without temperature change.\n\n## Formulas & Laws\n- **Linear Expansion:** $L_t = L_0(1 + \\alpha \\Delta T)$\n- **Volumetric Expansion:** $V_t = V_0(1 + \\gamma \\Delta T)$\n- **Thermal Stress:** $\\sigma = Y \\alpha \\Delta T$\n- **Heat Transfer:** $Q = mc\\Delta T$ or $Q = mL$\n\n## JEE Focus & Common Traps\n- **Thermal Expansion of Holes:** If a sheet with a hole is heated, the hole expands as if it were made of the sheet material.\n- **Anomalous Expansion:** Remember water contracts from $0^\\circ\\text{C}$ to $4^\\circ\\text{C}$ before expanding.\n- **Unit Conversion:** Be careful with Celsius vs. Kelvin in expansion problems, though $\\Delta T$ is the same for both.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 7
+}

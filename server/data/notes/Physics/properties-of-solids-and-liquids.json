@@ -1,0 +1,14 @@
+{
+  "id": "properties-of-solids-and-liquids",
+  "title": "Properties of Solids and Liquids",
+  "subject": "Physics",
+  "chapter": "Mechanics",
+  "content": "# Properties of Solids and Liquids\n\n## Topic Breakdown\n### 1. Elasticity\n#### 1.1 Stress and Strain\n- **Stress**: Restoring force per unit area. Types: Tensile, Compressive, Shear, and Volumetric.\n- **Hooke's Law**: Stress $\\propto$ Strain within the elastic limit.\n#### 1.2 Elastic Moduli\n- **Young's Modulus ($Y$)**, **Bulk Modulus ($B$)**, and **Shear Modulus ($\\eta$).**\n\n### 2. Fluid Statics\n#### 2.1 Fluid Pressure\n- **Variation with Depth**: $P = P_0 + \\rho g h$.\n- **Pascal's Law**: Pressure is transmitted undiminished in an enclosed fluid.\n#### 2.2 Buoyancy\n- **Archimedes' Principle**: Upthrust equals weight of displaced fluid.\n\n### 3. Fluid Dynamics\n#### 3.1 Flow Characteristics\n- **Equation of Continuity**: $A_1 v_1 = A_2 v_2$.\n- **Bernoulli's Principle**: $P + \\frac{1}{2}\\rho v^2 + \\rho gh = \\text{constant}$ (for ideal fluids).\n\n### 4. Surface Tension and Viscosity\n#### 4.1 Surface Tension\n- **Excess Pressure**: $2T/R$ for a drop, $4T/R$ for a bubble.\n- **Capillarity**: Rise/fall of liquid in a narrow tube.\n#### 4.2 Viscosity\n- **Stokes' Law**: $F = 6\\pi\\eta r v$.\n- **Terminal Velocity**: Steady speed when weight is balanced by buoyancy and drag.\n\n## Formulas & Laws\n- **Young's Modulus:** $Y = \\frac{FL}{A\\Delta L}$\n- **Bernoulli's Equation:** $P + \\frac{1}{2}\\rho v^2 + \\rho g h = \\text{const}$\n- **Capillary Rise:** $h = \\frac{2T \\cos \\theta}{r \\rho g}$\n- **Terminal Velocity:** $v_t = \\frac{2r^2(\\rho_{body} - \\rho_{fluid})g}{9\\eta}$\n\n## JEE Focus & Common Traps\n- **Bernoulli's Assumptions:** Only for non-viscous, incompressible, and streamline flow.\n- **Bubble Surface Energy:** Remember bubbles have TWO surfaces ($W = 2 \\times T \\Delta A$).\n- **Apparent Weight:** $W_{app} = W_{real} - F_B$.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 7
+}

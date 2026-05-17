@@ -1,0 +1,14 @@
+{
+  "id": "general-organic-chemistry",
+  "title": "General Organic Chemistry",
+  "subject": "Chemistry",
+  "chapter": "Organic Chemistry",
+  "content": "# General Organic Chemistry\n\n## Topic Breakdown\n### 1. Electronic Effects\n#### 1.1 Inductive Effect ($+I$ and $-I$)\n- Permanent displacement of $\\sigma$ electrons along a saturated carbon chain.\n- $-I$ Groups: $-NO_2, -CN, -COOH, -F, -Cl, -Br, -I$.\n- $+I$ Groups: $-CH_3, -CH_2CH_3, -(CH_3)_2CH, -(CH_3)_3C$.\n#### 1.2 Resonance (Mesomeric) Effect ($+M$ and $-M$)\n- Polarity produced by the interaction between two $\\pi$-bonds or a $\\pi$-bond and a lone pair.\n- Conditions for Resonance: Conjugation, planarity.\n#### 1.3 Hyperconjugation\n- Delocalization of $\\sigma$ electrons of $C-H$ bond of an alkyl group directly attached to an atom of unshared $\\pi$ orbital.\n\n### 2. Reaction Intermediates\n#### 2.1 Carbocations\n- $sp^2$ hybridized, trigonal planar. Stability: Tertiary $>$ Secondary $>$ Primary.\n#### 2.2 Carbanions\n- $sp^3$ hybridized (usually), pyramidal. Stability: Primary $>$ Secondary $>$ Tertiary.\n#### 2.3 Free Radicals\n- Paramagnetic species, $sp^2$ hybridized.\n\n### 3. Aromaticity\n#### 3.1 Huckel's Rule\n- Aromatic: Cyclic, planar, complete conjugation, $(4n+2)\\pi$ electrons.\n- Anti-aromatic: Cyclic, planar, complete conjugation, $4n\\pi$ electrons.\n\n## Formulas & Laws\n- **Huckel's Rule:** Aromatic if $\\pi \\text{ electrons} = 4n + 2$ (where $n = 0, 1, 2, ...$)\n\n## JEE Focus & Common Traps\n- **Stability Ranking:** Always check Resonance $>$ Hyperconjugation $>$ Inductive effect ($R > H > I$).\n- **Resonance Structures:** The most contributing structure is the one with the maximum number of covalent bonds and minimum formal charge separation.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 11
+}

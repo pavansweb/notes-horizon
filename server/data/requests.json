@@ -10,7 +10,14 @@
     "id": "1779014536714",
     "subject": "Mathematics",
     "topic": "indefinite integrals",
-    "status": "pending",
+    "status": "failed",
     "timestamp": "2026-05-17T10:42:16.714Z"
+  },
+  {
+    "id": "1779029636080",
+    "subject": "Physics",
+    "topic": "Rotational motion",
+    "status": "failed",
+    "timestamp": "2026-05-17T14:53:56.081Z"
   }
 ]

@@ -1,0 +1,14 @@
+{
+  "id": "surface-chemistry",
+  "title": "Surface Chemistry",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Surface Chemistry\n\n## Topic Breakdown\n### 1. Adsorption\n- **Physisorption vs. Chemisorption**: Bonding nature and heat of adsorption.\n- **Adsorption Isotherms**: Freundlich and Langmuir models.\n\n### 2. Catalysis\n- **Homogeneous and Heterogeneous Catalysis**.\n- **Enzyme Catalysis**: Lock-and-key mechanism.\n\n### 3. Colloids\n- **Classification**: Based on physical state, dispersion medium, and interaction (Lyophilic/Lyophobic).\n- **Properties**: Tyndall effect, Brownian motion, and Electrophoresis.\n- **Stability**: Zeta potential and coagulation (Hardy-Schulze Rule).\n\n## Formulas & Laws\n- **Freundlich Isotherm**: $\\frac{x}{m} = k P^{1/n}$\n- **Hardy-Schulze Rule**: Coagulating power $\\propto (\\text{valency of ion})^4$ (approx).\n\n## JEE Focus & Common Traps\n- **Physisorption vs. Chemisorption**: Chemisorption is highly specific and increases with temperature initially (due to activation energy), whereas physisorption always decreases with temperature.\n- **Gold Number**: Smaller the gold number, greater is the protective power of the lyophilic colloid.\n- **Hardy-Schulze Rule**: When coagulating a negative sol (like $As_2S_3$), the order of power of cations is $Al^{3+} > Ba^{2+} > Na^+$.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 8
+}

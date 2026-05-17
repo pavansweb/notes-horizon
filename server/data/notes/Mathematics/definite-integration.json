@@ -1,0 +1,13 @@
+{
+  "id": "definite-integration",
+  "title": "Definite Integration",
+  "subject": "Mathematics",
+  "chapter": "Calculus",
+  "content": "# Definite Integration\n\n## Topic Breakdown\n### 1. Fundamentals\n#### 1.1 Fundamental Theorem of Calculus\n- If $F'(x) = f(x)$, then $\\int_a^b f(x) dx = F(b) - F(a)$.\n\n#### 1.2 Limit of a Sum\n- Evaluation of integrals using Riemann sums.\n\n### 2. Properties of Definite Integrals\n#### 2.1 Basic Properties\n- $\\int_a^b f(x) dx = -\\int_b^a f(x) dx$\n- $\\int_a^b f(x) dx = \\int_a^c f(x) dx + \\int_c^b f(x) dx$\n\n#### 2.2 Advanced Properties (The \"Kings\" and \"Queens\")\n- **King's Property:** $\\int_a^b f(x) dx = \\int_a^b f(a+b-x) dx$\n- **Even/Odd Functions:** If $f(-x) = -f(x)$, $\\int_{-a}^a f(x) dx = 0$. If $f(-x) = f(x)$, $2\\int_0^a f(x) dx$.\n- **Periodic Functions:** Properties for $\\int_0^{nT} f(x) dx$.\n\n### 3. Special Results\n#### 3.1 Leibniz Rule\n- Differentiation under the integral sign: $\\frac{d}{dx} \\int_{g(x)}^{h(x)} f(t) dt = f(h(x))h'(x) - f(g(x))g'(x)$\n\n#### 3.2 Walli's Formula\n- Short-cut for $\\int_0^{\\pi/2} \\sin^n x dx$.\n\n## Formulas & Laws\n- **King's Property:** $\\int_0^a f(x) dx = \\int_0^a f(a-x) dx$\n- **Fundamental Theorem:** $\\int_a^b f(x) dx = [F(x)]_a^b = F(b) - F(a)$\n\n## JEE Focus & Common Traps\n- **Symmetry:** Always check for even/odd properties to save time.\n- **King's Property:** Apply this if the integrand looks complex (especially with trig functions).\n\n## Typed Problems (JEE Main PYQ Based)\n\n### Type 1: King's Property Application\n**Q1.** Evaluate $I = \\int_{0}^{\\pi} \\frac{x \\sin x}{1 + \\cos^2 x} dx$.\n**Concept:** $\\int_{a}^{b} f(x) dx = \\int_{a}^{b} f(a+b-x) dx$.\n**Solution:**\n1. $I = \\int_{0}^{\\pi} \\frac{(\\pi-x) \\sin(\\pi-x)}{1 + \\cos^2(\\pi-x)} dx = \\int_{0}^{\\pi} \\frac{(\\pi-x) \\sin x}{1 + \\cos^2 x} dx$.\n2. $2I = \\pi \\int_{0}^{\\pi} \\frac{\\sin x}{1 + \\cos^2 x} dx$.\n3. Let $u = \\cos x, du = -\\sin x dx$.\n4. $2I = \\pi \\int_{1}^{-1} \\frac{-du}{1 + u^2} = \\pi [\\tan^{-1} u]_{-1}^{1} = \\pi (\\pi/4 - (-\\pi/4)) = \\pi^2/2$.\n5. $I = \\pi^2/4$.\n\n### Type 2: Leibniz Rule\n**Q1.** If $f(x) = \\int_{0}^{x^2} \\sqrt{t} dt$, find $f'(x)$.\n**Concept:** $\\frac{d}{dx} \\int_{g(x)}^{h(x)} \\phi(t) dt = \\phi(h(x))h'(x) - \\phi(g(x))g'(x)$.\n**Solution:**\n1. $g(x) = 0, h(x) = x^2, \\phi(t) = \\sqrt{t}$.\n2. $f'(x) = \\sqrt{x^2} \\cdot \\frac{d}{dx}(x^2) - \\sqrt{0} \\cdot 0$.\n3. $f'(x) = |x| \\cdot 2x$.\n",
+  "lastUpdated": "2026-05-17T15:12:59Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in"
+  ],
+  "order": 9
+}

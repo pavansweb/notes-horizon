@@ -1,0 +1,13 @@
+{
+  "id": "p-block-elements",
+  "title": "p-Block Elements",
+  "subject": "Chemistry",
+  "chapter": "Inorganic Chemistry",
+  "content": "# p-Block Elements (Groups 13-18)\n\n## Topic Breakdown\n### 1. General Trends\n#### 1.1 Inert Pair Effect\n- Stability of lower oxidation states increases down the group for heavier elements (e.g., $Tl^+$ is more stable than $Tl^{3+}$).\n\n#### 1.2 Anomalous Properties\n- Second-period elements (B, C, N, O, F) differ from their groups due to small size, high electronegativity, and absence of d-orbitals.\n\n### 2. Group Specific Highlights\n#### 2.1 Group 13 & 14\n- Boron: Borax, Orthoboric acid, and **Diborane** ($B_2H_6$) with its 3-center-2-electron bonds.\n- Carbon: Allotropes (Diamond, Graphite, Fullerenes) and silicates.\n\n#### 2.2 Group 15 & 16\n- Nitrogen: Ammonia ($NH_3$) and Nitric acid ($HNO_3$).\n- Oxygen: Ozone ($O_3$) and Sulfuric acid ($H_2SO_4$).\n\n#### 2.3 Group 17 & 18\n- Halogens: Interhalogen compounds ($XX'_n$).\n- Noble Gases: Xenon fluorides ($XeF_2, XeF_4, XeF_6$) and oxides.\n\n## Formulas & Laws\n- **Hydrolysis of Xenon Fluorides:** e.g., $6XeF_4 + 12H_2O \\rightarrow 4Xe + 2XeO_3 + 24HF + 3O_2$.\n\n## JEE Focus & Common Traps\n- **Diborane Structure:** Understand the bridge bonds (banana bonds).\n- **Xenon Compounds:** Shapes and hybridization (VSEPR) are frequently asked.\n",
+  "lastUpdated": "2026-05-17T18:00:00.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 10
+}
