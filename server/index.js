@@ -106,6 +106,40 @@ app.get('/api/requests', async (req, res) => {
   }
 });
 
+// Save or update a note
+app.post('/api/notes', async (req, res) => {
+  try {
+    const { subject, chapter, title, content, sources, order } = req.body;
+    
+    if (!subject || !title || !content) {
+      return res.status(400).json({ error: 'Subject, title, and content are required' });
+    }
+
+    const id = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+    const subjectPath = path.join(NOTES_PATH, subject);
+    await fs.ensureDir(subjectPath);
+
+    const filePath = path.join(subjectPath, `${id}.json`);
+    
+    const noteData = {
+      id,
+      title,
+      subject,
+      chapter: chapter || 'General',
+      content,
+      lastUpdated: new Date().toISOString(),
+      sources: sources || [],
+      order: order || 999
+    };
+
+    await fs.writeJson(filePath, noteData, { spaces: 2 });
+    res.json({ message: 'Note saved successfully', note: noteData });
+  } catch (error) {
+    console.error('Save Error:', error);
+    res.status(500).json({ error: 'Failed to save note' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

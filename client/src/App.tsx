@@ -17,7 +17,9 @@ import {
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
+  PlusCircle,
   Printer,
+  Save,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -99,11 +101,38 @@ const readStoredList = (key: string) => {
 
 const noteKey = (note: Pick<NoteMetadata, 'subject' | 'id'>) => `${note.subject}/${note.id}`;
 
+const NOTE_TEMPLATE = (title = '[Title]') => `# ${title}
+
+## Synopsis
+[High-level introduction]
+
+## Topic Breakdown
+### 1. [Main Topic]
+#### 1.1 [Subtopic]
+
+## Formulas & Laws
+[LaTeX formulas here, use $...$ for inline and $$...$$ for blocks]
+
+## JEE Focus & Common Traps
+[Strategic advice]
+
+## Subject Specifics
+[Diagrams for Physics / Simulators for Math]
+`;
+
 function App() {
   const [notesList, setNotesList] = useState<NoteMetadata[]>([]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isEntryMode, setIsEntryMode] = useState(false);
+  const [entryData, setEntryData] = useState({
+    title: '',
+    chapter: '',
+    subject: 'Physics',
+    content: '',
+    sources: '',
+  });
   const [focusMode, setFocusMode] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
   const [fontScale, setFontScale] = useState(() => Number(localStorage.getItem(STORAGE_KEYS.fontScale)) || 1);
@@ -120,6 +149,73 @@ function App() {
   const [newTopicInput, setNewTopicInput] = useState('');
   const [pendingRequests, setPendingRequests] = useState<AIRequest[]>([]);
   const [dashboardMessage, setDashboardMessage] = useState('');
+
+  const enterEntryMode = useCallback((note: Note | null = null) => {
+    setIsEntryMode(true);
+    if (note) {
+      setEntryData({
+        title: note.title,
+        chapter: note.chapter,
+        subject: note.subject,
+        content: note.content,
+        sources: note.sources.join(', '),
+      });
+    } else {
+      setEntryData({
+        title: '',
+        chapter: '',
+        subject: activeSubject,
+        content: NOTE_TEMPLATE(),
+        sources: '',
+      });
+    }
+  }, [activeSubject]);
+
+  const fetchNotesList = useCallback(async () => {
+    try {
+      const response = await axios.get<NoteMetadata[]>(`${API_BASE_URL}/api/notes`);
+      setNotesList(
+        response.data.sort((a, b) => {
+          if (a.subject !== b.subject) return SUBJECTS.indexOf(a.subject) - SUBJECTS.indexOf(b.subject);
+          return (a.order || 999) - (b.order || 999) || a.title.localeCompare(b.title);
+        }),
+      );
+
+      if (response.data.length > 0 && !selectedNote) {
+        const firstNote = response.data.find((note) => note.subject === activeSubject) || response.data[0];
+        fetchNote(firstNote.subject, firstNote.id);
+      }
+    } catch (error) {
+      console.error('Error fetching notes list:', error);
+    }
+  }, [activeSubject, selectedNote]); // fetchNote added inside effect or defined before
+
+  const handleSaveNote = async () => {
+    if (!entryData.title || !entryData.content) {
+      setDashboardMessage('Title and content are required.');
+      return;
+    }
+    try {
+      setLoading(true);
+      const payload = {
+        ...entryData,
+        sources: entryData.sources.split(',').map((s) => s.trim()).filter(Boolean),
+      };
+      const response = await axios.post(`${API_BASE_URL}/api/notes`, payload);
+      setDashboardMessage('Note saved successfully!');
+      setIsEntryMode(false);
+      await fetchNotesList();
+      if (response.data.note) {
+        setSelectedNote(response.data.note);
+      }
+      setTimeout(() => setDashboardMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving note:', error);
+      setDashboardMessage('Failed to save note.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -171,27 +267,7 @@ function App() {
     }
   }, []);
 
-  const fetchNotesList = useCallback(async () => {
-    try {
-      const response = await axios.get<NoteMetadata[]>(`${API_BASE_URL}/api/notes`);
-      setNotesList(
-        response.data.sort((a, b) => {
-          if (a.subject !== b.subject) return SUBJECTS.indexOf(a.subject) - SUBJECTS.indexOf(b.subject);
-          return (a.order || 999) - (b.order || 999) || a.title.localeCompare(b.title);
-        }),
-      );
-
-      if (response.data.length > 0 && !selectedNote) {
-        const firstNote = response.data.find((note) => note.subject === activeSubject) || response.data[0];
-        fetchNote(firstNote.subject, firstNote.id);
-      }
-    } catch (error) {
-      console.error('Error fetching notes list:', error);
-    }
-  }, [activeSubject, fetchNote, selectedNote]);
-
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotesList();
   }, [fetchNotesList]);
 
@@ -202,7 +278,6 @@ function App() {
   useEffect(() => {
     if (notesList.length === 0 || selectedNote?.subject === activeSubject || searchQuery.trim()) return;
     const firstNoteOfSubject = notesList.find((note) => note.subject === activeSubject);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (firstNoteOfSubject) fetchNote(firstNoteOfSubject.subject, firstNoteOfSubject.id);
   }, [activeSubject, fetchNote, notesList, searchQuery, selectedNote]);
 
@@ -351,6 +426,9 @@ function App() {
         </label>
 
         <div className="header-actions">
+          <button className="icon-btn" onClick={() => enterEntryMode()} title="Create new note">
+            <PlusCircle size={19} />
+          </button>
           <button className="icon-btn" onClick={handleOpenDashboard} title="Generation queue" aria-label="Generation queue">
             <TerminalSquare size={19} />
           </button>
@@ -452,10 +530,88 @@ function App() {
               <Sparkles size={32} />
               <p>Loading note...</p>
             </div>
+          ) : isEntryMode ? (
+            <div className="entry-form-container">
+              <div className="entry-header">
+                <div>
+                  <span>Note Editor</span>
+                  <h2>{entryData.title || 'Untitled Note'}</h2>
+                </div>
+                <button className="icon-btn" onClick={() => setIsEntryMode(false)} aria-label="Close editor">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="entry-grid">
+                <div className="form-row">
+                  <label className="form-group">
+                    <span>Subject</span>
+                    <select
+                      value={entryData.subject}
+                      onChange={(e) => setEntryData({ ...entryData, subject: e.target.value })}
+                    >
+                      {SUBJECTS.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="form-group">
+                    <span>Chapter</span>
+                    <input
+                      type="text"
+                      value={entryData.chapter}
+                      placeholder="e.g. Mechanics"
+                      onChange={(e) => setEntryData({ ...entryData, chapter: e.target.value })}
+                    />
+                  </label>
+                </div>
+                <label className="form-group">
+                  <span>Title</span>
+                  <input
+                    type="text"
+                    value={entryData.title}
+                    placeholder="Note Title"
+                    onChange={(e) => setEntryData({ ...entryData, title: e.target.value })}
+                  />
+                </label>
+                <label className="form-group">
+                  <span>Content (Markdown + LaTeX)</span>
+                  <textarea
+                    className="content-editor"
+                    value={entryData.content}
+                    onChange={(e) => setEntryData({ ...entryData, content: e.target.value })}
+                    placeholder="Write your note here..."
+                  />
+                </label>
+                <label className="form-group">
+                  <span>Sources (comma separated)</span>
+                  <input
+                    type="text"
+                    value={entryData.sources}
+                    placeholder="https://example.com, https://another.com"
+                    onChange={(e) => setEntryData({ ...entryData, sources: e.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="entry-actions">
+                <button className="tool-button" onClick={() => setIsEntryMode(false)}>
+                  Cancel
+                </button>
+                <button className="primary-btn" onClick={handleSaveNote}>
+                  <Save size={18} />
+                  Save Note
+                </button>
+              </div>
+            </div>
           ) : selectedNote ? (
             <article className="note-content" style={{ '--note-font-scale': fontScale } as React.CSSProperties}>
               <div className="note-toolbar no-print">
                 <div className="toolbar-group">
+                  <button className="tool-button" onClick={() => enterEntryMode(selectedNote)}>
+                    <SlidersHorizontal size={16} />
+                    Edit
+                  </button>
                   <button className={`tool-button ${currentIsFavorite ? 'active' : ''}`} onClick={() => toggleListItem(currentKey, setFavorites)}>
                     <Star size={16} />
                     Save
