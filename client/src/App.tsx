@@ -65,7 +65,7 @@ interface AIRequest {
   timestamp: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 const STORAGE_KEYS = {
   theme: 'notes-horizon-theme',

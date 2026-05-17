@@ -1235,7 +1235,8 @@ button {
 
 @media (max-width: 760px) {
   .app-container {
-    overflow: visible;
+    height: 100vh;
+    height: 100svh;
   }
 
   .header {
@@ -1255,12 +1256,15 @@ button {
   }
 
   .main-layout {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   .sidebar {
-    position: fixed;
-    top: 133px;
+    position: absolute;
+    top: 0;
     bottom: 0;
     left: 0;
     z-index: 500;
@@ -1278,7 +1282,8 @@ button {
   }
 
   .content-area {
-    min-height: calc(100svh - 133px);
+    flex: 1;
+    overflow-y: auto;
     padding: 16px;
   }
 
