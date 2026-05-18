@@ -38,22 +38,50 @@ async function safeWriteJson(filePath, data) {
 // Get all notes (metadata only)
 app.get('/api/notes', async (req, res) => {
   try {
-    const subjects = await fs.readdir(NOTES_PATH).catch(() => []);
-    const allNotes = [];
+    let allNotes = [];
+    
+    if (syncClient.enabled) {
+      // Try fetching from GitHub first for the most up-to-date list
+      const subjects = ['Physics', 'Chemistry', 'Mathematics'];
+      for (const subject of subjects) {
+        const contents = await syncClient.getDirectoryContents(`data/notes/${subject}`);
+        for (const item of contents) {
+          if (item.name.endsWith('.json')) {
+            const fileData = await syncClient.getFile(item.path);
+            if (fileData && fileData.data) {
+              const { content, ...metadata } = fileData.data;
+              allNotes.push({ ...metadata, subject });
+              
+              // Optional: Cache locally if possible
+              const localPath = path.join(NOTES_PATH, subject, item.name);
+              await safeWriteJson(localPath, fileData.data);
+            }
+          }
+        }
+      }
+    }
 
-    for (const subject of subjects) {
+    // Fallback or addition from local filesystem if any
+    const localSubjects = await fs.readdir(NOTES_PATH).catch(() => []);
+    for (const subject of localSubjects) {
       const subjectPath = path.join(NOTES_PATH, subject);
       if ((await fs.stat(subjectPath).catch(() => ({ isDirectory: () => false }))).isDirectory()) {
         const files = await fs.readdir(subjectPath).catch(() => []);
         for (const file of files) {
           if (file.endsWith('.json')) {
-            const note = await fs.readJson(path.join(subjectPath, file));
-            const { content, ...metadata } = note;
-            allNotes.push({ ...metadata, subject });
+            const exists = allNotes.find(n => n.id === file.replace('.json', '') && n.subject === subject);
+            if (!exists) {
+              const note = await fs.readJson(path.join(subjectPath, file)).catch(() => null);
+              if (note) {
+                const { content, ...metadata } = note;
+                allNotes.push({ ...metadata, subject });
+              }
+            }
           }
         }
       }
     }
+
     res.json(allNotes);
   } catch (error) {
     console.error('API Error:', error);

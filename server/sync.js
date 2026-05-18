@@ -66,14 +66,37 @@ class GithubSync {
     }
   }
 
+  async getDirectoryContents(dirPath) {
+    if (!this.enabled) return [];
+    try {
+      const url = `${this.apiBase}/repos/${this.repo}/contents/${dirPath}?ref=${this.branch}`;
+      const res = await fetch(url, { headers: this.headers });
+      if (res.status === 404) return [];
+      if (!res.ok) throw new Error(`GitHub GET DIR error: ${res.statusText}`);
+      return await res.json();
+    } catch (error) {
+      console.error(`GitHub Dir Fetch Error (${dirPath}):`, error.message);
+      return [];
+    }
+  }
+
   async syncFromRemote(remotePath, localPath) {
     const remote = await this.getFile(remotePath);
     if (remote && remote.data) {
-      await fs.writeJson(localPath, remote.data, { spaces: 2 });
+      try {
+        await fs.ensureDir(path.dirname(localPath));
+        await fs.writeJson(localPath, remote.data, { spaces: 2 });
+      } catch (e) {
+        console.warn(`Could not cache ${remotePath} locally: ${e.message}`);
+      }
       return remote.data;
     }
     if (await fs.pathExists(localPath)) {
-      return await fs.readJson(localPath);
+      try {
+        return await fs.readJson(localPath);
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   }

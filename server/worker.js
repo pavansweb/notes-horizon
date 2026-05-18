@@ -1,3 +1,4 @@
+const os = require('os');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs-extra");
 const path = require("path");
@@ -7,9 +8,19 @@ require("dotenv").config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-const DATA_PATH = path.join(__dirname, 'data');
+const DATA_PATH = process.env.VERCEL ? path.join(os.tmpdir(), 'data') : path.join(__dirname, 'data');
 const NOTES_PATH = path.join(DATA_PATH, 'notes');
 const REQUESTS_FILE = path.join(DATA_PATH, 'requests.json');
+
+// Safer local write helper
+async function safeWriteJson(filePath, data) {
+  try {
+    await fs.ensureDir(path.dirname(filePath));
+    await fs.writeJson(filePath, data, { spaces: 2 });
+  } catch (e) {
+    console.warn(`Local write failed for ${filePath}, skipping local cache:`, e.message);
+  }
+}
 
 async function processRequests() {
   try {
@@ -66,11 +77,9 @@ async function processRequests() {
         text = jsonMatch[0];
         const noteData = JSON.parse(text);
 
-        // Save note locally
-        const subjectPath = path.join(NOTES_PATH, req.subject);
-        await fs.ensureDir(subjectPath);
-        const noteLocalPath = path.join(subjectPath, `${noteData.id}.json`);
-        await fs.writeJson(noteLocalPath, noteData, { spaces: 2 });
+        // Save note locally (optional cache)
+        const noteLocalPath = path.join(NOTES_PATH, req.subject, `${noteData.id}.json`);
+        await safeWriteJson(noteLocalPath, noteData);
         
         // Save note to GitHub
         await syncClient.putFile(`data/notes/${req.subject}/${noteData.id}.json`, noteData, `Worker: Generated ${req.topic}`);
@@ -80,7 +89,7 @@ async function processRequests() {
         requests[idx].status = "completed";
         
         // Save requests locally and to GitHub
-        await fs.writeJson(REQUESTS_FILE, requests, { spaces: 2 });
+        await safeWriteJson(REQUESTS_FILE, requests);
         await syncClient.putFile('data/requests.json', requests, `Worker: Completed ${req.topic}`);
         
         console.log(`[Worker] Successfully generated: ${req.topic}`);
@@ -88,7 +97,7 @@ async function processRequests() {
         console.error(`[Worker] Error processing ${req.topic}:`, e);
         const idx = requests.findIndex(r => r.id === req.id);
         requests[idx].status = "failed";
-        await fs.writeJson(REQUESTS_FILE, requests, { spaces: 2 });
+        await safeWriteJson(REQUESTS_FILE, requests);
         await syncClient.putFile('data/requests.json', requests, `Worker: Failed ${req.topic}`);
       }
     }
