@@ -1,0 +1,14 @@
+{
+  "id": "chemical-equilibrium",
+  "title": "Chemical Equilibrium",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Chemical Equilibrium\n\n## Topic Breakdown\n### 1. Law of Mass Action and Equilibrium Constant\n- Definition of $K_c$ and $K_p$.\n- Relationship between $K_p$ and $K_c$: $K_p = K_c(RT)^{\\Delta n_g}$.\n\n### 2. Reaction Quotient ($Q$)\n- Predicting reaction direction: $Q < K$ (forward), $Q > K$ (backward), $Q = K$ (equilibrium).\n\n### 3. Le Chatelier's Principle\n- Effects of concentration, pressure, temperature, and addition of inert gas on equilibrium position.\n\n## Formulas & Laws\n- **Equilibrium Constant Relation:** $K_p = K_c(RT)^{\\Delta n_g}$\n- **Gibbs Free Energy and Equilibrium:** $\\Delta G^\\circ = -RT \\ln K = -2.303 RT \\log K$\n\n## JEE Focus & Common Traps\n- **Temperature Dependence:** $K$ is constant unless temperature changes. Use Van't Hoff equation to find new $K$ at different $T$.\n- **Solids and Pure Liquids:** The active mass (concentration) of pure solids and liquids is taken as 1 and does not appear in the $K$ expression.\n\\n\\n## Typed Problems (JEE Main PYQ Based)\n### Type 1: Relation between $K_p$ and $K_c$\n- **Q1.** For the reaction $PCl_5(g) \\rightleftharpoons PCl_3(g) + Cl_2(g)$, find the relation between $K_p$ and $K_c$.\n- **Concept:** $K_p = K_c(RT)^{\\Delta n_g}$, where $\\Delta n_g$ is the change in number of moles of gaseous products and reactants.\n- **Solution:**\n  1. $\\Delta n_g = (1 + 1) - 1 = 1$.\n  2. Therefore, $K_p = K_c(RT)^1 = K_cRT$.\n\n### Type 2: Le Chatelier's Principle\n- **Q1.** What is the effect of increasing pressure on the equilibrium: $N_2(g) + 3H_2(g) \\rightleftharpoons 2NH_3(g)$?\n- **Concept:** Increasing pressure shifts equilibrium towards the side with fewer moles of gas.\n- **Solution:**\n  1. Reactant moles = $1+3=4$, Product moles = $2$.\n  2. Increase in pressure shifts equilibrium to the right (forward), increasing $NH_3$ yield.\n",
+  "lastUpdated": "2026-05-17T15:19:31.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}
