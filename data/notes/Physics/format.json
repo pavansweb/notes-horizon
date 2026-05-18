@@ -1,0 +1,10 @@
+{
+  "id": "format",
+  "title": "format",
+  "subject": "Physics",
+  "chapter": "format",
+  "content": "Generate JEE (Physics/Chemistry/Maths) quick revision notes in clean Markdown with LaTeX.\n\nStrict requirements:\n- Keep it concise (1-page revision style)\n- No long explanations\n- No paragraphs\n- Use bullet points wherever possible\n- Focus on formulas, results, and problem-solving insights\n- Output must be clean Markdown + LaTeX only (no extra text)\n\nFORMAT:\n\n# {Chapter Name}\n\n## Key Concepts\n- Short bullet points (max 5\u20136)\n- Each point \u2264 1 line\n\n## Core Formulae\n- List only the most important formulas\n- Each formula in LaTeX block:\n$$ ... $$\n\n## Derived Results / Standard Results\n- Important results used directly in problems\n- Use LaTeX blocks\n\n## Special Cases / Exceptions\n- Edge cases, boundary conditions\n- Important theoretical facts\n\n## Graphs / Trends (if applicable)\n- Write relationships like:\n- $y \\propto x^2$\n- Mention behavior (increasing/decreasing)\n\n## Tricks / Shortcuts\n- Problem-solving hacks\n- Symmetry, approximations, substitutions\n\n## Common Mistakes\n- Typical student errors in exams\n\n## Units / Dimensions (if applicable)\n- Important units or dimensional formulas\n\nSTYLE RULES:\n- No derivations\n- No proofs\n- No storytelling\n- No emojis\n- Maximize readability for quick revision\n- Prefer formulas over text\n- Keep everything exam-focused (JEE Main + Advanced)\n\nEXAMPLE OUTPUT STYLE:\n\n# Electrostatics\n\n## Core Formulae\n$$\nF = k \\frac{q_1 q_2}{r^2}\n$$\n\n$$\nE = \\frac{F}{q}\n$$\n\n## Tricks / Shortcuts\n- Use symmetry to cancel electric field\n- Check limiting cases ($r \\to \\infty$)\n\nNow generate notes for: {TOPIC NAME}\n",
+  "lastUpdated": "2026-05-17T12:27:39.621Z",
+  "sources": [],
+  "order": 999
+}
