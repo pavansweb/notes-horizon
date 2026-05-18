@@ -5,11 +5,11 @@ A web application designed to display high-quality JEE (Joint Entrance Examinati
 
 ## Architecture
 - **Frontend:** React (TypeScript) + Vite + Vanilla CSS.
-- **Backend:** Node.js + Express.
-- **Storage:** Local JSON files in `server/data/notes/` for maximum portability and AI-readability.
+- **Backend:** Node.js + Express + Mongoose.
+- **Storage:** MongoDB Atlas (Persistent NoSQL storage).
 
 ## Data Structure
-Notes are stored in JSON format with the following schema:
+Notes are stored in MongoDB with the following schema:
 ```json
 {
   "id": "slug-string",
@@ -17,8 +17,9 @@ Notes are stored in JSON format with the following schema:
   "subject": "Physics | Chemistry | Mathematics",
   "chapter": "Chapter Name",
   "content": "Markdown content with LaTeX support ($...$ for inline, $$...$$ for blocks)",
-  "lastUpdated": "ISO Timestamp",
-  "sources": ["URL1", "URL2"]
+  "lastUpdated": "Date Object",
+  "sources": ["URL1", "URL2"],
+  "order": 999
 }
 ```
 
@@ -35,7 +36,7 @@ Notes are stored in JSON format with the following schema:
         - **Physics**: Include a "Diagrams" section with descriptive placeholders or Mermaid diagrams.
         - **Mathematics (Coordinate Geometry)**: Include a "Simulators" section with descriptions or links to interactive tools like Desmos/GeoGebra.
 4. **Formatting:** Use Markdown and LaTeX exclusively for technical content.
-5. **Storage:** Save as JSON in `server/data/notes/{subject}/{id}.json`.
+5. **Storage:** Save to MongoDB collection `notes` via the API or Mongoose model.
 
 ## Development Roadmap
 - [ ] Phase 1: Basic Scaffolding (Server & Client)

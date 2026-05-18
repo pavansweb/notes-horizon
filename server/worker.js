@@ -1,20 +1,20 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs-extra");
 const path = require("path");
+const syncClient = require("./sync");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-const REQUESTS_PATH = path.join(__dirname, "data", "requests.json");
-const NOTES_PATH = path.join(__dirname, "data", "notes");
+const DATA_PATH = path.join(__dirname, 'data');
+const NOTES_PATH = path.join(DATA_PATH, 'notes');
+const REQUESTS_FILE = path.join(DATA_PATH, 'requests.json');
 
 async function processRequests() {
   try {
-    if (!(await fs.pathExists(REQUESTS_PATH))) return;
-
-    let requests = await fs.readJson(REQUESTS_PATH);
-    const pending = requests.filter((r) => r.status === "pending");
+    let requests = await syncClient.syncFromRemote('data/requests.json', REQUESTS_FILE) || [];
+    const pending = requests.filter(r => r.status === "pending");
 
     if (pending.length === 0) return;
 
@@ -24,24 +24,32 @@ async function processRequests() {
       console.log(`[Worker] Generating notes for: ${req.topic} (${req.subject})...`);
 
       const prompt = `
-        You are an expert JEE (Joint Entrance Examination) educator. 
-        Generate comprehensive, high-quality study notes for the topic: "${req.topic}" for the subject: "${req.subject}".
+        You are an expert JEE (Joint Entrance Examination) educator and content creator. 
+        Generate comprehensive, high-quality, and exam-oriented study notes for the topic: "${req.topic}" for the subject: "${req.subject}".
         
-        Requirements:
-        1. Use Markdown for structure.
-        2. Use LaTeX for ALL mathematical formulas and chemical equations (e.g., $E=mc^2$ or block $$...$$).
-        3. Include: Basic Concepts, Key Formulas, JEE Tips & Tricks, and a small Summary.
-        4. Focus on exam-oriented content for JEE Main & Advanced 2026.
-        
+        Follow this hierarchical structure strictly:
+        1. # Title
+        2. ## Synopsis: A high-level introduction to the chapter.
+        3. ## Topic Breakdown: Use nested headers (###, ####) covering every major and minor concept.
+        4. ## Formulas & Laws: All mathematical and chemical expressions MUST use LaTeX ($...$ for inline, $$...$$ for blocks).
+        5. ## JEE Focus & Common Traps: Strategic advice, common mistakes, and important points for JEE Main & Advanced.
+        6. ## Subject Specifics:
+           ${req.subject === 'Physics' ? '- Include a "Diagrams" section with descriptive placeholders or Mermaid diagrams.' : '- Include a "Simulators" section with descriptions or links to interactive tools like Desmos/GeoGebra.'}
+
+        Formatting Rules:
+        - Use Markdown for structure.
+        - Ensure LaTeX is used for ALL technical expressions.
+        - The content should be comprehensive enough for a student to understand the topic from scratch.
+
         Output the result ONLY as a raw JSON object with this structure:
         {
-          "id": "slugified-id",
-          "title": "Topic Title",
+          "id": "${req.topic.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}",
+          "title": "${req.topic}",
           "subject": "${req.subject}",
-          "chapter": "Chapter Name",
+          "chapter": "${req.topic}",
           "content": "Full markdown content here",
           "lastUpdated": "${new Date().toISOString()}",
-          "sources": ["AI Synthesis based on JEE Syllabus"]
+          "sources": ["AI Synthesis based on JEE Syllabus", "NCERT Reference", "Standard Coaching Material"]
         }
       `;
 
@@ -50,32 +58,54 @@ async function processRequests() {
         const response = await result.response;
         let text = response.text();
         
-        // Clean the text if AI wrapped it in markdown code blocks
-        text = text.replace(/```json|```/g, "").trim();
+        // Robust JSON extraction
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error("No JSON found in response");
+        }
+        text = jsonMatch[0];
         const noteData = JSON.parse(text);
 
-        const subjectDir = path.join(NOTES_PATH, req.subject);
-        await fs.ensureDir(subjectDir);
+        // Save note locally
+        const subjectPath = path.join(NOTES_PATH, req.subject);
+        await fs.ensureDir(subjectPath);
+        const noteLocalPath = path.join(subjectPath, `${noteData.id}.json`);
+        await fs.writeJson(noteLocalPath, noteData, { spaces: 2 });
         
-        const fileName = `${noteData.id}.json`;
-        await fs.writeJson(path.join(subjectDir, fileName), noteData, { spaces: 2 });
+        // Save note to GitHub
+        await syncClient.putFile(`data/notes/${req.subject}/${noteData.id}.json`, noteData, `Worker: Generated ${req.topic}`);
 
         // Update request status
-        req.status = "completed";
+        const idx = requests.findIndex(r => r.id === req.id);
+        requests[idx].status = "completed";
+        
+        // Save requests locally and to GitHub
+        await fs.writeJson(REQUESTS_FILE, requests, { spaces: 2 });
+        await syncClient.putFile('data/requests.json', requests, `Worker: Completed ${req.topic}`);
+        
         console.log(`[Worker] Successfully generated: ${req.topic}`);
       } catch (e) {
         console.error(`[Worker] Error processing ${req.topic}:`, e);
-        req.status = "failed";
+        const idx = requests.findIndex(r => r.id === req.id);
+        requests[idx].status = "failed";
+        await fs.writeJson(REQUESTS_FILE, requests, { spaces: 2 });
+        await syncClient.putFile('data/requests.json', requests, `Worker: Failed ${req.topic}`);
       }
     }
-
-    await fs.writeJson(REQUESTS_PATH, requests, { spaces: 2 });
   } catch (error) {
     console.error("[Worker] Loop error:", error);
   }
 }
 
 // Poll every 10 seconds
-console.log("[Worker] AI Background Worker started...");
-setInterval(processRequests, 10000);
-processRequests();
+if (process.env.RUN_WORKER === "true") {
+  console.log("[Worker] AI Background Worker started...");
+  setInterval(processRequests, 10000);
+  processRequests();
+} else {
+  console.log("[Worker] Worker is not enabled (RUN_WORKER != true). Running one-off check...");
+  processRequests().then(() => {
+    console.log("[Worker] One-off check complete.");
+    if (!process.env.INTERVAL) process.exit(0);
+  });
+}

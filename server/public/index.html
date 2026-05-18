@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Horizon - JEE Prep</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { color: #333; }
+        .note-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .note-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .note-title { font-weight: bold; font-size: 1.2em; }
+        .note-meta { font-size: 0.9em; color: #666; }
+        #note-content { background: white; padding: 20px; border-radius: 8px; display: none; margin-top: 20px; }
+        #back-btn { margin-bottom: 20px; display: none; cursor: pointer; padding: 10px; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+        input, select, button { padding: 10px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; color: white; margin-left: 10px; }
+        .Physics { background: #dc3545; }
+        .Chemistry { background: #17a2b8; }
+        .Mathematics { background: #28a745; }
+    </style>
+</head>
+<body>
+    <h1>Notes Horizon</h1>
+    
+    <div id="main-view">
+        <div class="controls">
+            <input type="text" id="topic-input" placeholder="Enter topic (e.g. Thermodynamics)">
+            <select id="subject-select">
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Mathematics">Mathematics</option>
+            </select>
+            <button onclick="requestGeneration()">Generate Notes</button>
+        </div>
+        <div id="notes-list">Loading notes...</div>
+    </div>
+
+    <div id="detail-view" style="display:none;">
+        <button id="back-btn" onclick="showList()">← Back to List</button>
+        <div id="note-display"></div>
+    </div>
+
+    <script>
+        async function fetchNotes() {
+            const res = await fetch('/api/notes');
+            const notes = await res.json();
+            const list = document.getElementById('notes-list');
+            list.innerHTML = '';
+            
+            notes.sort((a, b) => a.subject.localeCompare(b.subject) || a.order - b.order);
+
+            notes.forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                card.onclick = () => showNote(note.subject, note.id);
+                card.innerHTML = `
+                    <div class="note-title">${note.title} <span class="badge ${note.subject}">${note.subject}</span></div>
+                    <div class="note-meta">${note.chapter} | Last Updated: ${new Date(note.lastUpdated).toLocaleDateString()}</div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        async function showNote(subject, id) {
+            const res = await fetch(`/api/notes/${subject}/${id}`);
+            const note = await res.json();
+            
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            document.getElementById('back-btn').style.display = 'block';
+            
+            document.getElementById('note-display').innerHTML = `
+                <h2>${note.title}</h2>
+                <div class="note-meta">${note.subject} | ${note.chapter}</div>
+                <hr>
+                <div style="white-space: pre-wrap; line-height: 1.6;">${note.content}</div>
+            `;
+        }
+
+        function showList() {
+            document.getElementById('main-view').style.display = 'block';
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('back-btn').style.display = 'none';
+        }
+
+        async function requestGeneration() {
+            const topic = document.getElementById('topic-input').value;
+            const subject = document.getElementById('subject-select').value;
+            if (!topic) return alert('Please enter a topic');
+
+            const res = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic, subject })
+            });
+            const result = await res.json();
+            alert(result.message);
+        }
+
+        fetchNotes();
+    </script>
+</body>
+</html>
