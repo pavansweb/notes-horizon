@@ -1,0 +1,14 @@
+{
+  "id": "ionic-equilibrium",
+  "title": "Ionic Equilibrium",
+  "subject": "Chemistry",
+  "chapter": "Physical Chemistry",
+  "content": "# Ionic Equilibrium\n\n## Topic Breakdown\n### 1. Acids, Bases and Salts\n- Arrhenius, Bronsted-Lowry, and Lewis concepts.\n- Dissociation constants ($K_a$ and $K_b$) and Degree of Dissociation ($\\alpha$).\n\n### 2. pH Scale and Hydrolysis of Salts\n- Auto-ionization of water ($K_w = [H^+][OH^-]$).\n- pH of different salt solutions: Strong Acid-Strong Base, Strong Acid-Weak Base, etc.\n\n### 3. Buffer Solutions\n- Acidic Buffers (Weak Acid + Salt with Strong Base).\n- Basic Buffers (Weak Base + Salt with Strong Acid).\n\n### 4. Solubility Product ($K_{sp}$)\n- Relation between solubility ($S$) and $K_{sp}$.\n- Condition for precipitation: Ionic Product ($IP$) $> K_{sp}$.\n\n## Formulas & Laws\n- **pH and pOH:** $pH = -\\log[H^+]$, $pOH = -\\log[OH^-]$, $pH + pOH = 14$ (at 298 K)\n- **Ostwald's Dilution Law:** $\\alpha = \\sqrt{\\frac{K}{C}}$ (for weak electrolytes)\n- **Henderson-Hasselbalch Equation:** $pH = pK_a + \\log \\frac{[\\text{Salt}]}{[\\text{Acid}]}$ (for acidic buffer)\n- **Solubility Product ($A_xB_y$):** $K_{sp} = x^x y^y S^{x+y}$\n\n## JEE Focus & Common Traps\n- **Common Ion Effect:** Solubility of a salt decreases in the presence of a common ion. Use this for selective precipitation problems.\n- **Buffer Action:** Buffers are most effective when $pH = pK_a$ (i.e., $[\\text{Salt}] = [\\text{Acid}]$). The buffer range is typically $pK_a \\pm 1$.\n- **Approximate Calculations:** When $\\alpha < 0.05$ (or $5\\%$), $1 - \\alpha \\approx 1$. Always verify this after calculation.\n\\n\\n## Typed Problems (JEE Main PYQ Based)\n### Type 1: Buffer Solution pH\n- **Q1.** Calculate the pH of a buffer solution containing $0.1 M$ $CH_3COOH$ and $0.1 M$ $CH_3COONa$. ($pK_a$ of acetic acid = $4.74$).\n- **Concept:** Henderson-Hasselbalch equation: $pH = pK_a + \\log\\frac{[Salt]}{[Acid]}$.\n- **Solution:**\n  1. $pH = 4.74 + \\log\\frac{0.1}{0.1} = 4.74 + \\log(1)$.\n  2. $pH = 4.74 + 0 = 4.74$.\n\n### Type 2: Solubility Product ($K_{sp}$)\n- **Q1.** If the solubility of $AgCl$ in water is $10^{-5} mol/L$, calculate its $K_{sp}$.\n- **Concept:** $K_{sp} = [Ag^+][Cl^-] = s^2$ for $AB$ type salt.\n- **Solution:**\n  1. $K_{sp} = (10^{-5})^2 = 10^{-10}$.\n",
+  "lastUpdated": "2026-05-17T15:19:31.000Z",
+  "sources": [
+    "https://jeemain.nta.nic.in",
+    "https://jeeadv.ac.in",
+    "https://ncert.nic.in/textbook.php"
+  ],
+  "order": 6
+}
