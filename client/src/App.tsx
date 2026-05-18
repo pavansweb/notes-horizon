@@ -67,7 +67,7 @@ interface AIRequest {
 
 const GITHUB_REPO = 'pavansweb/notes-horizon';
 const GITHUB_BRANCH = 'main';
-const API_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/data`;
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/data`);
 const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 const STORAGE_KEYS = {
   theme: 'notes-horizon-theme',
@@ -418,6 +418,9 @@ function App() {
         </label>
 
         <div className="header-actions">
+          <button className="icon-btn" onClick={() => fetchNote('Mathematics', 'jee-main-syllabus')} title="JEE Syllabus">
+            <ListTree size={19} />
+          </button>
           <button className="icon-btn" onClick={() => enterEntryMode()} title="Create new note">
             <PlusCircle size={19} />
           </button>

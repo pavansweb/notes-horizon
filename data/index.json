@@ -200,6 +200,14 @@
     "order": 14
   },
   {
+    "id": "jee-main-syllabus",
+    "title": "JEE Main Official Syllabus (2026)",
+    "subject": "Mathematics",
+    "chapter": "Reference",
+    "lastUpdated": "2026-05-18T00:00:00Z",
+    "order": 999
+  },
+  {
     "id": "limits-continuity-and-differentiability",
     "title": "Limits, Continuity and Differentiability",
     "subject": "Mathematics",
