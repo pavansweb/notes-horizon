@@ -2,12 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs-extra');
 const path = require('path');
+const os = require('os');
 const syncClient = require('./sync');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const DATA_PATH = path.join(__dirname, 'data');
+
+// Use OS temp directory if on a read-only filesystem (like Vercel)
+const DATA_PATH = process.env.VERCEL ? path.join(os.tmpdir(), 'data') : path.join(__dirname, 'data');
 const NOTES_PATH = path.join(DATA_PATH, 'notes');
 const REQUESTS_FILE = path.join(DATA_PATH, 'requests.json');
 
@@ -15,19 +18,33 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Helper to ensure directories exist
-fs.ensureDirSync(NOTES_PATH);
+// Helper to ensure directories exist (safely)
+try {
+  fs.ensureDirSync(NOTES_PATH);
+} catch (e) {
+  console.warn('Could not ensure local data directory (might be read-only):', e.message);
+}
+
+// Safer local write helper
+async function safeWriteJson(filePath, data) {
+  try {
+    await fs.ensureDir(path.dirname(filePath));
+    await fs.writeJson(filePath, data, { spaces: 2 });
+  } catch (e) {
+    console.warn(`Local write failed for ${filePath}, skipping local cache:`, e.message);
+  }
+}
 
 // Get all notes (metadata only)
 app.get('/api/notes', async (req, res) => {
   try {
-    const subjects = await fs.readdir(NOTES_PATH);
+    const subjects = await fs.readdir(NOTES_PATH).catch(() => []);
     const allNotes = [];
 
     for (const subject of subjects) {
       const subjectPath = path.join(NOTES_PATH, subject);
-      if ((await fs.stat(subjectPath)).isDirectory()) {
-        const files = await fs.readdir(subjectPath);
+      if ((await fs.stat(subjectPath).catch(() => ({ isDirectory: () => false }))).isDirectory()) {
+        const files = await fs.readdir(subjectPath).catch(() => []);
         for (const file of files) {
           if (file.endsWith('.json')) {
             const note = await fs.readJson(path.join(subjectPath, file));
@@ -80,7 +97,7 @@ app.post('/api/generate', async (req, res) => {
     };
     
     requests.push(newRequest);
-    await fs.writeJson(REQUESTS_FILE, requests, { spaces: 2 });
+    await safeWriteJson(REQUESTS_FILE, requests);
     await syncClient.putFile('data/requests.json', requests, `New request: ${topic}`);
     
     res.json({ message: 'Request queued for AI generation.', request: newRequest });
@@ -110,9 +127,6 @@ app.post('/api/notes', async (req, res) => {
     }
 
     const id = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
-    const subjectPath = path.join(NOTES_PATH, subject);
-    await fs.ensureDir(subjectPath);
-
     const noteData = {
       id,
       title,
@@ -124,10 +138,10 @@ app.post('/api/notes', async (req, res) => {
       order: order || 999
     };
 
-    const localPath = path.join(subjectPath, `${id}.json`);
+    const localPath = path.join(NOTES_PATH, subject, `${id}.json`);
     const remotePath = `data/notes/${subject}/${id}.json`;
 
-    await fs.writeJson(localPath, noteData, { spaces: 2 });
+    await safeWriteJson(localPath, noteData);
     await syncClient.putFile(remotePath, noteData, `Save note: ${title}`);
 
     res.json({ message: 'Note saved successfully', note: noteData });
