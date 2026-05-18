@@ -65,7 +65,9 @@ interface AIRequest {
   timestamp: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const GITHUB_REPO = 'pavansweb/notes-horizon';
+const GITHUB_BRANCH = 'main';
+const API_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/data`;
 const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 const STORAGE_KEYS = {
   theme: 'notes-horizon-theme',
@@ -173,7 +175,7 @@ function App() {
 
   const fetchNotesList = useCallback(async () => {
     try {
-      const response = await axios.get<NoteMetadata[]>(`${API_BASE_URL}/api/notes`);
+      const response = await axios.get<NoteMetadata[]>(`${API_BASE_URL}/index.json`);
       setNotesList(
         response.data.sort((a, b) => {
           if (a.subject !== b.subject) return SUBJECTS.indexOf(a.subject) - SUBJECTS.indexOf(b.subject);
@@ -283,10 +285,11 @@ function App() {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get<AIRequest[]>(`${API_BASE_URL}/api/requests`);
-      setPendingRequests(response.data);
+      const response = await axios.get<AIRequest[]>(`${API_BASE_URL}/requests.json`);
+      setPendingRequests(response.data.reverse());
     } catch (error) {
       console.error('Error fetching requests:', error);
+      setPendingRequests([]);
     }
   };
 
@@ -299,19 +302,8 @@ function App() {
     event.preventDefault();
     if (!newTopicInput.trim()) return;
 
-    try {
-      await axios.post(`${API_BASE_URL}/api/generate`, {
-        subject: activeSubject,
-        topic: newTopicInput.trim(),
-      });
-      setNewTopicInput('');
-      setDashboardMessage('Topic queued for generation.');
-      fetchRequests();
-      setTimeout(() => setDashboardMessage(''), 3500);
-    } catch (error) {
-      console.error('Error queueing request:', error);
-      setDashboardMessage('Could not queue this topic.');
-    }
+    setDashboardMessage('Backend removed. Add requests to data/requests.json in GitHub directly.');
+    setTimeout(() => setDashboardMessage(''), 4500);
   };
 
   const subjectCounts = useMemo(
