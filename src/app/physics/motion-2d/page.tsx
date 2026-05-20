@@ -110,15 +110,15 @@ export default function Motion2DPage() {
         <div className="space-y-4">
           <div>
             <p className="font-bold text-blue-300 mb-2">Key Definitions:</p>
-            <Latex>{`\\textbf{Scalar:} magnitude only (speed, mass, energy). \\quad \\textbf{Vector:} magnitude + direction (velocity, force).`}</Latex>
+            <Latex>{`$$\\textbf{Scalar:} magnitude only (speed, mass, energy). \\quad \\textbf{Vector:} magnitude + direction (velocity, force).$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Position & Unit Vectors:</p>
-            <Latex>{`\\vec{r} = x\\hat{i} + y\\hat{j}, \\quad |\\vec{r}| = \\sqrt{x^2 + y^2}`}</Latex>
+            <Latex>{`$$\\vec{r} = x\\hat{i} + y\\hat{j}, \\quad |\\vec{r}| = \\sqrt{x^2 + y^2}$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Direction Cosines (Quick):</p>
-            <Latex>{`\\cos\\alpha = \\frac{x}{|\\vec{r}|}, \\quad \\cos\\beta = \\frac{y}{|\\vec{r}|}`}</Latex>
+            <Latex>{`$$\\cos\\alpha = \\frac{x}{|\\vec{r}|}, \\quad \\cos\\beta = \\frac{y}{|\\vec{r}|}$$`}</Latex>
           </div>
         </div>
       </ConceptBlock>
@@ -131,7 +131,7 @@ export default function Motion2DPage() {
         <div className="space-y-4">
           <div className="bg-purple-900/30 p-4 rounded-lg border border-purple-500/30">
             <p className="font-bold text-yellow-300 mb-2">⚡ Core Formula:</p>
-            <Latex>{`A_x = A\\cos\\theta, \\quad A_y = A\\sin\\theta`}</Latex>
+            <Latex>{`$$A_x = A\\cos\\theta, \\quad A_y = A\\sin\\theta$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Quadrant Sign Convention:</p>
@@ -142,7 +142,7 @@ export default function Motion2DPage() {
               <div>Q4: (+, −)</div>
             </div>
           </div>
-          <Latex>{`\\text{Inverse:} \\quad \\theta = \\tan^{-1}\\left(\\frac{A_y}{A_x}\\right) \\quad \\text{(watch quadrant!)} \\quad |\\vec{A}| = \\sqrt{A_x^2 + A_y^2}`}</Latex>
+          <Latex>{`$$\\text{Inverse:} \\quad \\theta = \\tan^{-1}\\left(\\frac{A_y}{A_x}\\right) \\quad \\text{(watch quadrant!)} \\quad |\\vec{A}| = \\sqrt{A_x^2 + A_y^2}$$`}</Latex>
         </div>
       </ConceptBlock>
 
@@ -165,12 +165,12 @@ export default function Motion2DPage() {
         <div className="space-y-4">
           <div>
             <p className="font-bold text-blue-300 mb-2">Algebraic Method (BEST):</p>
-            <Latex>{`\\vec{R} = \\vec{A} + \\vec{B} = (A_x + B_x)\\hat{i} + (A_y + B_y)\\hat{j}`}</Latex>
+            <Latex>{`$$\\vec{R} = \\vec{A} + \\vec{B} = (A_x + B_x)\\hat{i} + (A_y + B_y)\\hat{j}$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Resultant Magnitude & Direction:</p>
-            <Latex>{`R = \\sqrt{A^2 + B^2 + 2AB\\cos\\alpha}`}</Latex>
-            <Latex>{`\\tan\\phi = \\frac{B\\sin\\alpha}{A + B\\cos\\alpha}`}</Latex>
+            <Latex>{`$$R = \\sqrt{A^2 + B^2 + 2AB\\cos\\alpha}$$`}</Latex>
+            <Latex>{`$$\\tan\\phi = \\frac{B\\sin\\alpha}{A + B\\cos\\alpha}$$`}</Latex>
             <p className="text-xs text-gray-400 mt-2">where α = angle between vectors A and B</p>
           </div>
           <TrickBlock 
@@ -188,16 +188,16 @@ export default function Motion2DPage() {
         <div className="space-y-4">
           <div className="bg-red-900/30 p-4 rounded-lg border border-red-500/30">
             <p className="font-bold text-yellow-300 mb-2">Core Equation:</p>
-            <Latex>{`\\vec{v}_{AB} = \\vec{v}_A - \\vec{v}_B \\quad \\text{(A relative to B)}`}</Latex>
+            <Latex>{`$$\\vec{v}_{AB} = \\vec{v}_A - \\vec{v}_B \\quad \\text{(A relative to B)}$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Rain-Man Example:</p>
-            <Latex>{`\\vec{v}_{rain,man} = \\vec{v}_{rain} - \\vec{v}_{man}`}</Latex>
-            <Latex>{`\\text{Hold umbrella at angle:} \\quad \\tan\\theta = \\frac{v_m}{v_r} \\quad \\text{(from vertical)}`}</Latex>
+            <Latex>{`$$\\vec{v}_{rain,man} = \\vec{v}_{rain} - \\vec{v}_{man}$$`}</Latex>
+            <Latex>{`$$\\text{Hold umbrella at angle:} \\quad \\tan\\theta = \\frac{v_m}{v_r} \\quad \\text{(from vertical)}$$`}</Latex>
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Boat-River Problem:</p>
-            <Latex>{`\\vec{v}_{boat,ground} = \\vec{v}_{boat,water} + \\vec{v}_{water,ground}`}</Latex>
+            <Latex>{`$$\\vec{v}_{boat,ground} = \\vec{v}_{boat,water} + \\vec{v}_{water,ground}$$`}</Latex>
             <p className="text-sm text-gray-400">To cross perpendicular: angle boat upstream = sin⁻¹(v_water/v_boat)</p>
           </div>
         </div>
@@ -225,32 +225,32 @@ export default function Motion2DPage() {
 
           <div>
             <p className="font-bold text-blue-300 mb-2">🎯 Key Formulas:</p>
-            <Latex>{`\\text{Time of Flight:} \\quad T = \\frac{2v_0\\sin\\theta}{g}`}</Latex>
-            <Latex>{`\\text{Max Height:} \\quad H = \\frac{v_0^2\\sin^2\\theta}{2g}`}</Latex>
-            <Latex>{`\\text{Horizontal Range:} \\quad R = \\frac{v_0^2\\sin(2\\theta)}{g}`}</Latex>
-            <Latex>{`\\text{Trajectory Equation:} \\quad y = x\\tan\\theta - \\frac{gx^2}{2v_0^2\\cos^2\\theta}`}</Latex>
+            <Latex>{`$$\\text{Time of Flight:} \\quad T = \\frac{2v_0\\sin\\theta}{g}$$`}</Latex>
+            <Latex>{`$$\\text{Max Height:} \\quad H = \\frac{v_0^2\\sin^2\\theta}{2g}$$`}</Latex>
+            <Latex>{`$$\\text{Horizontal Range:} \\quad R = \\frac{v_0^2\\sin(2\\theta)}{g}$$`}</Latex>
+            <Latex>{`$$\\text{Trajectory Equation:} \\quad y = x\\tan\\theta - \\frac{gx^2}{2v_0^2\\cos^2\\theta}$$`}</Latex>
           </div>
 
           <div className="bg-blue-900/30 p-4 rounded-lg border border-blue-500/30">
             <p className="font-bold text-cyan-300 mb-2">At Highest Point (CRITICAL):</p>
-            <Latex>{`v_y = 0 \\quad \\text{(only)}, \\quad v_x = v_0\\cos\\theta \\quad \\text{(unchanged)}, \\quad a = g \\quad \\text{(downward)}`}</Latex>
+            <Latex>{`$$v_y = 0 \\quad \\text{(only)}, \\quad v_x = v_0\\cos\\theta \\quad \\text{(unchanged)}, \\quad a = g \\quad \\text{(downward)}$$`}</Latex>
             <p className="text-xs text-gray-300 mt-2">Time to max height: t = v₀sinθ/g = T/2</p>
           </div>
 
           <div>
             <p className="font-bold text-blue-300 mb-2">Complementary Angles:</p>
-            <Latex>{`\\text{Angles } \\theta \\text{ and } (90° - \\theta) \\text{ give SAME range:} \\quad \\sin(2\\theta) = \\sin(180° - 2\\theta)`}</Latex>
+            <Latex>{`$$\\text{Angles } \\theta \\text{ and } (90° - \\theta) \\text{ give SAME range:} \\quad \\sin(2\\theta) = \\sin(180° - 2\\theta)$$`}</Latex>
             <p className="text-sm text-gray-400">Max range at 45°, times of flight are different though!</p>
           </div>
 
           <div>
             <p className="font-bold text-blue-300 mb-2">Horizontal Projection from Height h:</p>
-            <Latex>{`y = h - \\frac{1}{2}gt^2, \\quad x = v_0 t, \\quad \\text{Fall time:} t = \\sqrt{\\frac{2h}{g}}`}</Latex>
+            <Latex>{`$$y = h - \\frac{1}{2}gt^2, \\quad x = v_0 t, \\quad \\text{Fall time:} t = \\sqrt{\\frac{2h}{g}}$$`}</Latex>
           </div>
 
           <div>
             <p className="font-bold text-blue-300 mb-2">Range on Inclined Plane (Basic):</p>
-            <Latex>{`R = \\frac{2v_0^2\\sin\\theta\\cos(\\theta+\\alpha)}{g\\cos^2\\alpha} \\quad (\\alpha = \\text{plane angle})`}</Latex>
+            <Latex>{`$$R = \\frac{2v_0^2\\sin\\theta\\cos(\\theta+\\alpha)}{g\\cos^2\\alpha} \\quad (\\alpha = \\text{plane angle})$$`}</Latex>
             <p className="text-xs text-gray-300">Derivation: resolve plane into x-y, apply projectile equations.</p>
           </div>
         </div>
@@ -311,9 +311,9 @@ export default function Motion2DPage() {
           </div>
           <div>
             <p className="font-bold text-blue-300 mb-2">Key Formulas:</p>
-            <Latex>{`\\text{Angular velocity:} \\quad \\omega = \\frac{\\theta}{t}, \\quad \\text{Period:} T = \\frac{2\\pi}{\\omega}`}</Latex>
-            <Latex>{`\\text{Linear velocity:} \\quad v = r\\omega`}</Latex>
-            <Latex>{`\\text{Centripetal acceleration:} \\quad a_c = \\frac{v^2}{r} = r\\omega^2`}</Latex>
+            <Latex>{"$\\text{Angular velocity:} \\quad \\omega = \\frac{\\theta}{t}, \\quad \\text{Period:} T = \\frac{2\\pi}{\\omega}$"}</Latex>
+            <Latex>{"$\\text{Linear velocity:} \\quad v = r\\omega$"}</Latex>
+            <Latex>{"$\\text{Centripetal acceleration:} \\quad a_c = \\frac{v^2}{r} = r\\omega^2$"}</Latex>
           </div>
           <div className="bg-purple-900/30 p-4 rounded-lg border border-purple-500/30">
             <p className="font-bold text-cyan-300 mb-2">Direction Rules:</p>

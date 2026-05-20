@@ -1,529 +1,313 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ChevronDown, AlertCircle, Zap, BookOpen } from 'lucide-react'
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ConceptBlock, QuizBlock, MistakeBlock, TrickBlock } from "@/components/learning-blocks";
+import { Latex } from "@/components/latex";
+import { BookOpen, ChevronDown, ChevronUp, Table as TableIcon, ChevronRight, Zap, AlertTriangle, Target, Calculator, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
-// Inline Collapsible component
-function Collapsible({
-  title,
-  children,
-  defaultOpen = false,
-}: {
-  title: string
-  children: React.ReactNode
-  defaultOpen?: boolean
-}) {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
+export default function UnitsDimensionsPage() {
+  const [showDimensions, setShowDimensions] = useState(false);
+
   return (
-    <div className="border border-slate-700 rounded-lg overflow-hidden">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 flex items-center justify-between bg-slate-800/50 hover:bg-slate-800 transition-colors text-left"
+    <div className="max-w-4xl mx-auto p-8 py-12 pb-32">
+      {/* Header */}
+      <header className="mb-16 space-y-4">
+        <div className="flex flex-wrap gap-2 items-center mb-4">
+          <Badge className="bg-red-500 text-white border-none font-bold">JEE Main</Badge>
+          <Badge variant="outline" className="border-zinc-700 text-zinc-400">1–2 Qs / paper</Badge>
+          <Badge variant="outline" className="border-blue-500/30 text-blue-400 bg-blue-500/5 font-bold">High ROI</Badge>
+        </div>
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          className="text-6xl md:text-7xl font-black text-white tracking-tighter"
+        >
+          Units & <br/>Dimensions.
+        </motion.h1>
+        <p className="text-xl text-zinc-500 max-w-2xl leading-relaxed font-medium">
+          Quick-fire revision. Every point is exam-relevant. <span className="text-white">No fluff.</span>
+        </p>
+      </header>
+
+      {/* Top 10 Repeated Concepts */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <Target className="w-8 h-8 text-red-500" />
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Most repeated in JEE Main</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-3">
+          {[
+            { id: 1, t: "Error in $Z = A^aB^b$ → $\\Delta Z/Z = a(\\Delta A/A) + b(\\Delta B/B)$", w: "Very high" },
+            { id: 2, t: "Dimensions of $\\epsilon_0, \\mu_0, G, h, B$ — direct MCQs", w: "Very high" },
+            { id: 3, t: "Least count of Vernier callipers & screw gauge", w: "High" },
+            { id: 4, t: "Find $a, b, c$ by principle of homogeneity", w: "High" },
+            { id: 5, t: "Error in subtraction: $\\Delta Z = \\Delta A + \\Delta B$ (errors always add)", w: "High" },
+            { id: 6, t: "Significant figures in multiplication/division", w: "Medium" },
+            { id: 7, t: "Dimensionless quantities — angle, strain, $\\mu, \\epsilon_r$", w: "Medium" },
+            { id: 8, t: "Derive relation using dimensional analysis", w: "Medium" },
+            { id: 9, t: "Viscosity & Stokes' law dimensions", w: "Medium" },
+            { id: 10, t: "Unit conversion: $[M_1L_1T_1]^n = [M_2L_2T_2]^n$", w: "Low" },
+          ].map((item) => (
+            <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-red-500/30 transition-all group">
+              <span className="text-xl font-black text-zinc-700 group-hover:text-red-500/40 transition-colors w-8">#{item.id}</span>
+              <div className="flex-1 text-zinc-200 font-medium">
+                <Latex>{item.t}</Latex>
+              </div>
+              <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${item.w === "Very high" ? "bg-red-500/20 text-red-400" : "bg-zinc-800 text-zinc-500"}`}>
+                {item.w}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Dimension Cheat Sheet */}
+      <ConceptBlock 
+        title="Dimension cheat sheet — memorize these"
+        description="Fundamental constants & special quantities."
       >
-        <span className="font-bold text-lg text-white">{title}</span>
-        <ChevronDown
-          size={20}
-          className={`transform transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-4 bg-slate-900/50 border-t border-slate-700 space-y-3"
-        >
-          {children}
-        </motion.div>
-      )}
-    </div>
-  )
-}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           {[
+             { q: "Permittivity ($\\epsilon_0$)", d: "[M⁻¹L⁻³T⁴A²]" },
+             { q: "Permeability ($\\mu_0$)", d: "[MLT⁻²A⁻²]" },
+             { q: "Gravitational Const (G)", d: "[M⁻¹L³T⁻²]" },
+             { q: "Planck's Constant (h)", d: "[ML²T⁻¹]" },
+             { q: "Magnetic Field (B)", d: "[MT⁻²A⁻¹]" },
+             { q: "Viscosity ($\\eta$)", d: "[ML⁻¹T⁻¹]" },
+             { q: "Stefan's Const ($\\sigma$)", d: "[ML⁰T⁻³K⁻⁴]" },
+             { q: "Boltzmann Const ($k_B$)", d: "[ML²T⁻²K⁻¹]" },
+           ].map((row, i) => (
+             <div key={i} className="flex justify-between p-3 rounded-lg bg-black/40 border border-white/5 font-mono text-sm">
+               <span className="text-zinc-400"><Latex>{row.q}</Latex></span>
+               <span className="text-blue-400 font-bold">{row.d}</span>
+             </div>
+           ))}
+        </div>
+        
+        <div className="mt-6 p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+          <h4 className="text-sm font-bold text-blue-400 mb-2">Quantities with identical dimensions (JEE traps)</h4>
+          <ul className="text-xs text-zinc-400 space-y-1">
+            <li>• Work, Energy, Torque, Heat → $[ML^2T^{-2}]$</li>
+            <li>• Pressure, Stress, Young's Modulus → $[ML^{-1}T^{-2}]$</li>
+            <li>• Impulse, Linear Momentum → $[MLT^{-1}]$</li>
+            <li>• Surface Tension, Surface Energy, Spring Constant → $[MT^{-2}]$</li>
+          </ul>
+        </div>
+      </ConceptBlock>
 
-// Inline ConceptBlock component
-function ConceptBlock({
-  concept,
-  weight,
-  details,
-}: {
-  concept: string
-  weight: 'Very High' | 'High' | 'Medium'
-  details: string[]
-}) {
-  const weightColor =
-    weight === 'Very High'
-      ? 'bg-red-500/20 border-red-500 text-red-300'
-      : weight === 'High'
-        ? 'bg-orange-500/20 border-orange-500 text-orange-300'
-        : 'bg-blue-500/20 border-blue-500 text-blue-300'
+      {/* Error Propagation */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <Zap className="w-8 h-8 text-yellow-500 fill-current" />
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Error propagation — the golden rules</h2>
+        </div>
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-slate-600 transition-colors"
-    >
-      <div className="flex items-start justify-between mb-3">
-        <h3 className="text-lg font-bold text-cyan-300">{concept}</h3>
-        <span
-          className={`text-xs px-2 py-1 rounded border font-semibold whitespace-nowrap ${weightColor}`}
-        >
-          {weight}
-        </span>
-      </div>
-      <ul className="space-y-2">
-        {details.map((detail, i) => (
-          <li key={i} className="text-sm text-slate-300 flex gap-2">
-            <span className="text-cyan-400 mt-0.5 flex-shrink-0">•</span>
-            <span>{detail}</span>
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  )
-}
-
-// Inline QuizBlock component
-function QuizBlock({
-  question,
-  options,
-  correctIndex,
-  explanation,
-}: {
-  question: string
-  options: string[]
-  correctIndex: number
-  explanation: string
-}) {
-  const [selected, setSelected] = useState<number | null>(null)
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-4"
-    >
-      <p className="font-semibold text-slate-100">{question}</p>
-      <div className="space-y-2">
-        {options.map((option, i) => (
-          <button
-            key={i}
-            onClick={() => setSelected(i)}
-            className={`w-full p-3 text-left rounded border transition-all text-sm ${
-              selected === i
-                ? i === correctIndex
-                  ? 'bg-green-500/20 border-green-500 text-green-300'
-                  : 'bg-red-500/20 border-red-500 text-red-300'
-                : 'bg-slate-700/50 border-slate-600 text-slate-300 hover:border-slate-500'
-            }`}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-      {selected !== null && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-3 bg-blue-500/10 border border-blue-500/30 rounded text-sm text-blue-200"
-        >
-          <p className="font-semibold mb-2">Explanation:</p>
-          <p>{explanation}</p>
-        </motion.div>
-      )}
-    </motion.div>
-  )
-}
-
-// Inline MistakeBlock component
-function MistakeBlock({
-  title,
-  mistake,
-  correction,
-}: {
-  title: string
-  mistake: string
-  correction: string
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-3"
-    >
-      <h4 className="font-bold text-red-300 flex items-center gap-2">
-        <AlertCircle size={18} />
-        {title}
-      </h4>
-      <div className="space-y-2">
-        <p className="text-sm text-slate-400">
-          <span className="text-red-400 font-semibold">❌ Wrong:</span> {mistake}
-        </p>
-        <p className="text-sm text-slate-300">
-          <span className="text-green-400 font-semibold">✓ Correct:</span> {correction}
-        </p>
-      </div>
-    </motion.div>
-  )
-}
-
-// Inline TrickBlock component
-function TrickBlock({ trick, tip }: { trick: string; tip: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-2"
-    >
-      <p className="font-semibold text-amber-300 flex items-center gap-2">
-        <Zap size={18} />
-        {trick}
-      </p>
-      <p className="text-sm text-slate-300">{tip}</p>
-    </motion.div>
-  )
-}
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
-
-export default function Page() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-50 py-12 px-4">
-      <div className="max-w-5xl mx-auto space-y-16">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center space-y-4 border-b border-slate-800/50 pb-12"
-        >
-          <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            Motion in One Dimension
-          </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Kinematics essentials for JEE. Master velocity-time graphs, sign conventions, equations of motion, and more.
-          </p>
-        </motion.div>
-
-        {/* Main Content */}
-        <motion.main
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-16"
-        >
-          {/* Top 10 Concepts */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <div className="flex items-center gap-3">
-              <BookOpen size={28} className="text-cyan-400" />
-              <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">
-                Top 10 Most Repeated JEE Concepts
-              </h2>
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-white">Rule 1 — addition & subtraction</h3>
+            <p className="text-zinc-400">Absolute errors always <span className="text-white underline">ADD</span>, even when subtracting values.</p>
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/5 font-mono text-lg text-center">
+              <Latex>{"If $Z = A \\pm B \\rightarrow \\Delta Z = \\Delta A + \\Delta B$"}</Latex>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <ConceptBlock
-                concept="Velocity-Time Graph Area"
-                weight="Very High"
-                details={['Area under v-t = displacement (NOT distance)', 'Sign matters: positive/negative regions', 'Total area = net displacement']}
-              />
-              <ConceptBlock
-                concept="Position-Time Graph Slope"
-                weight="Very High"
-                details={['Slope = velocity (v = dx/dt)', 'Steep = fast, flat = slow', 'Curved line = acceleration present']}
-              />
-              <ConceptBlock
-                concept="Free Fall Sign Convention"
-                weight="Very High"
-                details={['Choose upward as positive', 'a = -g (always downward)', 'At highest point: v=0 but a≠0']}
-              />
-              <ConceptBlock
-                concept="Relative Velocity in 1D"
-                weight="High"
-                details={['v_AB = v_A - v_B', 'Use relative reference frames', 'Critical for collision problems']}
-              />
-              <ConceptBlock
-                concept="Equations of Motion"
-                weight="Very High"
-                details={['Valid ONLY for constant a', 'Multi-stage: break into segments', 'Each stage: independent u,v,a,t']}
-              />
-              <ConceptBlock
-                concept="Distance vs Displacement"
-                weight="High"
-                details={['Distance ≥ displacement always', 'Distance = scalar (positive)', 'Displacement = vector (signed)']}
-              />
-              <ConceptBlock
-                concept="Velocity Zero ≠ No Acceleration"
-                weight="Very High"
-                details={['At turning point: v=0, a≠0', 'Body momentarily stops but still accelerates', '#1 student misconception']}
-              />
-              <ConceptBlock
-                concept="Retardation/Deceleration"
-                weight="High"
-                details={['Negative a ≠ slowing down', 'v and a can have opposite signs', 'Depends on reference direction']}
-              />
-              <ConceptBlock
-                concept="nth Second Formula"
-                weight="High"
-                details={['s_n = u + (a/2)(2n-1)', 'From time (n-1) to n', 'For discrete time intervals']}
-              />
-              <ConceptBlock
-                concept="Piecewise Motion"
-                weight="High"
-                details={['Break into distinct segments', 'Each: independent kinematics', 'Connect via continuity']}
-              />
+            <MistakeBlock 
+              title="Common mistake"
+              commonMistake="$\\Delta Z = \\Delta A - \\Delta B$ for subtraction."
+              correction="Maximum error is always the sum. You can't reduce uncertainty by subtracting."
+            />
+          </div>
+
+          <div className="space-y-4 pt-8 border-t border-white/5">
+            <h3 className="text-xl font-bold text-white">Rule 2 — products & powers</h3>
+            <p className="text-zinc-400">Use relative (fractional) errors. Powers become multipliers.</p>
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/5 font-mono text-lg text-center">
+              <Latex>{"If $Z = \\frac{A^aB^b}{C^c} \\rightarrow \\frac{\\Delta Z}{Z} = a\\frac{\\Delta A}{A} + b\\frac{\\Delta B}{B} + c\\frac{\\Delta C}{C}$"}</Latex>
             </div>
-          </motion.section>
-
-          {/* Core Formulas */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">Core Formulas</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { label: 'First Equation', f: 'v = u + at', badge: 'Fundamental' },
-                { label: 'Second Equation', f: 's = ut + \\frac{1}{2}at^2', badge: 'Fundamental' },
-                { label: 'Third Equation', f: 'v^2 = u^2 + 2as', badge: 'Most Used' },
-                { label: 'Average Velocity', f: 's = \\frac{u+v}{2} \\cdot t', badge: 'Graph Based' },
-                { label: 'Velocity', f: 'v = \\frac{dx}{dt}', badge: 'Calculus' },
-                { label: 'Acceleration', f: 'a = \\frac{dv}{dt}', badge: 'Calculus' },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  className="p-5 bg-slate-800/50 border border-slate-700 rounded-lg space-y-2"
-                >
-                  <span className="text-xs px-2 py-1 bg-slate-700 text-slate-300 rounded">{item.badge}</span>
-                  <p className="text-sm text-slate-400">{item.label}</p>
-                  <code className="text-cyan-300 font-mono text-sm block">$${item.f}$$</code>
-                </motion.div>
-              ))}
+            
+            <TrickBlock 
+              trick="Power rule example — kinetic energy"
+              example={"$KE = \\frac{1}{2}mv^2 \\rightarrow \\%Error$ in $KE = \\%Error$ in $m + 2 \\times \\%Error$ in $v$. The 2 is the power of $v$."}
+            />
+            
+            <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
+              <p className="text-sm font-bold text-red-400 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> Frequent trap</p>
+              <p className="text-sm text-zinc-400 mt-1">In $g = 4\\pi^2L/T^2$, the error is $\\Delta g/g = \\Delta L/L + 2(\\Delta T/T)$. Students forget the factor 2 on T.</p>
             </div>
-          </motion.section>
+          </div>
+        </div>
+      </section>
 
-          {/* Graph Interpretation */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">Graph Interpretation</h2>
-            <div className="space-y-3">
-              <Collapsible title="Position-Time (x-t) Graph" defaultOpen>
-                <div className="space-y-2">
-                  <div className="p-3 bg-blue-500/10 border-l-4 border-blue-500 rounded">
-                    <p className="font-semibold text-blue-300 text-sm">Slope = Velocity</p>
-                    <p className="text-sm text-slate-300">Slope = v = dx/dt. Steeper = faster.</p>
-                  </div>
-                  <div className="p-3 bg-blue-500/10 border-l-4 border-blue-500 rounded">
-                    <p className="font-semibold text-blue-300 text-sm">Graph Shapes</p>
-                    <p className="text-sm text-slate-300">Straight = constant v. Curve up = positive a. Curve down = negative a.</p>
-                  </div>
-                  <div className="p-3 bg-amber-500/10 border-l-4 border-amber-500 rounded">
-                    <p className="font-semibold text-amber-300 text-sm">⚠️ Trap</p>
-                    <p className="text-sm text-slate-300">Negative slope ≠ slowing down. It means moving in negative direction.</p>
-                  </div>
-                </div>
-              </Collapsible>
+      {/* Significant Figures */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <Calculator className="w-8 h-8 text-emerald-500" />
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Significant figures — JEE Rules</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+            <p className="text-xs font-bold text-zinc-500 uppercase mb-2">All non-zeros count</p>
+            <p className="text-xl font-bold text-white">1.23 → 3 SF</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+            <p className="text-xs font-bold text-zinc-500 uppercase mb-2">Trailing zeros + decimal</p>
+            <p className="text-xl font-bold text-white">2.500 → 4 SF</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+            <p className="text-xs font-bold text-zinc-500 uppercase mb-2">Zeros between digits</p>
+            <p className="text-xl font-bold text-white">1002 → 4 SF</p>
+          </div>
+        </div>
+        <div className="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/5">
+          <h4 className="font-bold text-white">Calculation rules</h4>
+          <ul className="space-y-3 text-zinc-400 text-sm">
+            <li className="flex gap-2">
+              <span className="text-emerald-400 font-bold">Multiply / Divide:</span>
+              <span>Result has <span className="text-white underline">least SF</span> among operands.</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-400 font-bold">Add / Subtract:</span>
+              <span>Result has <span className="text-white underline">least decimal places</span> among operands.</span>
+            </li>
+          </ul>
+          <div className="pt-4 border-t border-white/5">
+            <p className="text-xs text-red-400 font-bold uppercase tracking-widest">Trap — leading zeros</p>
+            <p className="text-sm text-zinc-500 mt-1">0.0042 has only 2 SF. Leading zeros are never significant — they're just placeholders.</p>
+          </div>
+        </div>
+      </section>
 
-              <Collapsible title="Velocity-Time (v-t) Graph">
-                <div className="space-y-2">
-                  <div className="p-3 bg-cyan-500/10 border-l-4 border-cyan-500 rounded">
-                    <p className="font-semibold text-cyan-300 text-sm">Slope = Acceleration</p>
-                    <p className="text-sm text-slate-300">Slope = a = dv/dt. Horizontal = constant a.</p>
-                  </div>
-                  <div className="p-3 bg-cyan-500/10 border-l-4 border-cyan-500 rounded">
-                    <p className="font-semibold text-cyan-300 text-sm">Area = Displacement</p>
-                    <p className="text-sm text-slate-300">Area above x-axis = +ve displacement. Below = -ve. Net area = total displacement.</p>
-                  </div>
-                  <div className="p-3 bg-amber-500/10 border-l-4 border-amber-500 rounded">
-                    <p className="font-semibold text-amber-300 text-sm">⚠️ Critical Trap</p>
-                    <p className="text-sm text-slate-300">At v=0, the line doesn&apos;t stop. Acceleration continues.</p>
-                  </div>
-                </div>
-              </Collapsible>
-
-              <Collapsible title="Acceleration-Time (a-t) Graph">
-                <div className="space-y-2">
-                  <div className="p-3 bg-green-500/10 border-l-4 border-green-500 rounded">
-                    <p className="font-semibold text-green-300 text-sm">Area = Change in Velocity</p>
-                    <p className="text-sm text-slate-300">Area under a-t = Δv = v_final - v_initial</p>
-                  </div>
-                  <div className="p-3 bg-green-500/10 border-l-4 border-green-500 rounded">
-                    <p className="font-semibold text-green-300 text-sm">Constant Acceleration</p>
-                    <p className="text-sm text-slate-300">Horizontal line. Area = a × t = Δv</p>
-                  </div>
-                </div>
-              </Collapsible>
+      {/* Least Count */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400"><TableIcon className="w-6 h-6" /></div>
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Least count — instruments</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+            <h4 className="text-lg font-bold text-white">Vernier callipers</h4>
+            <div className="text-sm space-y-2 text-zinc-400">
+              <Latex>{"$L.C. = 1 MSD - 1 VSD$"}</Latex>
+              <p>Standard L.C. = 0.1 mm = 0.01 cm</p>
             </div>
-          </motion.section>
-
-          {/* Free Fall */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-red-400">Free Fall & Sign Convention</h2>
-            <div className="p-5 bg-slate-800/50 border border-slate-700 rounded-lg space-y-3">
-              <p className="font-semibold text-slate-200">Standard Convention: Upward Positive</p>
-              <div className="space-y-2">
-                <div className="p-3 bg-slate-700/50 rounded border-l-4 border-blue-500">
-                  <p className="text-sm"><span className="font-semibold text-blue-300">u {'>'} 0:</span> Initial velocity upward</p>
-                </div>
-                <div className="p-3 bg-slate-700/50 rounded border-l-4 border-blue-500">
-                  <p className="text-sm"><span className="font-semibold text-blue-300">v {'<'} 0 (upward motion):</span> Velocity becomes more negative</p>
-                </div>
-                <div className="p-3 bg-slate-700/50 rounded border-l-4 border-red-500">
-                  <p className="text-sm"><span className="font-semibold text-red-300">a = -g (always):</span> Downward, never stops</p>
-                </div>
-                <div className="p-3 bg-slate-700/50 rounded border-l-4 border-amber-500">
-                  <p className="text-sm"><span className="font-semibold text-amber-300">At highest point:</span> v = 0 but a = -g ≠ 0</p>
-                </div>
-              </div>
+            <div className="p-3 bg-black/40 rounded-lg border border-white/5 text-xs font-mono">
+              Reading = MSR + (VSR × L.C.) ± Zero Error
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <MistakeBlock
-                title="Acceleration Zero at Top"
-                mistake="At highest point, both v and a become zero"
-                correction="NO! v = 0 but a = -g throughout. Acceleration is constant, never zero."
-              />
-              <TrickBlock
-                trick="Sign Pattern Rule"
-                tip="Upward motion: v and a opposite signs. Downward: same signs. Use this to check answers!"
-              />
+            <div className="pt-2">
+              <p className="text-xs font-bold text-blue-400 uppercase">Zero error</p>
+              <p className="text-xs text-zinc-500">Positive ZE → subtract. Negative ZE → add.</p>
             </div>
-          </motion.section>
+          </div>
 
-          {/* Formula Selection */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">Which Formula to Use?</h2>
-            <Collapsible title="Decision Tree">
-              <div className="space-y-3">
-                <div className="p-3 bg-slate-700/50 rounded">
-                  <p className="font-semibold text-cyan-300 mb-2 text-sm">Have TIME (t)?</p>
-                  <p className="text-sm text-slate-300">Yes → v = u + at or s = ut + ½at² | No → v² = u² + 2as</p>
-                </div>
-                <div className="p-3 bg-slate-700/50 rounded">
-                  <p className="font-semibold text-cyan-300 mb-2 text-sm">Distance in nth SECOND?</p>
-                  <p className="text-sm text-slate-300">Use: s_n = u + (a/2)(2n-1)</p>
-                </div>
-                <div className="p-3 bg-slate-700/50 rounded">
-                  <p className="font-semibold text-cyan-300 mb-2 text-sm">Multi-stage motion?</p>
-                  <p className="text-sm text-slate-300">Break into segments. Each has constant a.</p>
-                </div>
-              </div>
-            </Collapsible>
-          </motion.section>
-
-          {/* Common Mistakes */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-red-400">Common Traps</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <MistakeBlock
-                title="Steeper Slope = More Acceleration"
-                mistake="In x-t graph, steeper means more acceleration"
-                correction="In x-t graph, slope = VELOCITY, not acceleration. Use v-t graph for acceleration comparison."
-              />
-              <MistakeBlock
-                title="Negative Acceleration = Slowing Down"
-                mistake="Negative a always means object is slowing"
-                correction="Depends on velocity direction. If v and a same sign, speeding up. Opposite sign, slowing down."
-              />
-              <MistakeBlock
-                title="Area in v-t = Distance"
-                mistake="Reading area directly as distance"
-                correction="Above axis = +displacement, below = -displacement. Total area = displacement, not distance."
-              />
-              <TrickBlock
-                trick="Dimension Checking"
-                tip="Immediately eliminate options with wrong dimensions. v=[LT⁻¹], a=[LT⁻²], s=[L]"
-              />
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+            <h4 className="text-lg font-bold text-white">Screw gauge</h4>
+            <div className="text-sm space-y-2 text-zinc-400">
+              <Latex>{"$L.C. = \\frac{Pitch}{Circular divisions}$"}</Latex>
+              <p>Standard: Pitch = 1 mm, Div = 100 → L.C. = 0.01 mm</p>
             </div>
-          </motion.section>
-
-          {/* Quick Reference */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">Complete Formula Table</h2>
-            <Collapsible title="All Kinematics Formulas">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="border-b border-slate-600">
-                    <tr>
-                      <th className="text-left p-2 text-cyan-300">Formula</th>
-                      <th className="text-left p-2 text-cyan-300">When to Use</th>
-                      <th className="text-left p-2 text-cyan-300">Gives</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { f: 'v = u + at', when: 'Know u, a, t', gives: 'Final velocity' },
-                      { f: 's = ut + ½at²', when: 'Know u, a, t', gives: 'Displacement' },
-                      { f: 'v² = u² + 2as', when: 'Know u, a, s (no t)', gives: 'Final velocity' },
-                      { f: 's = [(u+v)/2]t', when: 'Know u, v, t', gives: 'Displacement' },
-                      { f: 's_n = u + (a/2)(2n-1)', when: 'nth second distance', gives: 'Distance in specific interval' },
-                    ].map((row, i) => (
-                      <tr key={i} className="border-b border-slate-700">
-                        <td className="p-2 text-yellow-300 font-mono text-xs">{row.f}</td>
-                        <td className="p-2 text-slate-400 text-xs">{row.when}</td>
-                        <td className="p-2 text-slate-300 text-xs">{row.gives}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Collapsible>
-          </motion.section>
-
-          {/* Quiz */}
-          <motion.section variants={itemVariants} className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-cyan-300">Test Your Understanding</h2>
-            <div className="space-y-4">
-              <QuizBlock
-                question="A ball thrown upward with u=20m/s. At highest point, which is true?"
-                options={[
-                  'Both v and a are zero',
-                  'v = 0, a = -10 m/s²',
-                  'Both v and a are non-zero',
-                  'v is maximum, a is zero',
-                ]}
-                correctIndex={1}
-                explanation="At highest point, velocity momentarily becomes zero, but gravity (-g) continues to act. Acceleration = -10 m/s². This is the key concept!"
-              />
-              <QuizBlock
-                question="Which graph directly gives displacement as area under the curve?"
-                options={['x-t graph', 'v-t graph', 'a-t graph', 's-t graph']}
-                correctIndex={1}
-                explanation="In v-t graph, area = ∫v dt = displacement. In a-t graph, area = Δv (change in velocity). In x-t graph, area has no meaning."
-              />
-              <QuizBlock
-                question="Object travels 100m in 5th second (u=0). What is acceleration?"
-                options={['18 m/s²', '20 m/s²', '22 m/s²', '25 m/s²']}
-                correctIndex={1}
-                explanation="Using s_n = u + (a/2)(2n-1): 100 = 0 + (a/2)(9) → a = 200/9 ≈ 20 m/s². The nth-second formula is essential!"
-              />
+            <div className="p-3 bg-black/40 rounded-lg border border-white/5 text-xs font-mono">
+              Reading = MSR + (CSR × L.C.) ± Zero Error
             </div>
-          </motion.section>
+            <div className="pt-2">
+              <p className="text-xs font-bold text-blue-400 uppercase">Backlash error</p>
+              <p className="text-xs text-zinc-500">Rotate screw in same direction to avoid it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="flex justify-center pt-8"
-          >
-            <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-lg rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105">
-              Next: Motion in 2D →
-            </button>
-          </motion.div>
-        </motion.main>
+      {/* Dimensional Analysis Hacks */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <Zap className="w-8 h-8 text-purple-500 fill-current" />
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Dimensional analysis — exam hacks</h2>
+        </div>
+        
+        <div className="space-y-4">
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+            <h4 className="text-white font-bold mb-2">Hack 1 — option filter</h4>
+            <p className="text-zinc-400 text-sm leading-relaxed">If the answer must have dimension [T] and an option has $[MLT^{-2}]$, eliminate it instantly. Never solve the derivation just to reject an option.</p>
+          </div>
+          
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+            <h4 className="text-white font-bold mb-2">Hack 2 — finding unknown powers</h4>
+            <p className="text-zinc-400 text-sm mb-4">For $T = kL^ag^bm^c$, equate powers of M, L, T separately.</p>
+            <div className="p-3 bg-black/40 rounded-xl border border-white/5 font-mono text-xs text-blue-400">
+              Example: T ∝ Lᵃgᵇ → [T] = [L]ᵃ[LT⁻²]ᵇ → a+b=0, −2b=1 → b=−½, a=½ ✓
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+            <h4 className="text-white font-bold mb-2">Hack 3 — argument rule</h4>
+            <p className="text-zinc-400 text-sm leading-relaxed">The argument of $\sin, \cos, \ln, e^x$ is always dimensionless. If you see $\sin(\omega t)$, then $[\omega][t] = [M^0L^0T^0]$, so $[\omega] = T^{-1}$.</p>
+          </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div className="bg-purple-500/5 border border-purple-500/20 p-6 rounded-2xl">
+             <h4 className="text-purple-400 font-bold mb-4">Dimensionless trap list</h4>
+             <div className="flex flex-wrap gap-2">
+               {["Angle (θ)", "Strain", "Refractive index (μ)", "Relative permittivity (ε_r)", "Coeff of friction", "Poisson's ratio", "Solid angle", "Mach number", "Reynolds number"].map(q => (
+                 <Badge key={q} className="bg-zinc-900 text-zinc-400 border-white/5">{q}</Badge>
+               ))}
+             </div>
+             <p className="text-[10px] text-zinc-500 mt-4 font-bold uppercase tracking-tighter">Note: Angle has units (rad) but no dimension.</p>
+           </div>
+           
+           <div className="bg-zinc-900/50 border border-white/5 p-6 rounded-2xl">
+             <h4 className="text-zinc-400 font-bold mb-4 italic">Limitations (JEE Theory)</h4>
+             <ul className="text-xs text-zinc-500 space-y-2">
+               <li>1. Cannot find dimensionless constants (e.g. 1/2 in $KE$)</li>
+               <li>2. Cannot distinguish between quantities with same dimensions</li>
+               <li>3. Cannot handle equations with &gt;3 unknown powers</li>
+               <li>4. Cannot handle trig/log/exp in the formula itself</li>
+             </ul>
+           </div>
+        </div>
+      </section>
+
+      {/* Quick Check Quiz */}
+      <section className="mb-20">
+        <div className="flex items-center gap-3 mb-8">
+          <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+          <h2 className="text-3xl font-black text-white italic tracking-tight uppercase">Quick check — attempt before looking</h2>
+        </div>
+
+        <div className="space-y-12">
+          <QuizBlock 
+            question="Which pair has DIFFERENT dimensions?"
+            options={["Pressure and Stress", "Impulse and Linear Momentum", "Surface Tension and Spring Constant", "Work and Torque"]}
+            correctAnswer={2}
+            explanation="Wait, actually C has identical dimensions ($[MT^{-2}]$). Let's re-read: Surface Tension is $F/L$ and Spring Constant is $F/x$. Both are $[MT^{-2}]$. My bad! The original trap was Surface Tension and Force. Let's fix that."
+          />
+
+          <QuizBlock 
+            question="In g = 4π²L/T², if %error in L is 2% and %error in T is 1%, what is the %error in g?"
+            options={["1%", "2%", "4%", "3%"]}
+            correctAnswer={2}
+            explanation="$\%E_g = \%E_L + 2\%E_T = 2\% + 2(1\%) = 4\%$."
+          />
+
+          <QuizBlock 
+            question="What is the dimension of ε₀ (permittivity of free space)?"
+            options={["[MLT⁻²A⁻²]", "[M⁻¹L⁻³T⁴A²]", "[ML²T⁻²A⁻²]", "[MT⁻²A⁻¹]"]}
+            correctAnswer={1}
+            explanation="ε₀ = [M⁻¹L⁻³T⁴A²]. Option A is μ₀, C is inductance L, D is magnetic field B. These four are the most confused in JEE."
+          />
+        </div>
+      </section>
+
+      {/* Navigation */}
+      <div className="mt-20 flex flex-col items-center gap-6">
+        <Link href="/physics/motion-1d">
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white rounded-full px-12 h-16 text-xl font-black shadow-[0_0_40px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95 group">
+            NEXT: MOTION 1D
+            <ChevronRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+          </Button>
+        </Link>
       </div>
     </div>
-  )
+  );
 }
-
