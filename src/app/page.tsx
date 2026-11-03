@@ -11,6 +11,7 @@ import { DocumentCard } from '@/components/DocumentCard';
 import { DocumentList } from '@/components/DocumentList';
 import { PDFViewerModal } from '@/components/PDFViewerModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
+import { BrowseModeModal } from '@/components/BrowseModeModal';
 import { useToast } from '@/components/Toast';
 import {
   FileQuestion,
@@ -36,33 +37,96 @@ function getDocFolderPath(doc: PDFDocument, mode: BrowseMode): string {
   const cleanPath = raw.replace(/^Physics Wallah Content\/?/, '');
   if (!cleanPath) return 'Physics Wallah Content';
 
-  if (mode === 'type') {
-    return `Physics Wallah Content/${cleanPath}`;
-  }
-
-  // mode === 'subject'
   const parts = cleanPath.split('/').filter(Boolean);
-  const type = parts[0] || 'Notes';
-  const subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'General';
+  const rawType = parts[0] || 'Notes';
 
-  if (type === 'Teacher Kits') {
-    const kitName = parts[1] || 'Teacher Kit';
-    const sub = parts.slice(2).join('/');
-    return `Physics Wallah Content/${subject}/${kitName}${sub ? '/' + sub : ''}`;
+  // Normalize category / resource format
+  let type = rawType;
+  if (rawType === 'Mindmaps' || rawType.toLowerCase().includes('mindmap')) {
+    type = 'Mindmaps & Flowcharts';
+  } else if (rawType.includes('2026 Qs') || rawType.includes('Top 100') || rawType.toLowerCase().includes('question')) {
+    type = 'Question Papers';
+  } else if (rawType === 'Formula Sheets') {
+    type = 'Formula Sheets';
+  } else if (rawType === 'Short Notes') {
+    type = 'Short Notes';
   }
 
-  if (type === 'Syllabus') {
-    const level = parts[1] || 'General';
-    return `Physics Wallah Content/${subject}/Syllabus/${level}`;
+  // Subject detection
+  let subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'General';
+  if (subject === 'General') {
+    const checkStr = (cleanPath + ' ' + doc.name + ' ' + (doc.tags || []).join(' ')).toLowerCase();
+    if (checkStr.includes('physics') || checkStr.includes('phy')) {
+      subject = 'Physics';
+    } else if (
+      checkStr.includes('chemistry') ||
+      checkStr.includes('chem') ||
+      checkStr.includes('organic')
+    ) {
+      subject = 'Chemistry';
+    } else if (
+      checkStr.includes('maths') ||
+      checkStr.includes('mathematics') ||
+      checkStr.includes('math')
+    ) {
+      subject = 'Maths';
+    }
   }
 
-  const classLevel =
-    doc.classLevel ||
-    parts.find((p) => p.includes('Class 11') || p.includes('Class 12')) ||
-    'General';
+  // Class level detection
+  let classLevel = doc.classLevel;
+  if (!classLevel || classLevel === 'General') {
+    if (cleanPath.includes('Class 11')) classLevel = 'Class 11';
+    else if (cleanPath.includes('Class 12')) classLevel = 'Class 12';
+    else if (cleanPath.includes('JEE Advance')) classLevel = 'JEE Advance';
+    else if (cleanPath.includes('JEE Mains')) classLevel = 'JEE Mains';
+    else classLevel = 'Class 11';
+  }
 
-  return `Physics Wallah Content/${subject}/${classLevel}/${type}`;
+  if (mode === 'subject') {
+    // Subject mode: Physics Wallah Content -> Subject (Physics | Chemistry | Maths) -> Class (Class 11 | Class 12) -> Type
+    if (type === 'Teacher Kits') {
+      const kitName = parts[1] || 'Lakshya JEE';
+      const sub = parts.slice(2).join('/');
+      return `Physics Wallah Content/${subject}/Teacher Kits/${kitName}${sub ? '/' + sub : ''}`;
+    }
+    if (type === 'Syllabus') {
+      return `Physics Wallah Content/${subject}/Syllabus`;
+    }
+    return `Physics Wallah Content/${subject}/${classLevel}/${type}`;
+  } else {
+    // Format mode: Physics Wallah Content -> Type (Mindmaps & Flowcharts | Short Notes | ...) -> Class -> Subject
+    if (type === 'Teacher Kits') {
+      const kitName = parts[1] || 'Lakshya JEE';
+      const sub = parts.slice(2).join('/');
+      return `Physics Wallah Content/Teacher Kits/${subject}/${kitName}${sub ? '/' + sub : ''}`;
+    }
+    if (type === 'Syllabus') {
+      return `Physics Wallah Content/Syllabus/${subject}`;
+    }
+    return `Physics Wallah Content/${type}/${classLevel}/${subject}`;
+  }
 }
+
+const TYPE_ORDER: Record<string, number> = {
+  'Mindmaps & Flowcharts': 1,
+  'Short Notes': 2,
+  'Formula Sheets': 3,
+  'Question Papers': 4,
+  'Teacher Kits': 5,
+  'Syllabus': 6,
+};
+const SUBJECT_ORDER: Record<string, number> = {
+  Physics: 1,
+  Chemistry: 2,
+  Maths: 3,
+};
+const CLASS_ORDER: Record<string, number> = {
+  'Class 11': 1,
+  'Class 12': 2,
+  'JEE Mains': 3,
+  'JEE Advance': 4,
+};
 
 export default function Home() {
   const { showToast } = useToast();
@@ -81,6 +145,7 @@ export default function Home() {
   // Navigation states
   const [currentFolderPath, setCurrentFolderPath] = useState<string>('');
   const [browseMode, setBrowseMode] = useState<BrowseMode>('subject');
+  const [isModeModalOpen, setIsModeModalOpen] = useState<boolean>(false);
   const [isStarredView, setIsStarredView] = useState<boolean>(false);
   const [isRecentView, setIsRecentView] = useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
@@ -91,12 +156,16 @@ export default function Home() {
   const [showAllNested, setShowAllNested] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  // Load saved arrangement mode on mount
+  // Load saved arrangement mode on mount & trigger welcome modal on first visit
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('jee_browse_mode') as BrowseMode | null;
       if (saved === 'subject' || saved === 'type') {
         setBrowseMode(saved);
+      }
+      const asked = localStorage.getItem('jee_mode_asked');
+      if (!asked) {
+        setIsModeModalOpen(true);
       }
     }
   }, []);
@@ -105,6 +174,7 @@ export default function Home() {
     setBrowseMode(mode);
     if (typeof window !== 'undefined') {
       localStorage.setItem('jee_browse_mode', mode);
+      localStorage.setItem('jee_mode_asked', 'true');
     }
     // If inside a deep PW folder, reset back to 'Physics Wallah Content'
     setCurrentFolderPath((prev) => {
@@ -116,7 +186,7 @@ export default function Home() {
     showToast(
       mode === 'subject'
         ? 'Arranged by Subject (Physics • Chemistry • Maths)'
-        : 'Arranged by Format (Mindmaps • Short Notes • Question Papers)',
+        : 'Arranged by Format (Mindmaps & Flowcharts • Short Notes • Question Papers)',
       'info'
     );
   }, [showToast]);
@@ -379,9 +449,21 @@ export default function Home() {
         return a.name.localeCompare(b.name);
       });
     } else {
-      subfolders.sort((a, b) =>
-        a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-      );
+      subfolders.sort((a, b) => {
+        const subOrderA = SUBJECT_ORDER[a.name];
+        const subOrderB = SUBJECT_ORDER[b.name];
+        if (subOrderA !== undefined && subOrderB !== undefined) return subOrderA - subOrderB;
+
+        const classOrderA = CLASS_ORDER[a.name];
+        const classOrderB = CLASS_ORDER[b.name];
+        if (classOrderA !== undefined && classOrderB !== undefined) return classOrderA - classOrderB;
+
+        const typeOrderA = TYPE_ORDER[a.name];
+        const typeOrderB = TYPE_ORDER[b.name];
+        if (typeOrderA !== undefined && typeOrderB !== undefined) return typeOrderA - typeOrderB;
+
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+      });
     }
 
     return subfolders;
@@ -610,6 +692,8 @@ export default function Home() {
         onOpenUpload={() => setIsUploadOpen((prev) => !prev)}
         stats={stats}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+        browseMode={browseMode}
+        onBrowseModeChange={handleBrowseModeChange}
       />
 
       {/* Main Layout: Sidebar + Explorer */}
@@ -1026,6 +1110,19 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      {/* First-Visit / Change Browse Mode Prompt Dialog */}
+      <BrowseModeModal
+        isOpen={isModeModalOpen}
+        currentMode={browseMode}
+        onSelect={handleBrowseModeChange}
+        onClose={() => {
+          setIsModeModalOpen(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('jee_mode_asked', 'true');
+          }
+        }}
+      />
 
       {/* PDF Viewer Modal */}
       {previewDoc && (
