@@ -14,9 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'HorizonVault — Next-Gen PDF Cloud Storage & Reader',
-  description:
-    'Store, organize, and preview your PDF documents securely in the cloud with Vercel Blob. 1 GB free storage, instant previews, and zero credit card required.',
+  title: 'JEE Resources — PDF Storage & Viewer',
+  description: 'Fast, minimal PDF storage and reader for JEE study material, notes, and question papers.',
   icons: {
     icon: '/favicon.ico',
   },
@@ -32,7 +31,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100 font-sans selection:bg-zinc-800 selection:text-white">
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

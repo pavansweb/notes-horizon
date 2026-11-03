@@ -12,7 +12,6 @@ import {
   ZoomOut,
   RotateCcw,
   FileText,
-  Tag,
   Star,
   Check,
 } from 'lucide-react';
@@ -50,7 +49,7 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
         ? document.url
         : `${window.location.origin}${document.url}`;
       await navigator.clipboard.writeText(fullUrl);
-      showToast('Public link copied to clipboard!', 'success');
+      showToast('Link copied', 'success');
     } catch {
       showToast('Could not copy link', 'error');
     }
@@ -64,33 +63,32 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
     window.document.body.appendChild(link);
     link.click();
     window.document.body.removeChild(link);
-    showToast(`Downloading ${document.name}...`, 'info');
   };
 
   const handleSaveNotes = () => {
     onUpdateMetadata(document.id, { notes: notesInput });
     setIsEditingNotes(false);
-    showToast('Document notes updated!', 'success');
+    showToast('Notes saved', 'success');
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden">
-      {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 border-b border-zinc-800/80 bg-zinc-900/90 shrink-0">
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="w-9 h-9 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center shrink-0">
-            <FileText className="w-5 h-5 text-rose-400" />
+    <div className="w-full h-full flex flex-col overflow-hidden bg-zinc-950">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-950 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <div className="w-7 h-7 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-zinc-300">
+            <FileText className="w-3.5 h-3.5" />
           </div>
 
           <div className="min-w-0">
             <h2
               id="pdf-viewer-title"
-              className="text-sm sm:text-base font-bold text-white truncate max-w-md"
+              className="text-xs sm:text-sm font-medium text-white truncate max-w-sm sm:max-w-md"
               title={document.name}
             >
               {document.name}
             </h2>
-            <div className="flex items-center gap-3 text-xs text-zinc-400 font-mono mt-0.5">
+            <div className="flex items-center gap-2 text-[11px] text-zinc-500 font-mono">
               <span>{formatBytes(document.size)}</span>
               <span>•</span>
               <span>{formatDate(document.uploadedAt)}</span>
@@ -100,36 +98,36 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
           <button
             type="button"
             onClick={() => onToggleFavorite(document.id, document.isFavorite)}
-            className={`p-1.5 rounded-lg transition-colors ml-1 ${
+            className={`p-1 rounded transition-colors ml-1 ${
               document.isFavorite
-                ? 'text-amber-400 bg-amber-400/10'
-                : 'text-zinc-500 hover:text-amber-400 hover:bg-zinc-800'
+                ? 'text-amber-400'
+                : 'text-zinc-600 hover:text-zinc-300'
             }`}
             title={document.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             aria-label={document.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
-            <Star className={`w-4 h-4 ${document.isFavorite ? 'fill-amber-400' : ''}`} />
+            <Star className={`w-3.5 h-3.5 ${document.isFavorite ? 'fill-amber-400' : ''}`} />
           </button>
         </div>
 
         {/* Action Controls */}
         <div className="flex items-center gap-1.5 shrink-0">
           {/* Zoom controls */}
-          <div className="hidden sm:flex items-center bg-zinc-800/80 border border-zinc-700/60 rounded-xl px-1.5 py-1 mr-1 text-xs">
+          <div className="hidden sm:flex items-center bg-zinc-900 border border-zinc-800 rounded-md px-1 py-0.5 text-xs text-zinc-400">
             <button
               onClick={() => setZoomLevel((z) => Math.max(50, z - 15))}
-              className="p-1 hover:text-white text-zinc-400 transition-colors"
+              className="p-1 hover:text-white transition-colors"
               title="Zoom out"
               aria-label="Zoom out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="px-1.5 font-mono text-[11px] text-zinc-300 min-w-[42px] text-center">
+            <span className="px-1.5 font-mono text-[11px] min-w-[38px] text-center text-zinc-300">
               {zoomLevel}%
             </span>
             <button
               onClick={() => setZoomLevel((z) => Math.min(200, z + 15))}
-              className="p-1 hover:text-white text-zinc-400 transition-colors"
+              className="p-1 hover:text-white transition-colors"
               title="Zoom in"
               aria-label="Zoom in"
             >
@@ -137,7 +135,7 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
             </button>
             <button
               onClick={() => setZoomLevel(100)}
-              className="p-1 hover:text-white text-zinc-400 transition-colors ml-1 border-l border-zinc-700 pl-1.5"
+              className="p-1 hover:text-white transition-colors ml-0.5 border-l border-zinc-800 pl-1"
               title="Reset zoom"
               aria-label="Reset zoom"
             >
@@ -150,7 +148,7 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
             href={document.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
             title="Open in new window"
             aria-label="Open in new window"
           >
@@ -161,7 +159,7 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
             title="Download PDF"
             aria-label="Download PDF"
           >
@@ -172,9 +170,9 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
-            title="Copy share link"
-            aria-label="Copy share link"
+            className="p-1.5 rounded-md hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            title="Copy link"
+            aria-label="Copy link"
           >
             <Share2 className="w-4 h-4" />
           </button>
@@ -183,19 +181,19 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-rose-500/20 text-zinc-400 hover:text-rose-400 transition-colors ml-1"
-            title="Close viewer (Esc)"
-            aria-label="Close viewer"
+            className="p-1.5 rounded-md hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors ml-1"
+            title="Close (Esc)"
+            aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Main PDF View Area */}
-      <div className="flex-1 bg-zinc-950 relative overflow-auto flex items-center justify-center p-2 sm:p-4">
+      {/* Main View Area */}
+      <div className="flex-1 bg-zinc-950 relative overflow-auto flex items-center justify-center p-2">
         <div
-          className="w-full h-full rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-inner flex flex-col transition-transform duration-200"
+          className="w-full h-full rounded-md overflow-hidden bg-zinc-900 border border-zinc-800 flex flex-col transition-transform duration-150"
           style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
         >
           <object
@@ -203,31 +201,25 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
             type="application/pdf"
             className="w-full h-full flex-1"
           >
-            {/* Fallback if browser cannot display PDF inside object */}
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-zinc-300">
-              <FileText className="w-16 h-16 text-rose-400 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-2">
-                PDF Preview
-              </h3>
-              <p className="text-sm text-zinc-400 max-w-md mb-6">
-                Your browser does not support embedded PDF rendering directly. You can open it in a new tab or download it directly.
+            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-zinc-400">
+              <FileText className="w-12 h-12 text-zinc-500 mb-3" />
+              <p className="text-xs text-zinc-400 mb-4">
+                Embedded preview is not supported in this browser.
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <a
                   href={document.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold flex items-center gap-2"
+                  className="px-3 py-1.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded-md text-xs font-medium"
                 >
-                  <ExternalLink className="w-4 h-4" />
                   Open in New Tab
                 </a>
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-sm font-semibold flex items-center gap-2"
+                  className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-md text-xs font-medium"
                 >
-                  <Download className="w-4 h-4" />
                   Download File
                 </button>
               </div>
@@ -236,30 +228,30 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
         </div>
       </div>
 
-      {/* Bottom Notes & Details Footer */}
-      <div className="border-t border-zinc-800/80 bg-zinc-900/90 px-4 py-3 sm:px-6 text-xs text-zinc-400 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="font-semibold text-zinc-300 shrink-0">Notes:</span>
+      {/* Footer / Notes & Tags */}
+      <div className="border-t border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs text-zinc-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-[11px] text-zinc-500 shrink-0">Notes:</span>
           {isEditingNotes ? (
-            <div className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-1.5 flex-1 max-w-md">
               <input
                 type="text"
                 value={notesInput}
                 onChange={(e) => setNotesInput(e.target.value)}
-                placeholder="Add notes about this document..."
-                className="bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500 flex-1 max-w-lg"
+                placeholder="Add notes..."
+                className="bg-zinc-900 border border-zinc-800 rounded px-2 py-0.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-700 flex-1"
               />
               <button
                 type="button"
                 onClick={handleSaveNotes}
-                className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1"
+                className="px-2 py-0.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded text-[11px] font-medium flex items-center gap-1"
               >
-                <Check className="w-3.5 h-3.5" /> Save
+                <Check className="w-3 h-3" /> Save
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditingNotes(false)}
-                className="text-zinc-500 hover:text-zinc-300 px-1 py-1"
+                className="text-zinc-500 hover:text-zinc-300 text-[11px] px-1"
               >
                 Cancel
               </button>
@@ -267,13 +259,13 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
           ) : (
             <div
               onClick={() => setIsEditingNotes(true)}
-              className="cursor-pointer hover:text-zinc-200 truncate flex-1"
+              className="cursor-pointer hover:text-zinc-300 truncate text-[11px] text-zinc-400"
               title="Click to edit notes"
             >
               {document.notes ? (
-                <span className="italic">&ldquo;{document.notes}&rdquo;</span>
+                <span>{document.notes}</span>
               ) : (
-                <span className="text-zinc-600 italic hover:text-zinc-400">Click to add notes...</span>
+                <span className="text-zinc-600">Click to add notes...</span>
               )}
             </div>
           )}
@@ -281,13 +273,12 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
 
         {/* Tags */}
         {document.tags && document.tags.length > 0 && (
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             {document.tags.map((tag, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20"
+                className="text-[10px] text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded"
               >
-                <Tag className="w-2.5 h-2.5" />
                 {tag}
               </span>
             ))}
@@ -329,7 +320,7 @@ export const PDFViewerModal: React.FC<PDFViewerModalProps> = ({
       ref={dialogRef}
       onClose={onClose}
       aria-labelledby="pdf-viewer-title"
-      className="m-auto rounded-2xl bg-zinc-950 text-zinc-100 border border-zinc-800 shadow-2xl backdrop:bg-black/80 backdrop:backdrop-blur-sm p-0 overflow-hidden w-[95vw] max-w-6xl h-[92vh] max-h-[92vh] flex flex-col focus:outline-none"
+      className="m-auto rounded-xl bg-zinc-950 text-zinc-100 border border-zinc-800 shadow-2xl backdrop:bg-black/80 p-0 overflow-hidden w-[95vw] max-w-5xl h-[90vh] max-h-[90vh] flex flex-col focus:outline-none"
       style={{
         overscrollBehavior: 'contain',
       }}

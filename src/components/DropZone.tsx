@@ -1,17 +1,24 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { UploadCloud, FileText, X, Plus, Tag } from 'lucide-react';
+import { Upload, FileText, X, Plus } from 'lucide-react';
 import { formatBytes } from '@/lib/utils';
 import { useToast } from './Toast';
-import confetti from 'canvas-confetti';
 
 interface DropZoneProps {
   onUploadSuccess: () => void;
   onClose?: () => void;
 }
 
-const DEFAULT_TAGS = ['Work', 'Study', 'Finance', 'Personal', 'Research', 'Invoices'];
+const DEFAULT_TAGS = [
+  'Physics',
+  'Chemistry',
+  'Maths',
+  'Notes',
+  'PYQs',
+  'Formula Sheet',
+  'Mock Tests',
+];
 
 export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) => {
   const { showToast } = useToast();
@@ -104,19 +111,6 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
     }
   };
 
-  const triggerConfetti = () => {
-    try {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#6366f1', '#ec4899', '#38bdf8', '#10b981'],
-      });
-    } catch {
-      // Ignore if canvas-confetti fails
-    }
-  };
-
   const handleUploadSubmit = async () => {
     if (selectedFiles.length === 0) return;
 
@@ -148,10 +142,8 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
         setUploadProgress(Math.round(((i + 1) / total) * 100));
       }
 
-      showToast(`Successfully uploaded ${successCount} PDF document${successCount > 1 ? 's' : ''}!`, 'success');
-      triggerConfetti();
+      showToast(`Uploaded ${successCount} PDF${successCount > 1 ? 's' : ''}`, 'success');
 
-      // Reset
       setSelectedFiles([]);
       setSelectedTags([]);
       setNotes('');
@@ -166,38 +158,33 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
   };
 
   return (
-    <div className="w-full bg-zinc-900/90 rounded-2xl border border-zinc-800/80 p-5 sm:p-6 shadow-2xl backdrop-blur-xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            <UploadCloud className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-white">Upload PDF Documents</h2>
-            <p className="text-xs text-zinc-400">Secure storage on Vercel Blob with instant preview</p>
-          </div>
-        </div>
+    <div className="w-full bg-zinc-900/60 rounded-xl border border-zinc-800 p-4 sm:p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xs font-semibold text-zinc-200">
+          Upload PDF Files
+        </h2>
 
         {onClose && (
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-200 p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
+            className="text-zinc-500 hover:text-zinc-300 p-1 rounded transition-colors"
+            title="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* Drag & Drop Zone */}
+      {/* Drag & Drop Area */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-xl p-8 sm:p-10 text-center cursor-pointer transition-all duration-300 ${
+        className={`border border-dashed rounded-lg p-6 sm:p-8 text-center cursor-pointer transition-colors ${
           isDragging
-            ? 'border-indigo-500 bg-indigo-500/10 scale-[1.01]'
-            : 'border-zinc-700/80 hover:border-indigo-500/60 bg-zinc-950/40 hover:bg-zinc-950/60'
+            ? 'border-zinc-500 bg-zinc-800/40'
+            : 'border-zinc-800 hover:border-zinc-700 bg-zinc-950/40 hover:bg-zinc-950/60'
         }`}
       >
         <input
@@ -209,54 +196,43 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
           className="hidden"
         />
 
-        <div className="flex flex-col items-center justify-center gap-3">
-          <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
-              isDragging
-                ? 'bg-indigo-600 text-white scale-110 shadow-lg shadow-indigo-500/30'
-                : 'bg-zinc-800/80 text-zinc-300'
-            }`}
-          >
-            <UploadCloud className="w-7 h-7" />
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+            <Upload className="w-4 h-4" />
           </div>
 
-          <div>
-            <p className="text-sm font-semibold text-zinc-200">
-              Drag & drop your PDF documents here, or{' '}
-              <span className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
-                browse files
-              </span>
-            </p>
-            <p className="text-xs text-zinc-400 mt-1">
-              Supports multiple files • Maximum 50 MB per file
-            </p>
-          </div>
+          <p className="text-xs text-zinc-300 font-medium">
+            Drag & drop PDF files here, or <span className="text-zinc-100 underline underline-offset-2">browse</span>
+          </p>
+          <p className="text-[11px] text-zinc-500">
+            Up to 50 MB per file
+          </p>
         </div>
       </div>
 
       {/* Selected Files Queue */}
       {selectedFiles.length > 0 && (
-        <div className="mt-5 space-y-4">
-          <div className="flex items-center justify-between text-xs font-semibold text-zinc-300">
-            <span>Ready for upload ({selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''})</span>
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Selected ({selectedFiles.length})</span>
             <button
               onClick={() => setSelectedFiles([])}
-              className="text-rose-400 hover:text-rose-300 transition-colors"
+              className="text-zinc-400 hover:text-zinc-200 transition-colors"
             >
-              Clear all
+              Clear
             </button>
           </div>
 
-          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+          <div className="space-y-1.5 max-h-36 overflow-y-auto">
             {selectedFiles.map((file, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between bg-zinc-950/70 border border-zinc-800/80 rounded-xl px-3.5 py-2.5 text-xs text-zinc-200"
+                className="flex items-center justify-between bg-zinc-950/80 border border-zinc-800/80 rounded-lg px-3 py-2 text-xs text-zinc-200"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
-                  <span className="truncate font-medium">{file.name}</span>
-                  <span className="text-zinc-400 text-[11px] font-mono shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                  <span className="truncate">{file.name}</span>
+                  <span className="text-zinc-500 text-[10px] font-mono shrink-0">
                     {formatBytes(file.size)}
                   </span>
                 </div>
@@ -266,7 +242,7 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
                     e.stopPropagation();
                     removeFile(idx);
                   }}
-                  className="text-zinc-500 hover:text-rose-400 p-1 rounded-lg transition-colors ml-2"
+                  className="text-zinc-500 hover:text-zinc-300 p-0.5"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -274,14 +250,12 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
             ))}
           </div>
 
-          {/* Tags Section */}
+          {/* Tags */}
           <div className="pt-2 border-t border-zinc-800/80">
-            <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5 mb-2">
-              <Tag className="w-3.5 h-3.5 text-indigo-400" />
-              Add Tags & Categories (Optional)
+            <label className="text-[11px] text-zinc-400 block mb-1.5">
+              Tags
             </label>
-
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {DEFAULT_TAGS.map((tag) => {
                 const isSelected = selectedTags.includes(tag);
                 return (
@@ -289,76 +263,72 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all ${
+                    className={`text-[11px] px-2 py-0.5 rounded-md font-medium transition-colors ${
                       isSelected
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700/80'
+                        ? 'bg-zinc-200 text-zinc-950'
+                        : 'bg-zinc-800/70 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
                     }`}
                   >
-                    {isSelected ? '✓ ' : ''}{tag}
+                    {tag}
                   </button>
                 );
               })}
 
-              {/* Custom tag input */}
-              <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-lg px-2 py-0.5">
+              <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-md px-1.5 py-0.5">
                 <input
                   type="text"
                   value={customTagInput}
                   onChange={(e) => setCustomTagInput(e.target.value)}
                   onKeyDown={handleAddCustomTag}
-                  placeholder="Custom tag..."
-                  className="bg-transparent text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none w-24"
+                  placeholder="Add custom..."
+                  className="bg-transparent text-[11px] text-zinc-200 placeholder-zinc-500 focus:outline-none w-20"
                 />
                 <button
                   type="button"
                   onClick={handleAddCustomTag}
-                  className="text-zinc-400 hover:text-indigo-400 p-0.5"
+                  className="text-zinc-500 hover:text-zinc-300"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Notes Section */}
+          {/* Optional Note */}
           <div>
-            <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
-              Notes or Description (Optional)
-            </label>
             <input
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="e.g. Q3 quarterly financial report or lecture summary"
-              className="w-full bg-zinc-950 text-xs text-zinc-200 placeholder-zinc-500 rounded-xl px-3.5 py-2 border border-zinc-800 focus:outline-none focus:border-indigo-500 transition-all"
+              placeholder="Description or notes (optional)..."
+              className="w-full bg-zinc-950 text-xs text-zinc-200 placeholder-zinc-500 rounded-lg px-3 py-1.5 border border-zinc-800 focus:outline-none focus:border-zinc-700 transition-colors"
             />
           </div>
 
-          {/* Upload Progress Bar */}
+          {/* Progress Bar */}
           {isUploading && (
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-zinc-300 font-medium">
-                <span>Uploading to cloud storage...</span>
+            <div className="space-y-1">
+              <div className="flex justify-between text-[11px] text-zinc-400">
+                <span>Uploading...</span>
                 <span>{uploadProgress}%</span>
               </div>
-              <div className="w-full h-2 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
+              <div className="w-full h-1.5 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 transition-all duration-300"
+                  className="h-full bg-zinc-200 transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
             </div>
           )}
 
-          {/* Submit Action */}
-          <div className="flex justify-end gap-3 pt-2">
+          {/* Actions */}
+          <div className="flex justify-end gap-2 pt-1">
             {onClose && (
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isUploading}
-                className="px-4 py-2 text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
               >
                 Cancel
               </button>
@@ -367,10 +337,9 @@ export const DropZone: React.FC<DropZoneProps> = ({ onUploadSuccess, onClose }) 
               type="button"
               onClick={handleUploadSubmit}
               disabled={isUploading}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-rose-600 hover:from-indigo-500 hover:to-rose-500 shadow-lg shadow-indigo-600/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-zinc-950 bg-white hover:bg-zinc-200 disabled:opacity-50 transition-colors"
             >
-              <UploadCloud className="w-4 h-4" />
-              <span>{isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}`}</span>
+              {isUploading ? 'Uploading...' : `Upload (${selectedFiles.length})`}
             </button>
           </div>
         </div>
