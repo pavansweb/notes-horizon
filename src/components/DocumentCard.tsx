@@ -49,13 +49,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const link = window.document.createElement('a');
-    link.href = document.downloadUrl;
-    link.download = document.name;
-    link.target = '_blank';
-    window.document.body.appendChild(link);
-    link.click();
-    window.document.body.removeChild(link);
+    window.location.href = document.downloadUrl;
   };
 
   // Determine subject colors

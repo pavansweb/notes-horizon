@@ -259,23 +259,43 @@ export default function Home() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Synchronize URL when folder path changes
-  const navigateToFolder = useCallback((path: string) => {
-    setCurrentFolderPath(path);
+  // Synchronize URL when folder path changes with smart mode resolution
+  const navigateToFolder = useCallback((rawPath: string) => {
+    // Normalize legacy aliases
+    let targetPath = rawPath
+      .replace(/\/Mindmaps(\/|$)/, '/Mindmaps & Flowcharts$1')
+      .replace(/\/(JEE Main 2026 Qs|Top 100 Qs for 2026)(\/|$)/, '/Question Papers$2');
+
+    // Auto-detect mode if navigating to a specific top-level branch
+    if (targetPath.startsWith('Physics Wallah Content/')) {
+      const secondPart = targetPath.split('/')[1];
+      if (['Physics', 'Chemistry', 'Maths'].includes(secondPart) && browseMode !== 'subject') {
+        setBrowseMode('subject');
+        if (typeof window !== 'undefined') localStorage.setItem('jee_browse_mode', 'subject');
+      } else if (
+        ['Mindmaps & Flowcharts', 'Short Notes', 'Formula Sheets', 'Question Papers'].includes(secondPart) &&
+        browseMode !== 'type'
+      ) {
+        setBrowseMode('type');
+        if (typeof window !== 'undefined') localStorage.setItem('jee_browse_mode', 'type');
+      }
+    }
+
+    setCurrentFolderPath(targetPath);
     setIsStarredView(false);
     setIsRecentView(false);
     setSelectedIds([]);
 
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
-      if (path) {
-        url.searchParams.set('folder', path);
+      if (targetPath) {
+        url.searchParams.set('folder', targetPath);
       } else {
         url.searchParams.delete('folder');
       }
-      window.history.pushState({ folder: path }, '', url.toString());
+      window.history.pushState({ folder: targetPath }, '', url.toString());
     }
-  }, []);
+  }, [browseMode]);
 
   // Keyboard navigation
   useEffect(() => {

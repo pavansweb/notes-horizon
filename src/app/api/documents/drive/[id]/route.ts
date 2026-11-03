@@ -42,12 +42,15 @@ export async function GET(
 
     const headers = new Headers();
     headers.set('Content-Type', 'application/pdf');
+    headers.set('Accept-Ranges', 'bytes');
     if (size) headers.set('Content-Length', size);
+
+    const safeAsciiFilename = filename.replace(/["\\]/g, '').replace(/[^\x20-\x7E]/g, '_');
     headers.set(
       'Content-Disposition',
-      `${isDownload ? 'attachment' : 'inline'}; filename="${encodeURIComponent(filename)}"`
+      `${isDownload ? 'attachment' : 'inline'}; filename="${safeAsciiFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}`
     );
-    headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
 
     // Convert Node Readable stream to Web ReadableStream
     const webStream = Readable.toWeb(driveRes.data as unknown as Readable) as unknown as ReadableStream;
@@ -59,5 +62,37 @@ export async function GET(
   } catch (error) {
     console.error('Error streaming from Google Drive:', error);
     return new NextResponse('File not found or failed to load from Google Drive', { status: 404 });
+  }
+}
+
+export async function HEAD(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    const cleanId = decodeURIComponent(id).replace(/^gdrive-/, '');
+
+    const config = getDriveConfig();
+    if (!config) {
+      return new NextResponse(null, { status: 503 });
+    }
+
+    const meta = await config.drive.files.get({
+      fileId: cleanId,
+      fields: 'name, size',
+    });
+
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/pdf');
+    headers.set('Accept-Ranges', 'bytes');
+    if (meta.data.size) headers.set('Content-Length', meta.data.size);
+
+    return new Response(null, {
+      status: 200,
+      headers,
+    });
+  } catch {
+    return new NextResponse(null, { status: 404 });
   }
 }

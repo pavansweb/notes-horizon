@@ -52,13 +52,7 @@ export const DocumentList: React.FC<DocumentListProps> = ({
 
   const handleDownload = (e: React.MouseEvent, doc: PDFDocument) => {
     e.stopPropagation();
-    const link = window.document.createElement('a');
-    link.href = doc.downloadUrl;
-    link.download = doc.name;
-    link.target = '_blank';
-    window.document.body.appendChild(link);
-    link.click();
-    window.document.body.removeChild(link);
+    window.location.href = doc.downloadUrl;
   };
 
   return (

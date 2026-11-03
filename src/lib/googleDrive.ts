@@ -81,23 +81,8 @@ function getServiceAccountCredentials() {
 
 export function getDriveConfig(): DriveConfig | null {
   const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-  const saCreds = getServiceAccountCredentials();
 
-  // Option 1: Service Account
-  if (saCreds) {
-    try {
-      const auth = new google.auth.JWT({
-        email: saCreds.email,
-        key: saCreds.key,
-        scopes: ['https://www.googleapis.com/auth/drive'],
-      });
-      return { drive: google.drive({ version: 'v3', auth }), folderId };
-    } catch (err) {
-      console.error('Error initializing Google Drive Service Account:', err);
-    }
-  }
-
-  // Option 2: OAuth2 Refresh Token (Personal Google Account)
+  // Option 1: OAuth2 Refresh Token (Personal Google Account containing the JEE resources)
   if (
     process.env.GOOGLE_CLIENT_ID &&
     process.env.GOOGLE_CLIENT_SECRET &&
@@ -114,6 +99,21 @@ export function getDriveConfig(): DriveConfig | null {
       return { drive: google.drive({ version: 'v3', auth: oauth2Client }), folderId };
     } catch (err) {
       console.error('Error initializing Google Drive OAuth2:', err);
+    }
+  }
+
+  // Option 2: Service Account fallback
+  const saCreds = getServiceAccountCredentials();
+  if (saCreds) {
+    try {
+      const auth = new google.auth.JWT({
+        email: saCreds.email,
+        key: saCreds.key,
+        scopes: ['https://www.googleapis.com/auth/drive'],
+      });
+      return { drive: google.drive({ version: 'v3', auth }), folderId };
+    } catch (err) {
+      console.error('Error initializing Google Drive Service Account:', err);
     }
   }
 

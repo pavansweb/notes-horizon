@@ -56,13 +56,7 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
   };
 
   const handleDownload = () => {
-    const link = window.document.createElement('a');
-    link.href = document.downloadUrl;
-    link.download = document.name;
-    link.target = '_blank';
-    window.document.body.appendChild(link);
-    link.click();
-    window.document.body.removeChild(link);
+    window.location.href = document.downloadUrl;
   };
 
   const handleSaveNotes = () => {
@@ -191,40 +185,16 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
       </div>
 
       {/* Main View Area */}
-      <div className="flex-1 bg-zinc-950 relative overflow-auto flex items-center justify-center p-2">
+      <div className="flex-1 bg-zinc-950 relative overflow-hidden flex items-center justify-center p-2">
         <div
-          className="w-full h-full rounded-md overflow-hidden bg-zinc-900 border border-zinc-800 flex flex-col transition-transform duration-150"
+          className="w-full h-full rounded-md overflow-hidden bg-zinc-900 border border-zinc-800 flex flex-col transition-transform duration-150 relative"
           style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
         >
-          <object
-            data={document.url}
-            type="application/pdf"
-            className="w-full h-full flex-1"
-          >
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-zinc-400">
-              <FileText className="w-12 h-12 text-zinc-500 mb-3" />
-              <p className="text-xs text-zinc-400 mb-4">
-                Embedded preview is not supported in this browser.
-              </p>
-              <div className="flex items-center gap-2">
-                <a
-                  href={document.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded-md text-xs font-medium"
-                >
-                  Open in New Tab
-                </a>
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-md text-xs font-medium"
-                >
-                  Download File
-                </button>
-              </div>
-            </div>
-          </object>
+          <iframe
+            src={document.url}
+            title={document.name}
+            className="w-full h-full flex-1 border-0 bg-white"
+          />
         </div>
       </div>
 

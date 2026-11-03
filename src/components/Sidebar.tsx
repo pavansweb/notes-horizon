@@ -91,6 +91,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const pwSections: SidebarCategory[] = [
     {
+      id: 'mindmaps',
+      name: 'Mindmaps & Flowcharts',
+      path: 'Physics Wallah Content/Mindmaps & Flowcharts',
+      icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
+    },
+    {
       id: 'short-notes',
       name: 'Short Notes',
       path: 'Physics Wallah Content/Short Notes',
@@ -103,22 +109,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <FlaskConical className="w-3.5 h-3.5 text-amber-400" />,
     },
     {
-      id: 'mindmaps',
-      name: 'Mindmaps',
-      path: 'Physics Wallah Content/Mindmaps',
-      icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
-    },
-    {
-      id: 'jee-main-2026',
-      name: 'JEE Main 2026 Qs',
-      path: 'Physics Wallah Content/JEE Main 2026 Qs',
+      id: 'question-papers',
+      name: 'Question Papers',
+      path: 'Physics Wallah Content/Question Papers',
       icon: <Award className="w-3.5 h-3.5 text-indigo-400" />,
-    },
-    {
-      id: 'top-100',
-      name: 'Top 100 Qs for 2026',
-      path: 'Physics Wallah Content/Top 100 Qs for 2026',
-      icon: <Award className="w-3.5 h-3.5 text-rose-400" />,
     },
     {
       id: 'teacher-kits',
@@ -134,12 +128,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const teacherKits = [
-    { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Teacher Kits/Ashish Sirs Maths Kit' },
-    { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Teacher Kits/Saleem Sirs Physics Kit' },
-    { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
-    { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
-  ];
+  const teacherKits =
+    browseMode === 'subject'
+      ? [
+          { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Maths/Teacher Kits/Ashish Sirs Maths Kit' },
+          { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Physics/Teacher Kits/Saleem Sirs Physics Kit' },
+          { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Chemistry/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
+          { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Chemistry/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
+        ]
+      : [
+          { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Teacher Kits/Maths/Ashish Sirs Maths Kit' },
+          { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Teacher Kits/Physics/Saleem Sirs Physics Kit' },
+          { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Chemistry/Pankaj Sirs Organic Chemistry Kit' },
+          { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Chemistry/Rohit Sirs Organic Chemistry Kit' },
+        ];
 
   const percentUsed = Math.min(
     100,
