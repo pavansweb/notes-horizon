@@ -4,6 +4,14 @@ import path from 'path';
 import { PDFDocument, StorageInfo } from '@/types/document';
 import { getAllMetadata, saveMetadata, removeMetadata, updateMetadata } from './metadata';
 import { sanitizeFilename } from './utils';
+import {
+  isDriveConfigured,
+  uploadToDrive,
+  listDriveFiles,
+  deleteDriveFile,
+  updateDriveMetadata,
+  getDriveStorageQuota,
+} from './googleDrive';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'data', 'uploads');
 
@@ -16,13 +24,24 @@ async function ensureUploadDir() {
 }
 
 export function isCloudStorage(): boolean {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+  return isDriveConfigured() || !!process.env.BLOB_READ_WRITE_TOKEN;
 }
 
 export async function getDocumentList(): Promise<PDFDocument[]> {
+  // 1. Google Drive (2 TB Storage)
+  if (isDriveConfigured()) {
+    try {
+      const driveDocs = await listDriveFiles();
+      return driveDocs;
+    } catch (err) {
+      console.error('Error fetching Google Drive files:', err);
+    }
+  }
+
   const metadataMap = await getAllMetadata();
 
-  if (isCloudStorage()) {
+  // 2. Vercel Blob Storage
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       const { blobs } = await list();
       const docs: PDFDocument[] = [];
@@ -46,14 +65,13 @@ export async function getDocumentList(): Promise<PDFDocument[]> {
         });
       }
 
-      // Sort newest first by default
       return docs.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
     } catch (err) {
-      console.error('Error fetching Vercel blobs, falling back to local files:', err);
+      console.error('Error fetching Vercel blobs:', err);
     }
   }
 
-  // Local storage fallback
+  // 3. Local Storage fallback
   await ensureUploadDir();
   try {
     const files = await fs.readdir(UPLOAD_DIR);
@@ -96,12 +114,19 @@ export async function uploadDocument(
   tags: string[] = [],
   notes: string = ''
 ): Promise<PDFDocument> {
+  // 1. Google Drive
+  if (isDriveConfigured()) {
+    const driveDoc = await uploadToDrive(file, filename, tags, notes);
+    if (driveDoc) return driveDoc;
+  }
+
   const cleanName = sanitizeFilename(filename);
   const now = new Date();
   const timestamp = now.getTime();
   const uniqueName = `${timestamp}-${cleanName}`;
 
-  if (isCloudStorage()) {
+  // 2. Vercel Blob
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
     const pathname = `pdf/${uniqueName}`;
     const blob = await put(pathname, file, {
       access: 'public',
@@ -138,7 +163,7 @@ export async function uploadDocument(
     };
   }
 
-  // Local storage upload
+  // 3. Local Storage fallback
   await ensureUploadDir();
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -176,10 +201,13 @@ export async function uploadDocument(
 
 export async function deleteDocument(doc: PDFDocument): Promise<boolean> {
   try {
-    if (isCloudStorage() && doc.url && !doc.url.startsWith('/api/')) {
+    if (doc.id.startsWith('gdrive-')) {
+      return await deleteDriveFile(doc.id);
+    }
+
+    if (process.env.BLOB_READ_WRITE_TOKEN && doc.url && !doc.url.startsWith('/api/')) {
       await del(doc.url);
     } else {
-      // Local delete
       const filePath = path.join(UPLOAD_DIR, doc.pathname);
       await fs.unlink(filePath).catch(() => null);
     }
@@ -195,6 +223,10 @@ export async function updateDocumentDetails(
   id: string,
   updates: { isFavorite?: boolean; tags?: string[]; name?: string; notes?: string }
 ): Promise<PDFDocument | null> {
+  if (id.startsWith('gdrive-')) {
+    return await updateDriveMetadata(id, updates);
+  }
+
   const updated = await updateMetadata(id, updates);
   if (!updated) return null;
 
@@ -215,10 +247,22 @@ export async function updateDocumentDetails(
 
 export async function getStorageStats(): Promise<StorageInfo> {
   const docs = await getDocumentList();
-  const usedBytes = docs.reduce((acc, curr) => acc + curr.size, 0);
   const favoriteCount = docs.filter((d) => d.isFavorite).length;
-  // Free tier is 1 GB = 1024 * 1024 * 1024 bytes
-  const maxBytes = 1024 * 1024 * 1024;
+
+  if (isDriveConfigured()) {
+    const quota = await getDriveStorageQuota();
+    return {
+      totalBytes: quota.total,
+      usedBytes: quota.used,
+      maxBytes: quota.total,
+      fileCount: docs.length,
+      favoriteCount,
+      isCloud: true,
+    };
+  }
+
+  const usedBytes = docs.reduce((acc, curr) => acc + curr.size, 0);
+  const maxBytes = 1024 * 1024 * 1024; // 1 GB for Blob
 
   return {
     totalBytes: maxBytes,
@@ -226,6 +270,6 @@ export async function getStorageStats(): Promise<StorageInfo> {
     maxBytes,
     fileCount: docs.length,
     favoriteCount,
-    isCloud: isCloudStorage(),
+    isCloud: !!process.env.BLOB_READ_WRITE_TOKEN,
   };
 }
