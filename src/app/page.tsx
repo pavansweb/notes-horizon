@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { PDFDocument, StorageInfo, SortOption, ViewMode, FolderNode } from '@/types/document';
+import { PDFDocument, StorageInfo, SortOption, ViewMode, FolderNode, BrowseMode } from '@/types/document';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { BreadcrumbNav } from '@/components/BreadcrumbNav';
@@ -22,7 +22,47 @@ import {
   Star,
   Clock,
   Sparkles,
+  Atom,
+  BookOpen,
+  Compass,
 } from 'lucide-react';
+
+// Maps a document's relative path based on user's preferred browse arrangement
+function getDocFolderPath(doc: PDFDocument, mode: BrowseMode): string {
+  const raw = doc.folderPath || '';
+  if (!raw || raw.startsWith('agy ai genrated')) return raw;
+
+  // Strip 'Physics Wallah Content/' prefix if present for clean restructuring
+  const cleanPath = raw.replace(/^Physics Wallah Content\/?/, '');
+  if (!cleanPath) return 'Physics Wallah Content';
+
+  if (mode === 'type') {
+    return `Physics Wallah Content/${cleanPath}`;
+  }
+
+  // mode === 'subject'
+  const parts = cleanPath.split('/').filter(Boolean);
+  const type = parts[0] || 'Notes';
+  const subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'General';
+
+  if (type === 'Teacher Kits') {
+    const kitName = parts[1] || 'Teacher Kit';
+    const sub = parts.slice(2).join('/');
+    return `Physics Wallah Content/${subject}/${kitName}${sub ? '/' + sub : ''}`;
+  }
+
+  if (type === 'Syllabus') {
+    const level = parts[1] || 'General';
+    return `Physics Wallah Content/${subject}/Syllabus/${level}`;
+  }
+
+  const classLevel =
+    doc.classLevel ||
+    parts.find((p) => p.includes('Class 11') || p.includes('Class 12')) ||
+    'General';
+
+  return `Physics Wallah Content/${subject}/${classLevel}/${type}`;
+}
 
 export default function Home() {
   const { showToast } = useToast();
@@ -40,6 +80,7 @@ export default function Home() {
 
   // Navigation states
   const [currentFolderPath, setCurrentFolderPath] = useState<string>('');
+  const [browseMode, setBrowseMode] = useState<BrowseMode>('subject');
   const [isStarredView, setIsStarredView] = useState<boolean>(false);
   const [isRecentView, setIsRecentView] = useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
@@ -49,6 +90,36 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [showAllNested, setShowAllNested] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  // Load saved arrangement mode on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jee_browse_mode') as BrowseMode | null;
+      if (saved === 'subject' || saved === 'type') {
+        setBrowseMode(saved);
+      }
+    }
+  }, []);
+
+  const handleBrowseModeChange = useCallback((mode: BrowseMode) => {
+    setBrowseMode(mode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('jee_browse_mode', mode);
+    }
+    // If inside a deep PW folder, reset back to 'Physics Wallah Content'
+    setCurrentFolderPath((prev) => {
+      if (prev.startsWith('Physics Wallah Content/')) {
+        return 'Physics Wallah Content';
+      }
+      return prev;
+    });
+    showToast(
+      mode === 'subject'
+        ? 'Arranged by Subject (Physics • Chemistry • Maths)'
+        : 'Arranged by Format (Mindmaps • Short Notes • Question Papers)',
+      'info'
+    );
+  }, [showToast]);
 
   // Modal & Selection states
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
@@ -212,12 +283,13 @@ export default function Home() {
     });
 
     documents.forEach((doc) => {
-      const folderPath = doc.folderPath || '';
+      const folderPath = getDocFolderPath(doc, browseMode);
       if (!folderPath) return;
 
       const parts = folderPath.split('/').filter(Boolean);
       if (parts[0]) catCounts[parts[0]] = (catCounts[parts[0]] || 0) + 1;
       if (parts[1]) catCounts[parts[1]] = (catCounts[parts[1]] || 0) + 1;
+      if (parts[2]) catCounts[parts[2]] = (catCounts[parts[2]] || 0) + 1;
 
       for (let i = 0; i < parts.length; i++) {
         const subPath = parts.slice(0, i + 1).join('/');
@@ -276,7 +348,7 @@ export default function Home() {
     });
 
     return { folderMap: fMap, categoryCounts: catCounts };
-  }, [documents]);
+  }, [documents, browseMode]);
 
   // Subfolders in current view
   const currentSubfolders = useMemo(() => {
@@ -347,13 +419,14 @@ export default function Home() {
       if (showAllNested) {
         // Include everything in this folder and deeper
         if (currentFolderPath) {
-          result = result.filter(
-            (d) => d.folderPath === currentFolderPath || d.folderPath?.startsWith(currentFolderPath + '/')
-          );
+          result = result.filter((d) => {
+            const p = getDocFolderPath(d, browseMode);
+            return p === currentFolderPath || p.startsWith(currentFolderPath + '/');
+          });
         }
       } else {
         // Only direct files in this exact folder
-        result = result.filter((d) => (d.folderPath || '') === currentFolderPath);
+        result = result.filter((d) => getDocFolderPath(d, browseMode) === currentFolderPath);
       }
 
       // Subject filter
@@ -403,6 +476,7 @@ export default function Home() {
     selectedSubject,
     selectedClass,
     sortOption,
+    browseMode,
   ]);
 
   // Toggle favorite
@@ -565,6 +639,8 @@ export default function Home() {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           categoryCounts={categoryCounts}
+          browseMode={browseMode}
+          onBrowseModeChange={handleBrowseModeChange}
         />
 
         {/* Explorer Content */}
@@ -576,6 +652,97 @@ export default function Home() {
                 onUploadSuccess={refreshDocuments}
                 onClose={() => setIsUploadOpen(false)}
               />
+            </div>
+          )}
+
+          {/* Arrangement Choice Card (Homepage Root Prompt) */}
+          {currentFolderPath === '' && searchQuery.trim().length === 0 && !isStarredView && !isRecentView && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <div>
+                  <h2 className="text-xs sm:text-sm font-semibold text-white flex items-center gap-2">
+                    <Compass className="w-4 h-4 text-amber-400" />
+                    <span>How would you like to arrange your notes?</span>
+                  </h2>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Select how JEE study materials are grouped and navigated throughout the app:
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Option 1: By Subject */}
+                <button
+                  type="button"
+                  onClick={() => handleBrowseModeChange('subject')}
+                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                    browseMode === 'subject'
+                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-200 shadow-sm shadow-amber-500/5'
+                      : 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                  }`}
+                >
+                  <div
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                      browseMode === 'subject'
+                        ? 'bg-amber-500/20 text-amber-300'
+                        : 'bg-zinc-900 text-zinc-400'
+                    }`}
+                  >
+                    <Atom className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs sm:text-sm font-semibold text-white">
+                        By Subject
+                      </span>
+                      {browseMode === 'subject' && (
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300 font-semibold">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">
+                      Physics • Chemistry • Maths &rarr; each with its own Class 11, Class 12 notes, formula sheets & PYQs.
+                    </p>
+                  </div>
+                </button>
+
+                {/* Option 2: By Resource Format */}
+                <button
+                  type="button"
+                  onClick={() => handleBrowseModeChange('type')}
+                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                    browseMode === 'type'
+                      ? 'bg-sky-500/15 border-sky-500/40 text-sky-200 shadow-sm shadow-sky-500/5'
+                      : 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                  }`}
+                >
+                  <div
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                      browseMode === 'type'
+                        ? 'bg-sky-500/20 text-sky-300'
+                        : 'bg-zinc-900 text-zinc-400'
+                    }`}
+                  >
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs sm:text-sm font-semibold text-white">
+                        By Resource Format
+                      </span>
+                      {browseMode === 'type' && (
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-sky-500/30 text-sky-300 font-semibold">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">
+                      Mindmaps • Short Notes • Question Papers • Teacher Kits &rarr; divided across all subjects.
+                    </p>
+                  </div>
+                </button>
+              </div>
             </div>
           )}
 
@@ -660,6 +827,8 @@ export default function Home() {
               showAllNested={showAllNested}
               onToggleShowAllNested={setShowAllNested}
               hasSubfolders={currentSubfolders.length > 0}
+              browseMode={browseMode}
+              onBrowseModeChange={handleBrowseModeChange}
             />
           )}
 
@@ -757,22 +926,31 @@ export default function Home() {
                 {filteredAndSortedDocs.length > 0 ? (
                   viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                      {filteredAndSortedDocs.map((doc) => (
-                        <DocumentCard
-                          key={doc.id}
-                          document={doc}
-                          onPreview={(d) => setPreviewDoc(d)}
-                          onDelete={(d) => setDeleteDoc(d)}
-                          onToggleFavorite={handleToggleFavorite}
-                          isSelected={selectedIds.includes(doc.id)}
-                          onSelect={handleToggleSelect}
-                          onNavigateFolder={navigateToFolder}
-                        />
-                      ))}
+                      {filteredAndSortedDocs.map((doc) => {
+                        const activeDoc = {
+                          ...doc,
+                          folderPath: getDocFolderPath(doc, browseMode),
+                        };
+                        return (
+                          <DocumentCard
+                            key={doc.id}
+                            document={activeDoc}
+                            onPreview={(d) => setPreviewDoc(d)}
+                            onDelete={(d) => setDeleteDoc(d)}
+                            onToggleFavorite={handleToggleFavorite}
+                            isSelected={selectedIds.includes(doc.id)}
+                            onSelect={handleToggleSelect}
+                            onNavigateFolder={navigateToFolder}
+                          />
+                        );
+                      })}
                     </div>
                   ) : (
                     <DocumentList
-                      documents={filteredAndSortedDocs}
+                      documents={filteredAndSortedDocs.map((doc) => ({
+                        ...doc,
+                        folderPath: getDocFolderPath(doc, browseMode),
+                      }))}
                       onPreview={(d) => setPreviewDoc(d)}
                       onDelete={(d) => setDeleteDoc(d)}
                       onToggleFavorite={handleToggleFavorite}

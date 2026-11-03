@@ -28,6 +28,8 @@ export type SortOption =
 
 export type ViewMode = 'grid' | 'list';
 
+export type BrowseMode = 'subject' | 'type';
+
 export interface StorageInfo {
   totalBytes: number;
   usedBytes: number;

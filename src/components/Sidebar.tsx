@@ -43,6 +43,8 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   categoryCounts: Record<string, number>;
+  browseMode?: 'subject' | 'type';
+  onBrowseModeChange?: (mode: 'subject' | 'type') => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -60,9 +62,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   onClose,
   categoryCounts,
+  browseMode = 'subject',
+  onBrowseModeChange,
 }) => {
   const isPWActive = currentPath === 'Physics Wallah Content' || currentPath.startsWith('Physics Wallah Content/');
   const isAgyActive = currentPath === 'agy ai genrated' || currentPath.startsWith('agy ai genrated/');
+
+  const subjectSections: SidebarCategory[] = [
+    {
+      id: 'physics',
+      name: 'Physics',
+      path: 'Physics Wallah Content/Physics',
+      icon: <span className="text-sky-400">⚡</span>,
+    },
+    {
+      id: 'chemistry',
+      name: 'Chemistry',
+      path: 'Physics Wallah Content/Chemistry',
+      icon: <span className="text-emerald-400">🧪</span>,
+    },
+    {
+      id: 'maths',
+      name: 'Maths',
+      path: 'Physics Wallah Content/Maths',
+      icon: <span className="text-indigo-400">📐</span>,
+    },
+  ];
 
   const pwSections: SidebarCategory[] = [
     {
@@ -249,7 +274,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               {/* PW Sub-sections (Nested under PW Content) */}
               <div className="pl-3 space-y-0.5 border-l border-zinc-900 ml-3">
-                {pwSections.map((section) => {
+                {/* Arrangement Toggle Link */}
+                {onBrowseModeChange && (
+                  <div className="flex items-center justify-between text-[10px] text-zinc-500 pb-1 mb-1 border-b border-zinc-900 px-1">
+                    <span>Arranged by:</span>
+                    <button
+                      type="button"
+                      onClick={() => onBrowseModeChange(browseMode === 'subject' ? 'type' : 'subject')}
+                      className="text-amber-400 hover:text-amber-300 transition-colors font-semibold cursor-pointer"
+                      title="Click to toggle between Subject view and Format view"
+                    >
+                      {browseMode === 'subject' ? '⚡ Subjects' : '📚 Format'} ⇄
+                    </button>
+                  </div>
+                )}
+
+                {(browseMode === 'subject' ? subjectSections : pwSections).map((section) => {
                   const isActive =
                     !isStarredView &&
                     !isRecentView &&
