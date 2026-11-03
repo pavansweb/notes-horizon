@@ -10,6 +10,7 @@ import {
   Eye,
   Trash2,
   Share2,
+  Folder,
 } from 'lucide-react';
 import { useToast } from './Toast';
 
@@ -128,14 +129,16 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
                   e.stopPropagation();
                   onNavigateFolder(document.folderPath!);
                 }}
-                className="text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900/90 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.5 rounded font-mono truncate max-w-full text-left transition-colors cursor-pointer"
+                className="flex items-center text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.5 rounded font-mono truncate max-w-full text-left transition-colors cursor-pointer"
                 title={`Open folder: ${document.folderPath}`}
               >
-                📁 {document.folderPath.split('/').slice(-2).join(' / ')}
+                <Folder className="w-3 h-3 text-zinc-500 mr-1 shrink-0" />
+                <span className="truncate">{document.folderPath.split('/').slice(-2).join(' / ')}</span>
               </button>
             ) : (
-              <span className="text-[10px] text-zinc-400 bg-zinc-900/90 border border-zinc-800 px-1.5 py-0.5 rounded font-mono truncate max-w-full">
-                📁 {document.folderPath.split('/').slice(-2).join(' / ')}
+              <span className="flex items-center text-[10px] text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono truncate max-w-full">
+                <Folder className="w-3 h-3 text-zinc-500 mr-1 shrink-0" />
+                <span className="truncate">{document.folderPath.split('/').slice(-2).join(' / ')}</span>
               </span>
             )}
           </div>

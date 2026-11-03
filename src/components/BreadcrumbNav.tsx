@@ -110,26 +110,26 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
             <button
               type="button"
               onClick={() => onBrowseModeChange('subject')}
-              className={`px-2 py-0.5 rounded transition-colors cursor-pointer flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
                 browseMode === 'subject'
-                  ? 'bg-amber-500/20 text-amber-300 font-medium'
+                  ? 'bg-zinc-800 text-white font-medium'
                   : 'text-zinc-500 hover:text-zinc-300'
               }`}
-              title="Organize by Subject (Physics • Chemistry • Maths)"
+              title="Organize by Subject"
             >
-              <span>⚡ Subject</span>
+              Subject
             </button>
             <button
               type="button"
               onClick={() => onBrowseModeChange('type')}
-              className={`px-2 py-0.5 rounded transition-colors cursor-pointer flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
                 browseMode === 'type'
-                  ? 'bg-sky-500/20 text-sky-300 font-medium'
+                  ? 'bg-zinc-800 text-white font-medium'
                   : 'text-zinc-500 hover:text-zinc-300'
               }`}
-              title="Organize by Format (Mindmaps • Short Notes • PYQs)"
+              title="Organize by Format"
             >
-              <span>📚 Format</span>
+              Format
             </button>
           </div>
         )}

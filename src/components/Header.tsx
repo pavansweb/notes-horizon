@@ -81,36 +81,32 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Small Headbar Toggle: Subject-wise vs Mindmaps/Flowcharts */}
+          {/* Headbar Toggle: Subject vs Format */}
           {onBrowseModeChange && (
-            <div className="flex items-center bg-zinc-900/90 border border-zinc-800 rounded-lg p-0.5 text-xs shrink-0">
+            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 text-xs shrink-0">
               <button
                 type="button"
                 onClick={() => onBrowseModeChange('subject')}
-                className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-md transition-all cursor-pointer text-[11px] font-medium ${
+                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-xs font-medium ${
                   browseMode === 'subject'
-                    ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30 shadow-xs'
+                    ? 'bg-zinc-800 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
-                title="Arrange by Subject: Physics • Chemistry • Maths"
+                title="Arrange by Subject"
               >
-                <span>⚡</span>
-                <span className="hidden sm:inline">Subject-wise</span>
-                <span className="sm:hidden">Subject</span>
+                Subject
               </button>
               <button
                 type="button"
                 onClick={() => onBrowseModeChange('type')}
-                className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-md transition-all cursor-pointer text-[11px] font-medium ${
+                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-xs font-medium ${
                   browseMode === 'type'
-                    ? 'bg-sky-500/20 text-sky-200 border border-sky-500/30 shadow-xs'
+                    ? 'bg-zinc-800 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
-                title="Arrange by Format: Mindmaps & Flowcharts • Short Notes • Teacher Kits"
+                title="Arrange by Format"
               >
-                <span>🧠</span>
-                <span className="hidden sm:inline">Mindmaps & Flowcharts</span>
-                <span className="sm:hidden">Mindmaps</span>
+                Format
               </button>
             </div>
           )}

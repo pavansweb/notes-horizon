@@ -8,12 +8,12 @@ import {
   BookOpen,
   FlaskConical,
   Award,
-  GraduationCap,
-  Sparkles,
   ChevronRight,
   HardDrive,
   X,
-  Bot,
+  Atom,
+  Calculator,
+  FileText,
 } from 'lucide-react';
 import { StorageInfo } from '@/types/document';
 import { formatBytes } from '@/lib/utils';
@@ -73,19 +73,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'physics',
       name: 'Physics',
       path: 'Physics Wallah Content/Physics',
-      icon: <span className="text-sky-400">⚡</span>,
+      icon: <Atom className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'chemistry',
       name: 'Chemistry',
       path: 'Physics Wallah Content/Chemistry',
-      icon: <span className="text-emerald-400">🧪</span>,
+      icon: <FlaskConical className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'maths',
       name: 'Maths',
       path: 'Physics Wallah Content/Maths',
-      icon: <span className="text-indigo-400">📐</span>,
+      icon: <Calculator className="w-3.5 h-3.5 text-zinc-400" />,
     },
   ];
 
@@ -94,31 +94,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'mindmaps',
       name: 'Mindmaps & Flowcharts',
       path: 'Physics Wallah Content/Mindmaps & Flowcharts',
-      icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
+      icon: <BookOpen className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'short-notes',
       name: 'Short Notes',
       path: 'Physics Wallah Content/Short Notes',
-      icon: <BookOpen className="w-3.5 h-3.5 text-emerald-400" />,
+      icon: <FileText className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'formula-sheets',
       name: 'Formula Sheets',
       path: 'Physics Wallah Content/Formula Sheets',
-      icon: <FlaskConical className="w-3.5 h-3.5 text-amber-400" />,
+      icon: <FlaskConical className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'question-papers',
       name: 'Question Papers',
       path: 'Physics Wallah Content/Question Papers',
-      icon: <Award className="w-3.5 h-3.5 text-indigo-400" />,
+      icon: <Award className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'teacher-kits',
       name: 'Teacher Kits',
       path: 'Physics Wallah Content/Teacher Kits',
-      icon: <GraduationCap className="w-3.5 h-3.5 text-violet-400" />,
+      icon: <Folder className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'syllabus',
@@ -266,7 +266,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-2 truncate pr-1">
-                  <GraduationCap className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Folder className="w-4 h-4 text-zinc-300 shrink-0" />
                   <span className="truncate">Physics Wallah</span>
                 </div>
                 <span className="text-[10px] font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
@@ -283,10 +283,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       type="button"
                       onClick={() => onBrowseModeChange(browseMode === 'subject' ? 'type' : 'subject')}
-                      className="text-amber-400 hover:text-amber-300 transition-colors font-semibold cursor-pointer"
-                      title="Click to toggle between Subject view and Format view"
+                      className="text-zinc-300 hover:text-white transition-colors font-medium cursor-pointer"
+                      title="Toggle between Subject view and Format view"
                     >
-                      {browseMode === 'subject' ? '⚡ Subjects' : '📚 Format'} ⇄
+                      {browseMode === 'subject' ? 'Subject' : 'Format'} ⇄
                     </button>
                   </div>
                 )}
@@ -335,16 +335,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                   isAgyActive
-                    ? 'bg-violet-500/15 text-violet-200 font-semibold border border-violet-500/30'
+                    ? 'bg-zinc-800 text-white font-medium border border-zinc-700'
                     : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
                 }`}
               >
                 <div className="flex items-center gap-2 truncate pr-1">
-                  <Bot className="w-4 h-4 text-violet-400 shrink-0" />
+                  <Folder className="w-4 h-4 text-zinc-400 shrink-0" />
                   <span className="truncate">agy ai genrated</span>
                 </div>
-                <span className="text-[10px] font-mono text-violet-300 shrink-0 bg-violet-500/20 px-1.5 py-0.2 rounded border border-violet-500/30">
-                  AI
+                <span className="text-[10px] font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
+                  Empty
                 </span>
               </button>
             </div>
@@ -368,7 +368,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }}
                     className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-violet-500/15 text-violet-300 font-semibold border border-violet-500/30'
+                        ? 'bg-zinc-800 text-white font-medium border border-zinc-700'
                         : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
                     }`}
                   >
@@ -386,24 +386,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Filter by Subject
             </div>
             <div className="grid grid-cols-2 gap-1 px-1">
-              {[
-                { label: 'All', value: 'All' },
-                { label: 'Physics', value: 'Physics', icon: '⚡' },
-                { label: 'Chemistry', value: 'Chemistry', icon: '🧪' },
-                { label: 'Maths', value: 'Maths', icon: '📐' },
-              ].map((subj) => (
+              {['All', 'Physics', 'Chemistry', 'Maths'].map((subj) => (
                 <button
-                  key={subj.value}
+                  key={subj}
                   type="button"
-                  onClick={() => onSelectSubject(subj.value)}
-                  className={`flex items-center justify-center gap-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
-                    selectedSubject === subj.value
+                  onClick={() => onSelectSubject(subj)}
+                  className={`flex items-center justify-center py-1 px-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
+                    selectedSubject === subj
                       ? 'bg-zinc-200 text-zinc-950 font-semibold shadow-xs'
                       : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
                   }`}
                 >
-                  {subj.icon && <span>{subj.icon}</span>}
-                  <span>{subj.label}</span>
+                  <span>{subj}</span>
                 </button>
               ))}
             </div>

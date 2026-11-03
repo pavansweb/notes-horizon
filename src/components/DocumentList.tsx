@@ -10,6 +10,7 @@ import {
   Eye,
   Trash2,
   Share2,
+  Folder,
 } from 'lucide-react';
 import { useToast } from './Toast';
 
@@ -116,10 +117,11 @@ export const DocumentList: React.FC<DocumentListProps> = ({
                                 e.stopPropagation();
                                 onNavigateFolder(doc.folderPath!);
                               }}
-                              className="text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.2 rounded font-mono truncate transition-colors"
+                              className="inline-flex items-center text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.2 rounded font-mono truncate transition-colors"
                               title={`Open folder: ${doc.folderPath}`}
                             >
-                              📁 {doc.folderPath.split('/').slice(-2).join(' / ')}
+                              <Folder className="w-3 h-3 text-zinc-500 mr-1 shrink-0" />
+                              <span className="truncate">{doc.folderPath.split('/').slice(-2).join(' / ')}</span>
                             </button>
                           )}
                         </div>

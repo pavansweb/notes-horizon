@@ -22,10 +22,6 @@ import {
   Search,
   Star,
   Clock,
-  Sparkles,
-  Atom,
-  BookOpen,
-  Compass,
 } from 'lucide-react';
 
 // Maps a document's relative path based on user's preferred browse arrangement
@@ -185,8 +181,8 @@ export default function Home() {
     });
     showToast(
       mode === 'subject'
-        ? 'Arranged by Subject (Physics • Chemistry • Maths)'
-        : 'Arranged by Format (Mindmaps & Flowcharts • Short Notes • Question Papers)',
+        ? 'Arranged by Subject'
+        : 'Arranged by Format',
       'info'
     );
   }, [showToast]);
@@ -759,97 +755,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Arrangement Choice Card (Homepage Root Prompt) */}
-          {currentFolderPath === '' && searchQuery.trim().length === 0 && !isStarredView && !isRecentView && (
-            <div className="p-4 sm:p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <div>
-                  <h2 className="text-xs sm:text-sm font-semibold text-white flex items-center gap-2">
-                    <Compass className="w-4 h-4 text-amber-400" />
-                    <span>How would you like to arrange your notes?</span>
-                  </h2>
-                  <p className="text-[11px] text-zinc-400 mt-0.5">
-                    Select how JEE study materials are grouped and navigated throughout the app:
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Option 1: By Subject */}
-                <button
-                  type="button"
-                  onClick={() => handleBrowseModeChange('subject')}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                    browseMode === 'subject'
-                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-200 shadow-sm shadow-amber-500/5'
-                      : 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-                  }`}
-                >
-                  <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                      browseMode === 'subject'
-                        ? 'bg-amber-500/20 text-amber-300'
-                        : 'bg-zinc-900 text-zinc-400'
-                    }`}
-                  >
-                    <Atom className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs sm:text-sm font-semibold text-white">
-                        By Subject
-                      </span>
-                      {browseMode === 'subject' && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300 font-semibold">
-                          Active
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">
-                      Physics • Chemistry • Maths &rarr; each with its own Class 11, Class 12 notes, formula sheets & PYQs.
-                    </p>
-                  </div>
-                </button>
-
-                {/* Option 2: By Resource Format */}
-                <button
-                  type="button"
-                  onClick={() => handleBrowseModeChange('type')}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                    browseMode === 'type'
-                      ? 'bg-sky-500/15 border-sky-500/40 text-sky-200 shadow-sm shadow-sky-500/5'
-                      : 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-                  }`}
-                >
-                  <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                      browseMode === 'type'
-                        ? 'bg-sky-500/20 text-sky-300'
-                        : 'bg-zinc-900 text-zinc-400'
-                    }`}
-                  >
-                    <BookOpen className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs sm:text-sm font-semibold text-white">
-                        By Resource Format
-                      </span>
-                      {browseMode === 'type' && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-sky-500/30 text-sky-300 font-semibold">
-                          Active
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">
-                      Mindmaps • Short Notes • Question Papers • Teacher Kits &rarr; divided across all subjects.
-                    </p>
-                  </div>
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Search Header Banner */}
           {searchQuery.trim().length > 0 && (
             <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
@@ -1066,37 +971,23 @@ export default function Home() {
                   )
                 ) : currentSubfolders.length === 0 ? (
                   currentFolderPath === 'agy ai genrated' ? (
-                    <div className="py-16 sm:py-24 flex flex-col items-center justify-center text-center p-6 sm:p-10 border border-dashed border-violet-500/30 rounded-2xl bg-linear-to-b from-violet-950/20 via-zinc-950/40 to-transparent">
-                      <div className="w-14 h-14 rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300 mb-4 shadow-lg shadow-violet-500/10">
-                        <Sparkles className="w-7 h-7" />
+                    <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-xl bg-zinc-950/40">
+                      <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
+                        <FolderOpen className="w-5 h-5 text-zinc-400" />
                       </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-base sm:text-lg font-bold text-white">
-                          agy ai genrated
-                        </h3>
-                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 font-semibold">
-                          Empty
-                        </span>
-                      </div>
-                      <p className="text-xs text-zinc-400 max-w-md mb-6 leading-relaxed">
-                        This workspace is currently empty. AI-generated notes, formula sheets, chapter summaries, and practice problem sets from Antigravity AI will be automatically saved and organized here.
+                      <h3 className="text-sm font-medium text-zinc-200 mb-1">
+                        agy ai genrated
+                      </h3>
+                      <p className="text-xs text-zinc-500 max-w-sm mb-4">
+                        This folder is currently empty.
                       </p>
-                      <div className="flex items-center gap-3 flex-wrap justify-center">
-                        <button
-                          type="button"
-                          onClick={() => navigateToFolder('Physics Wallah Content')}
-                          className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-xs font-semibold text-amber-200 transition-colors cursor-pointer"
-                        >
-                          Explore Physics Wallah Content →
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => navigateToFolder('')}
-                          className="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
-                        >
-                          Return to Library Root
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigateToFolder('Physics Wallah Content')}
+                        className="px-3.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                      >
+                        Open Physics Wallah Content
+                      </button>
                     </div>
                   ) : (
                     <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
