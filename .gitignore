@@ -20,6 +20,13 @@
 # production
 /build
 
+# credentials & service accounts
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+
 # misc
 .DS_Store
 *.pem

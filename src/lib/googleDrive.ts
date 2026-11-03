@@ -1,5 +1,7 @@
 import { google } from 'googleapis';
 import { Readable } from 'stream';
+import fs from 'fs';
+import path from 'path';
 import { PDFDocument } from '@/types/document';
 import { saveMetadata, updateMetadata, removeMetadata, getAllMetadata } from './metadata';
 
@@ -8,15 +10,52 @@ export interface DriveConfig {
   folderId?: string;
 }
 
+function getServiceAccountCredentials() {
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+    return {
+      email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    };
+  }
+
+  // Auto-detect JSON file in workspace root during local development
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      const files = fs.readdirSync(/*turbopackIgnore: true*/ process.cwd());
+      const jsonFile = files.find(
+        (f) =>
+          f.endsWith('.json') &&
+          !['package.json', 'package-lock.json', 'tsconfig.json', 'components.json'].includes(f)
+      );
+      if (jsonFile) {
+        const filePath = path.join(process.cwd(), jsonFile);
+        const content = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8');
+        const data = JSON.parse(content);
+        if (data.type === 'service_account' && data.client_email && data.private_key) {
+          return {
+            email: data.client_email,
+            key: data.private_key,
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('Could not read local service account json:', err);
+    }
+  }
+
+  return null;
+}
+
 export function getDriveConfig(): DriveConfig | null {
   const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+  const saCreds = getServiceAccountCredentials();
 
   // Option 1: Service Account
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+  if (saCreds) {
     try {
       const auth = new google.auth.JWT({
-        email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        email: saCreds.email,
+        key: saCreds.key,
         scopes: ['https://www.googleapis.com/auth/drive'],
       });
       return { drive: google.drive({ version: 'v3', auth }), folderId };
