@@ -10,6 +10,39 @@ export interface DriveConfig {
   folderId?: string;
 }
 
+// In-memory cache for Drive files list (30s TTL for fast navigation)
+let cachedDriveDocs: PDFDocument[] | null = null;
+let cachedDriveDocsTime = 0;
+const CACHE_TTL_MS = 30 * 1000;
+
+export function invalidateDriveCache() {
+  cachedDriveDocs = null;
+  cachedDriveDocsTime = 0;
+}
+
+// Load .upload-cache.json once if available for instant path lookups
+let uploadCacheMap: Record<string, string> | null = null;
+function getUploadCacheMap(): Record<string, string> {
+  if (uploadCacheMap) return uploadCacheMap;
+  uploadCacheMap = {};
+  try {
+    const cachePath = path.join(process.cwd(), '.upload-cache.json');
+    if (fs.existsSync(cachePath)) {
+      const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      if (data && data.files) {
+        for (const item of Object.values(data.files) as any[]) {
+          if (item?.id && item?.relPath) {
+            uploadCacheMap[item.id] = item.relPath;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Could not read .upload-cache.json:', err);
+  }
+  return uploadCacheMap;
+}
+
 function getServiceAccountCredentials() {
   if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
     return {
@@ -154,6 +187,8 @@ export async function uploadToDrive(
     contentType: 'application/pdf',
   });
 
+  invalidateDriveCache();
+
   return {
     id: docId,
     name: filename,
@@ -170,11 +205,17 @@ export async function uploadToDrive(
 }
 
 export async function listDriveFiles(): Promise<PDFDocument[]> {
+  const now = Date.now();
+  if (cachedDriveDocs && now - cachedDriveDocsTime < CACHE_TTL_MS) {
+    return cachedDriveDocs;
+  }
+
   const config = getDriveConfig();
   if (!config) return [];
 
   const { drive, folderId } = config;
   const metadataMap = await getAllMetadata();
+  const cacheMap = getUploadCacheMap();
 
   let query = "trashed = false and mimeType = 'application/pdf'";
   if (folderId) {
@@ -202,7 +243,7 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
         q: query,
         fields: 'nextPageToken, files(id, name, size, webViewLink, webContentLink, createdTime, description)',
         orderBy: 'createdTime desc',
-        pageSize: 100,
+        pageSize: 1000,
         pageToken: pageToken,
       });
 
@@ -226,17 +267,67 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
 
     let tags: string[] = meta?.tags || [];
     let notes: string = meta?.notes || '';
+    let relPath: string = '';
 
     // If description holds meta json
     if (f.description) {
       try {
         const parsed = JSON.parse(f.description);
         if (parsed.tags && (!tags || tags.length === 0)) tags = parsed.tags;
-        if (parsed.notes && !notes) notes = parsed.notes;
+        if (parsed.notes) {
+          const match = parsed.notes.match(/Relative path:\s*(.+)/i);
+          if (match) {
+            relPath = match[1].trim();
+          } else if (!notes) {
+            notes = parsed.notes;
+          }
+        }
       } catch {
         if (!notes) notes = f.description;
       }
     }
+
+    // Fallback to cacheMap if relPath wasn't in description
+    if (!relPath && f.id && cacheMap[f.id]) {
+      relPath = cacheMap[f.id];
+    }
+
+    let folderPath = '';
+    if (relPath) {
+      const dir = path.dirname(relPath);
+      if (dir && dir !== '.') {
+        folderPath = dir.replace(/\\/g, '/');
+      }
+    }
+
+    const folderParts = folderPath ? folderPath.split('/').filter(Boolean) : [];
+    const category = folderParts[0] || (tags[0] ?? 'General');
+
+    // Infer subject
+    let subject: 'Physics' | 'Chemistry' | 'Maths' | 'General' = 'General';
+    const checkStr = (folderPath + ' ' + (f.name || '') + ' ' + tags.join(' ')).toLowerCase();
+    if (checkStr.includes('physics') || checkStr.includes('phy')) {
+      subject = 'Physics';
+    } else if (
+      checkStr.includes('chemistry') ||
+      checkStr.includes('chem') ||
+      checkStr.includes('organic')
+    ) {
+      subject = 'Chemistry';
+    } else if (
+      checkStr.includes('maths') ||
+      checkStr.includes('mathematics') ||
+      checkStr.includes('math')
+    ) {
+      subject = 'Maths';
+    }
+
+    // Infer classLevel
+    let classLevel: string | undefined = undefined;
+    if (folderPath.includes('Class 11')) classLevel = 'Class 11';
+    else if (folderPath.includes('Class 12')) classLevel = 'Class 12';
+    else if (folderPath.includes('JEE Advance')) classLevel = 'JEE Advance';
+    else if (folderPath.includes('JEE Mains')) classLevel = 'JEE Mains';
 
     docs.push({
       id: docId,
@@ -250,9 +341,16 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
       notes,
       pathname: f.id,
       contentType: 'application/pdf',
+      folderPath,
+      folderParts,
+      category,
+      subject,
+      classLevel,
     });
   }
 
+  cachedDriveDocs = docs;
+  cachedDriveDocsTime = Date.now();
   return docs;
 }
 
@@ -264,6 +362,7 @@ export async function deleteDriveFile(fileId: string): Promise<boolean> {
   try {
     await config.drive.files.delete({ fileId: cleanId });
     await removeMetadata(`gdrive-${cleanId}`);
+    invalidateDriveCache();
     return true;
   } catch (err) {
     console.error('Error deleting file from Google Drive:', err);
@@ -281,6 +380,7 @@ export async function updateDriveMetadata(
 
   const meta = await updateMetadata(docId, updates);
   if (!meta) return null;
+  invalidateDriveCache();
 
   if (config && updates.notes) {
     try {

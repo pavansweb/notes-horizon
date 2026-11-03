@@ -20,6 +20,7 @@ interface DocumentCardProps {
   onToggleFavorite: (id: string, currentState: boolean) => void;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
+  onNavigateFolder?: (folderPath: string) => void;
 }
 
 export const DocumentCard: React.FC<DocumentCardProps> = ({
@@ -29,6 +30,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
   onToggleFavorite,
   isSelected,
   onSelect,
+  onNavigateFolder,
 }) => {
   const { showToast } = useToast();
 
@@ -56,17 +58,36 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
     window.document.body.removeChild(link);
   };
 
+  // Determine subject colors
+  let subjectBadgeColor = 'text-zinc-400 bg-zinc-800/80 border-zinc-700/50';
+  let iconColor = 'text-zinc-300';
+  if (document.subject === 'Physics') {
+    subjectBadgeColor = 'text-sky-300 bg-sky-500/10 border-sky-500/20';
+    iconColor = 'text-sky-400';
+  } else if (document.subject === 'Chemistry') {
+    subjectBadgeColor = 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
+    iconColor = 'text-emerald-400';
+  } else if (document.subject === 'Maths') {
+    subjectBadgeColor = 'text-indigo-300 bg-indigo-500/10 border-indigo-500/20';
+    iconColor = 'text-indigo-400';
+  }
+
+  // Filter out internal "Relative path:" string from user notes display
+  const userNotes = document.notes && !document.notes.startsWith('Relative path:')
+    ? document.notes
+    : null;
+
   return (
     <div
       onClick={() => onPreview(document)}
-      className={`group relative flex flex-col justify-between bg-zinc-900/40 hover:bg-zinc-900/80 border rounded-xl p-4 transition-colors cursor-pointer ${
+      className={`group relative flex flex-col justify-between bg-zinc-900/40 hover:bg-zinc-900/80 border rounded-xl p-4 transition-all duration-150 cursor-pointer ${
         isSelected
-          ? 'border-zinc-500 bg-zinc-900/90'
-          : 'border-zinc-800/80 hover:border-zinc-700'
+          ? 'border-zinc-500 bg-zinc-900/90 shadow-md'
+          : 'border-zinc-800/80 hover:border-zinc-700 hover:-translate-y-0.5'
       }`}
     >
       <div>
-        <div className="flex items-start justify-between gap-2.5 mb-3">
+        <div className="flex items-start justify-between gap-2.5 mb-2.5">
           <div className="flex items-center gap-2.5">
             {onSelect && (
               <input
@@ -79,7 +100,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
               />
             )}
             <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300">
-              <FileText className="w-4 h-4 text-zinc-300" />
+              <FileText className={`w-4 h-4 ${iconColor}`} />
             </div>
           </div>
 
@@ -103,6 +124,29 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
           </button>
         </div>
 
+        {/* Folder badge if document has a path */}
+        {document.folderPath && (
+          <div className="mb-1.5 flex items-center">
+            {onNavigateFolder ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNavigateFolder(document.folderPath!);
+                }}
+                className="text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900/90 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.5 rounded font-mono truncate max-w-full text-left transition-colors cursor-pointer"
+                title={`Open folder: ${document.folderPath}`}
+              >
+                📁 {document.folderPath.split('/').slice(-2).join(' / ')}
+              </button>
+            ) : (
+              <span className="text-[10px] text-zinc-400 bg-zinc-900/90 border border-zinc-800 px-1.5 py-0.5 rounded font-mono truncate max-w-full">
+                📁 {document.folderPath.split('/').slice(-2).join(' / ')}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Title */}
         <h3
           title={document.name}
@@ -112,30 +156,39 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
         </h3>
 
         {/* Notes preview */}
-        {document.notes && (
+        {userNotes && (
           <p className="text-[11px] text-zinc-400 line-clamp-1 mb-2">
-            {document.notes}
+            {userNotes}
           </p>
         )}
 
-        {/* Tags */}
-        {document.tags && document.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
-            {document.tags.slice(0, 3).map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] text-zinc-400 bg-zinc-800/80 border border-zinc-700/50 px-1.5 py-0.5 rounded"
-              >
-                {tag}
-              </span>
-            ))}
-            {document.tags.length > 3 && (
-              <span className="text-[10px] text-zinc-400">
-                +{document.tags.length - 3}
-              </span>
-            )}
-          </div>
-        )}
+        {/* Tags / Subject */}
+        <div className="flex flex-wrap gap-1 mb-2">
+          {document.subject && document.subject !== 'General' && (
+            <span
+              className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${subjectBadgeColor}`}
+            >
+              {document.subject}
+            </span>
+          )}
+          {document.classLevel && (
+            <span className="text-[10px] text-zinc-400 bg-zinc-800/80 border border-zinc-700/50 px-1.5 py-0.5 rounded">
+              {document.classLevel}
+            </span>
+          )}
+          {document.tags &&
+            document.tags
+              .filter((t) => t !== document.subject && t !== document.classLevel)
+              .slice(0, 2)
+              .map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-[10px] text-zinc-400 bg-zinc-800/60 border border-zinc-800 px-1.5 py-0.5 rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+        </div>
       </div>
 
       {/* Footer */}

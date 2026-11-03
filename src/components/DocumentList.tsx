@@ -21,6 +21,7 @@ interface DocumentListProps {
   selectedIds: string[];
   onToggleSelect: (id: string) => void;
   onToggleSelectAll: () => void;
+  onNavigateFolder?: (folderPath: string) => void;
 }
 
 export const DocumentList: React.FC<DocumentListProps> = ({
@@ -31,6 +32,7 @@ export const DocumentList: React.FC<DocumentListProps> = ({
   selectedIds,
   onToggleSelect,
   onToggleSelectAll,
+  onNavigateFolder,
 }) => {
   const { showToast } = useToast();
   const allSelected = documents.length > 0 && selectedIds.length === documents.length;
@@ -109,10 +111,25 @@ export const DocumentList: React.FC<DocumentListProps> = ({
                         <FileText className="w-3.5 h-3.5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-medium text-zinc-200 group-hover:text-white truncate max-w-xs sm:max-w-md">
-                          {doc.name}
-                        </p>
-                        {doc.notes && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-medium text-zinc-200 group-hover:text-white truncate max-w-xs sm:max-w-md">
+                            {doc.name}
+                          </p>
+                          {doc.folderPath && onNavigateFolder && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onNavigateFolder(doc.folderPath!);
+                              }}
+                              className="text-[10px] text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-1.5 py-0.2 rounded font-mono truncate transition-colors"
+                              title={`Open folder: ${doc.folderPath}`}
+                            >
+                              📁 {doc.folderPath.split('/').slice(-2).join(' / ')}
+                            </button>
+                          )}
+                        </div>
+                        {doc.notes && !doc.notes.startsWith('Relative path:') && (
                           <p className="text-[11px] text-zinc-400 truncate max-w-xs sm:max-w-md">
                             {doc.notes}
                           </p>

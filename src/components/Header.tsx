@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Plus, FolderOpen } from 'lucide-react';
+import { Search, Plus, FolderOpen, Menu } from 'lucide-react';
 import { formatBytes } from '@/lib/utils';
 import { StorageInfo } from '@/types/document';
 
@@ -10,6 +10,7 @@ interface HeaderProps {
   onSearchChange: (query: string) => void;
   onOpenUpload: () => void;
   stats: StorageInfo;
+  onToggleSidebar?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchChange,
   onOpenUpload,
   stats,
+  onToggleSidebar,
 }) => {
   const percentUsed = Math.min(
     100,
@@ -25,18 +27,29 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo / Title */}
           <div className="flex items-center gap-3">
+            {onToggleSidebar && (
+              <button
+                type="button"
+                onClick={onToggleSidebar}
+                aria-label="Toggle navigation menu"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 md:hidden cursor-pointer"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+            )}
+
             <div className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-100">
-              <FolderOpen className="w-4 h-4 text-zinc-200" />
+              <FolderOpen className="w-4 h-4 text-amber-400" />
             </div>
 
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold tracking-tight text-zinc-100">
-                  JEE Resources
+                  JEE Horizon
                 </span>
                 <span className="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded">
                   {stats.fileCount} {stats.fileCount === 1 ? 'file' : 'files'}

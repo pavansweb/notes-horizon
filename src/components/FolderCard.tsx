@@ -1,0 +1,79 @@
+'use client';
+
+import React from 'react';
+import { Folder, FolderOpen, ChevronRight, BookOpen, Atom, FlaskConical, Calculator, Award, GraduationCap } from 'lucide-react';
+import { FolderNode } from '@/types/document';
+
+interface FolderCardProps {
+  folder: FolderNode;
+  onClick: (path: string) => void;
+}
+
+export const FolderCard: React.FC<FolderCardProps> = ({ folder, onClick }) => {
+  // Determine icon & color theme based on name / subject / category
+  const lowerName = folder.name.toLowerCase();
+  const lowerCategory = (folder.category || '').toLowerCase();
+
+  let accentColor = 'from-amber-500/10 to-amber-500/5 text-amber-400 border-amber-500/20 group-hover:border-amber-500/40';
+  let icon = <Folder className="w-5 h-5 text-amber-400" />;
+
+  if (folder.subject === 'Physics' || lowerName.includes('physics')) {
+    accentColor = 'from-sky-500/15 to-blue-600/5 text-sky-400 border-sky-500/20 group-hover:border-sky-500/50 group-hover:shadow-sky-500/10';
+    icon = <Atom className="w-5 h-5 text-sky-400" />;
+  } else if (folder.subject === 'Chemistry' || lowerName.includes('chem') || lowerName.includes('organic')) {
+    accentColor = 'from-emerald-500/15 to-teal-600/5 text-emerald-400 border-emerald-500/20 group-hover:border-emerald-500/50 group-hover:shadow-emerald-500/10';
+    icon = <FlaskConical className="w-5 h-5 text-emerald-400" />;
+  } else if (folder.subject === 'Maths' || lowerName.includes('math')) {
+    accentColor = 'from-indigo-500/15 to-purple-600/5 text-indigo-400 border-indigo-500/20 group-hover:border-indigo-500/50 group-hover:shadow-indigo-500/10';
+    icon = <Calculator className="w-5 h-5 text-indigo-400" />;
+  } else if (lowerCategory.includes('teacher') || lowerName.includes('sir') || lowerName.includes('kit')) {
+    accentColor = 'from-violet-500/15 to-fuchsia-600/5 text-violet-400 border-violet-500/20 group-hover:border-violet-500/50 group-hover:shadow-violet-500/10';
+    icon = <GraduationCap className="w-5 h-5 text-violet-400" />;
+  } else if (lowerName.includes('100') || lowerCategory.includes('100')) {
+    accentColor = 'from-rose-500/15 to-pink-600/5 text-rose-400 border-rose-500/20 group-hover:border-rose-500/50 group-hover:shadow-rose-500/10';
+    icon = <Award className="w-5 h-5 text-rose-400" />;
+  } else if (lowerName.includes('notes') || lowerName.includes('mindmap') || lowerName.includes('formula')) {
+    accentColor = 'from-amber-500/15 to-yellow-600/5 text-amber-400 border-amber-500/20 group-hover:border-amber-500/50 group-hover:shadow-amber-500/10';
+    icon = <BookOpen className="w-5 h-5 text-amber-400" />;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onClick(folder.path)}
+      className={`group relative text-left flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-br ${accentColor} border bg-zinc-900/60 backdrop-blur-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer w-full`}
+    >
+      <div className="flex items-center gap-3 min-w-0 pr-2">
+        <div className="w-10 h-10 shrink-0 rounded-lg bg-zinc-900/90 border border-zinc-800 flex items-center justify-center transition-transform group-hover:scale-105">
+          {icon}
+        </div>
+
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-xs sm:text-sm font-semibold text-zinc-100 truncate group-hover:text-white transition-colors">
+              {folder.name}
+            </h3>
+          </div>
+
+          <div className="flex items-center gap-2 mt-0.5 text-[11px] text-zinc-400 font-mono">
+            {folder.subfolderCount > 0 && (
+              <span>
+                {folder.subfolderCount} {folder.subfolderCount === 1 ? 'folder' : 'folders'}
+              </span>
+            )}
+            {folder.subfolderCount > 0 && folder.totalFileCount > 0 && <span>•</span>}
+            {folder.totalFileCount > 0 && (
+              <span>
+                {folder.totalFileCount} {folder.totalFileCount === 1 ? 'file' : 'files'}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="shrink-0 pl-1 text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all">
+        <ChevronRight className="w-4 h-4" />
+      </div>
+    </button>
+  );
+};

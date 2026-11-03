@@ -12,6 +12,7 @@ export interface DocumentMetadata {
   isFavorite: boolean;
   notes?: string;
   contentType: string;
+  folderPath?: string;
 }
 
 const DATA_DIR = path.join(process.cwd(), 'data');

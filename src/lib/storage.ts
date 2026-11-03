@@ -50,6 +50,10 @@ export async function getDocumentList(): Promise<PDFDocument[]> {
         const id = blob.pathname.replace(/^pdf\//, '').replace(/\.pdf$/, '') || blob.url;
         const meta = metadataMap[id] || metadataMap[blob.url] || metadataMap[blob.pathname];
 
+        const folderPath = meta?.folderPath || '';
+        const folderParts = folderPath ? folderPath.split('/').filter(Boolean) : [];
+        const category = folderParts[0] || (meta?.tags?.[0] ?? 'General');
+
         docs.push({
           id,
           name: meta?.name || path.basename(blob.pathname),
@@ -62,6 +66,9 @@ export async function getDocumentList(): Promise<PDFDocument[]> {
           notes: meta?.notes || '',
           pathname: blob.pathname,
           contentType: 'application/pdf',
+          folderPath,
+          folderParts,
+          category,
         });
       }
 
@@ -86,6 +93,10 @@ export async function getDocumentList(): Promise<PDFDocument[]> {
       const docId = file;
       const originalName = meta?.name || file.replace(/^[0-9]+-/, '');
 
+      const folderPath = meta?.folderPath || '';
+      const folderParts = folderPath ? folderPath.split('/').filter(Boolean) : [];
+      const category = folderParts[0] || (meta?.tags?.[0] ?? 'General');
+
       docs.push({
         id: docId,
         name: originalName,
@@ -98,6 +109,9 @@ export async function getDocumentList(): Promise<PDFDocument[]> {
         notes: meta?.notes || '',
         pathname: file,
         contentType: 'application/pdf',
+        folderPath,
+        folderParts,
+        category,
       });
     }
 

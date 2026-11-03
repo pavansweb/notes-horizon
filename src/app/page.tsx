@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { PDFDocument, StorageInfo, SortOption, ViewMode } from '@/types/document';
+import { PDFDocument, StorageInfo, SortOption, ViewMode, FolderNode } from '@/types/document';
 import { Header } from '@/components/Header';
+import { Sidebar } from '@/components/Sidebar';
+import { BreadcrumbNav } from '@/components/BreadcrumbNav';
+import { FolderCard } from '@/components/FolderCard';
 import { DropZone } from '@/components/DropZone';
 import { DocumentCard } from '@/components/DocumentCard';
 import { DocumentList } from '@/components/DocumentList';
@@ -10,36 +13,44 @@ import { PDFViewerModal } from '@/components/PDFViewerModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 import { useToast } from '@/components/Toast';
 import {
-  LayoutGrid,
-  List as ListIcon,
-  ArrowUpDown,
   FileQuestion,
   RefreshCw,
   Trash2,
   Download,
+  FolderOpen,
+  Search,
   Star,
+  Clock,
+  Sparkles,
 } from 'lucide-react';
-
-const PRESET_TAGS = ['Physics', 'Chemistry', 'Maths', 'Notes', 'PYQs', 'Formula Sheet', 'Mock Tests'];
 
 export default function Home() {
   const { showToast } = useToast();
 
   const [documents, setDocuments] = useState<PDFDocument[]>([]);
   const [stats, setStats] = useState<StorageInfo>({
-    totalBytes: 1024 * 1024 * 1024,
+    totalBytes: 2 * 1024 * 1024 * 1024 * 1024,
     usedBytes: 0,
-    maxBytes: 1024 * 1024 * 1024,
+    maxBytes: 2 * 1024 * 1024 * 1024 * 1024,
     fileCount: 0,
     favoriteCount: 0,
-    isCloud: false,
+    isCloud: true,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedTag, setSelectedTag] = useState<string>('All');
-  const [sortOption, setSortOption] = useState<SortOption>('newest');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
+  // Navigation states
+  const [currentFolderPath, setCurrentFolderPath] = useState<string>('');
+  const [isStarredView, setIsStarredView] = useState<boolean>(false);
+  const [isRecentView, setIsRecentView] = useState<boolean>(false);
+  const [selectedSubject, setSelectedSubject] = useState<string>('All');
+  const [selectedClass, setSelectedClass] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortOption, setSortOption] = useState<SortOption>('chapter-asc');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [showAllNested, setShowAllNested] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  // Modal & Selection states
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [previewDoc, setPreviewDoc] = useState<PDFDocument | null>(null);
   const [deleteDoc, setDeleteDoc] = useState<PDFDocument | null>(null);
@@ -82,9 +93,53 @@ export default function Home() {
     };
   }, [refreshTrigger, showToast]);
 
-  // Keyboard shortcut '/' to focus search
+  // Read initial folder path from URL params
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const folderParam = params.get('folder');
+      if (folderParam) {
+        setCurrentFolderPath(folderParam);
+      }
+    }
+  }, []);
+
+  // Handle browser Back / Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const folderParam = params.get('folder') || '';
+      setCurrentFolderPath(folderParam);
+      setIsStarredView(false);
+      setIsRecentView(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Synchronize URL when folder path changes
+  const navigateToFolder = useCallback((path: string) => {
+    setCurrentFolderPath(path);
+    setIsStarredView(false);
+    setIsRecentView(false);
+    setSelectedIds([]);
+
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (path) {
+        url.searchParams.set('folder', path);
+      } else {
+        url.searchParams.delete('folder');
+      }
+      window.history.pushState({ folder: path }, '', url.toString());
+    }
+  }, []);
+
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Focus search with '/' or 'Cmd+K'
       if (
         (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key === 'k')) &&
         window.document.activeElement?.tagName !== 'INPUT'
@@ -94,53 +149,206 @@ export default function Home() {
           'input[type="search"]'
         ) as HTMLInputElement | null;
         searchInput?.focus();
+        return;
+      }
+
+      // Backspace to go up one folder level
+      if (
+        e.key === 'Backspace' &&
+        window.document.activeElement?.tagName !== 'INPUT' &&
+        window.document.activeElement?.tagName !== 'TEXTAREA' &&
+        !previewDoc &&
+        !deleteDoc
+      ) {
+        if (currentFolderPath) {
+          e.preventDefault();
+          const parts = currentFolderPath.split('/').filter(Boolean);
+          if (parts.length > 0) {
+            const parent = parts.slice(0, -1).join('/');
+            navigateToFolder(parent);
+          }
+        }
+      }
+
+      // Escape to clear search or close preview
+      if (e.key === 'Escape') {
+        if (searchQuery) setSearchQuery('');
+        if (isSidebarOpen) setIsSidebarOpen(false);
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [currentFolderPath, previewDoc, deleteDoc, searchQuery, isSidebarOpen, navigateToFolder]);
 
-  // Compute available tags (preset + any custom tags found on documents)
-  const allTags = useMemo(() => {
-    const set = new Set<string>(PRESET_TAGS);
-    documents.forEach((d) => {
-      d.tags?.forEach((t) => set.add(t));
+  // Build Folder Hierarchy from documents
+  const { folderMap, categoryCounts } = useMemo(() => {
+    const fMap = new Map<string, FolderNode>();
+    const catCounts: Record<string, number> = {};
+
+    documents.forEach((doc) => {
+      const folderPath = doc.folderPath || '';
+      if (!folderPath) return;
+
+      const parts = folderPath.split('/').filter(Boolean);
+      const topCat = parts[0] || 'General';
+      catCounts[topCat] = (catCounts[topCat] || 0) + 1;
+
+      for (let i = 0; i < parts.length; i++) {
+        const subPath = parts.slice(0, i + 1).join('/');
+        const parent = i === 0 ? '' : parts.slice(0, i).join('/');
+        const name = parts[i];
+
+        if (!fMap.has(subPath)) {
+          // Infer subject & classLevel for this folder
+          let subject: 'Physics' | 'Chemistry' | 'Maths' | 'General' | undefined = undefined;
+          const lower = subPath.toLowerCase();
+          if (lower.includes('physics')) subject = 'Physics';
+          else if (lower.includes('chemistry') || lower.includes('organic')) subject = 'Chemistry';
+          else if (lower.includes('maths') || lower.includes('math')) subject = 'Maths';
+
+          let classLevel: string | undefined = undefined;
+          if (subPath.includes('Class 11')) classLevel = 'Class 11';
+          else if (subPath.includes('Class 12')) classLevel = 'Class 12';
+          else if (subPath.includes('JEE Advance')) classLevel = 'JEE Advance';
+          else if (subPath.includes('JEE Mains')) classLevel = 'JEE Mains';
+
+          fMap.set(subPath, {
+            id: subPath,
+            name,
+            path: subPath,
+            depth: i,
+            parentPath: parent,
+            totalFileCount: 0,
+            directFileCount: 0,
+            subfolderCount: 0,
+            subject,
+            classLevel,
+            category: parts[0],
+          });
+        }
+
+        const node = fMap.get(subPath)!;
+        node.totalFileCount += 1;
+        if (i === parts.length - 1) {
+          node.directFileCount += 1;
+        }
+      }
     });
-    return Array.from(set);
+
+    // Compute subfolder counts
+    const parentChildrenMap = new Map<string, Set<string>>();
+    fMap.forEach((node) => {
+      if (!parentChildrenMap.has(node.parentPath)) {
+        parentChildrenMap.set(node.parentPath, new Set());
+      }
+      parentChildrenMap.get(node.parentPath)!.add(node.path);
+    });
+
+    fMap.forEach((node) => {
+      const childSet = parentChildrenMap.get(node.path);
+      node.subfolderCount = childSet ? childSet.size : 0;
+    });
+
+    return { folderMap: fMap, categoryCounts: catCounts };
   }, [documents]);
 
-  // Filter & Sort
+  // Subfolders in current view
+  const currentSubfolders = useMemo(() => {
+    if (isStarredView || isRecentView || searchQuery.trim().length > 0) {
+      return [];
+    }
+
+    const subfolders: FolderNode[] = [];
+    folderMap.forEach((node) => {
+      if (node.parentPath === currentFolderPath) {
+        // Filter by subject if chosen
+        if (selectedSubject !== 'All' && node.subject && node.subject !== selectedSubject) {
+          return;
+        }
+        // Filter by class if chosen
+        if (selectedClass !== 'All' && node.classLevel && node.classLevel !== selectedClass) {
+          return;
+        }
+        subfolders.push(node);
+      }
+    });
+
+    // Natural sort subfolders
+    subfolders.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+    );
+
+    return subfolders;
+  }, [folderMap, currentFolderPath, isStarredView, isRecentView, searchQuery, selectedSubject, selectedClass]);
+
+  // Filtered & sorted documents
   const filteredAndSortedDocs = useMemo(() => {
     let result = [...documents];
 
-    if (searchQuery.trim()) {
+    // Search query takes precedence for discovery across library
+    if (searchQuery.trim().length > 0) {
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (d) =>
           d.name.toLowerCase().includes(q) ||
+          d.folderPath?.toLowerCase().includes(q) ||
           d.notes?.toLowerCase().includes(q) ||
           d.tags?.some((t) => t.toLowerCase().includes(q))
       );
-    }
 
-    if (selectedTag === 'Starred') {
+      if (selectedSubject !== 'All') {
+        result = result.filter((d) => d.subject === selectedSubject || d.tags?.includes(selectedSubject));
+      }
+      if (selectedClass !== 'All') {
+        result = result.filter(
+          (d) => d.classLevel === selectedClass || d.folderPath?.includes(selectedClass)
+        );
+      }
+    } else if (isStarredView) {
       result = result.filter((d) => d.isFavorite);
-    } else if (selectedTag !== 'All') {
-      result = result.filter((d) => d.tags?.includes(selectedTag));
+    } else if (isRecentView) {
+      // All files sorted by uploadedAt
+    } else {
+      // Normal Folder Navigation
+      if (showAllNested) {
+        // Include everything in this folder and deeper
+        if (currentFolderPath) {
+          result = result.filter(
+            (d) => d.folderPath === currentFolderPath || d.folderPath?.startsWith(currentFolderPath + '/')
+          );
+        }
+      } else {
+        // Only direct files in this exact folder
+        result = result.filter((d) => (d.folderPath || '') === currentFolderPath);
+      }
+
+      // Subject filter
+      if (selectedSubject !== 'All') {
+        result = result.filter((d) => d.subject === selectedSubject || d.tags?.includes(selectedSubject));
+      }
+
+      // Class filter
+      if (selectedClass !== 'All') {
+        result = result.filter(
+          (d) => d.classLevel === selectedClass || d.folderPath?.includes(selectedClass)
+        );
+      }
     }
 
+    // Sorting
     result.sort((a, b) => {
+      if (sortOption === 'chapter-asc' || sortOption === 'name-asc') {
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+      }
+      if (sortOption === 'name-desc') {
+        return b.name.localeCompare(a.name, undefined, { numeric: true, sensitivity: 'base' });
+      }
       if (sortOption === 'newest') {
         return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime();
       }
       if (sortOption === 'oldest') {
         return new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime();
-      }
-      if (sortOption === 'name-asc') {
-        return a.name.localeCompare(b.name);
-      }
-      if (sortOption === 'name-desc') {
-        return b.name.localeCompare(a.name);
       }
       if (sortOption === 'size-desc') {
         return b.size - a.size;
@@ -152,7 +360,17 @@ export default function Home() {
     });
 
     return result;
-  }, [documents, searchQuery, selectedTag, sortOption]);
+  }, [
+    documents,
+    searchQuery,
+    isStarredView,
+    isRecentView,
+    currentFolderPath,
+    showAllNested,
+    selectedSubject,
+    selectedClass,
+    sortOption,
+  ]);
 
   // Toggle favorite
   const handleToggleFavorite = async (id: string, currentState: boolean) => {
@@ -175,7 +393,7 @@ export default function Home() {
       setDocuments((prev) =>
         prev.map((d) => (d.id === id ? { ...d, isFavorite: currentState } : d))
       );
-      showToast('Failed to update', 'error');
+      showToast('Failed to update favorite', 'error');
     }
   };
 
@@ -278,253 +496,301 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 antialiased selection:bg-zinc-800 selection:text-white">
-      {/* Header */}
+      {/* Sticky Header */}
       <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onOpenUpload={() => setIsUploadOpen((prev) => !prev)}
         stats={stats}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-4">
-        {/* Upload Drawer */}
-        {isUploadOpen && (
-          <div className="animate-in fade-in duration-200">
-            <DropZone
-              onUploadSuccess={refreshDocuments}
-              onClose={() => setIsUploadOpen(false)}
-            />
-          </div>
-        )}
+      {/* Main Layout: Sidebar + Explorer */}
+      <div className="flex-1 flex max-w-7xl w-full mx-auto px-2 sm:px-4 md:px-6">
+        {/* Navigation Sidebar */}
+        <Sidebar
+          currentPath={currentFolderPath}
+          onNavigatePath={navigateToFolder}
+          selectedSubject={selectedSubject}
+          onSelectSubject={setSelectedSubject}
+          selectedClass={selectedClass}
+          onSelectClass={setSelectedClass}
+          stats={stats}
+          isStarredView={isStarredView}
+          onSelectStarredView={() => {
+            setIsStarredView(true);
+            setIsRecentView(false);
+            setSearchQuery('');
+          }}
+          isRecentView={isRecentView}
+          onSelectRecentView={() => {
+            setIsRecentView(true);
+            setIsStarredView(false);
+            setSearchQuery('');
+            setSortOption('newest');
+          }}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          categoryCounts={categoryCounts}
+        />
 
-        {/* Categories Bar */}
-        <div className="flex items-center justify-between gap-3 overflow-x-auto pb-1 scrollbar-none border-b border-zinc-900 pt-1">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setSelectedTag('All')}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                selectedTag === 'All'
-                  ? 'bg-zinc-100 text-zinc-950'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-              }`}
-            >
-              All ({documents.length})
-            </button>
+        {/* Explorer Content */}
+        <main className="flex-1 min-w-0 py-5 px-2 sm:px-4 space-y-4">
+          {/* Upload Drawer */}
+          {isUploadOpen && (
+            <div className="animate-in fade-in duration-200 mb-4">
+              <DropZone
+                onUploadSuccess={refreshDocuments}
+                onClose={() => setIsUploadOpen(false)}
+              />
+            </div>
+          )}
 
-            <button
-              onClick={() => setSelectedTag('Starred')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                selectedTag === 'Starred'
-                  ? 'bg-zinc-100 text-zinc-950'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-              }`}
-            >
-              <Star className="w-3 h-3 fill-current" />
-              Starred ({stats.favoriteCount})
-            </button>
-
-            {allTags.map((tag) => (
+          {/* Search Header Banner */}
+          {searchQuery.trim().length > 0 && (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <div className="flex items-center gap-2">
+                <Search className="w-4 h-4 text-zinc-400" />
+                <span className="text-xs text-zinc-300">
+                  Search results for &quot;<span className="text-white font-medium">{searchQuery}</span>&quot;
+                </span>
+                <span className="text-[11px] font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
+                  {filteredAndSortedDocs.length} matches
+                </span>
+              </div>
               <button
-                key={tag}
-                onClick={() => setSelectedTag(tag)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                  selectedTag === tag
-                    ? 'bg-zinc-100 text-zinc-950'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-                }`}
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
               >
-                {tag}
+                Clear search
               </button>
-            ))}
-          </div>
+            </div>
+          )}
 
-          {/* Right Toolbar Controls */}
-          <div className="flex items-center gap-2 shrink-0">
-            {selectedIds.length > 0 && (
-              <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-md px-1.5 py-0.5">
-                <span className="text-[11px] text-zinc-300 font-mono px-1">
-                  {selectedIds.length}
+          {/* Starred Banner */}
+          {isStarredView && (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                <span className="text-xs font-semibold text-amber-200">
+                  Starred Resources
+                </span>
+                <span className="text-[11px] font-mono text-amber-400/80 bg-amber-500/20 px-1.5 py-0.5 rounded">
+                  {filteredAndSortedDocs.length}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigateToFolder('')}
+                className="text-xs text-amber-300 hover:text-amber-100 transition-colors cursor-pointer"
+              >
+                Back to Library
+              </button>
+            </div>
+          )}
+
+          {/* Recent Banner */}
+          {isRecentView && (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-zinc-300" />
+                <span className="text-xs font-semibold text-zinc-200">
+                  Recently Uploaded
+                </span>
+                <span className="text-[11px] font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
+                  {filteredAndSortedDocs.length}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigateToFolder('')}
+                className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Back to Library
+              </button>
+            </div>
+          )}
+
+          {/* Breadcrumb Navigation & Controls */}
+          {!isStarredView && !isRecentView && searchQuery.trim().length === 0 && (
+            <BreadcrumbNav
+              currentPath={currentFolderPath}
+              onNavigate={navigateToFolder}
+              itemCount={currentSubfolders.length + filteredAndSortedDocs.length}
+              sortOption={sortOption}
+              onSortChange={setSortOption}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onRefresh={refreshDocuments}
+              isLoading={isLoading}
+              showAllNested={showAllNested}
+              onToggleShowAllNested={setShowAllNested}
+              hasSubfolders={currentSubfolders.length > 0}
+            />
+          )}
+
+          {/* Bulk Action Controls */}
+          {selectedIds.length > 0 && (
+            <div className="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 animate-in fade-in">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-zinc-300 px-2 py-0.5 bg-zinc-800 rounded">
+                  {selectedIds.length} selected
                 </span>
                 <button
                   type="button"
-                  onClick={handleBulkDownload}
-                  title="Download selected"
-                  className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white"
+                  onClick={handleToggleSelectAll}
+                  className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
                 >
-                  <Download className="w-3 h-3" />
+                  {selectedIds.length === filteredAndSortedDocs.length
+                    ? 'Deselect all'
+                    : 'Select all'}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleBulkDownload}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleBulkDelete}
-                  title="Delete selected"
-                  className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-red-400"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-950/60 hover:bg-red-900/80 border border-red-800/60 text-xs text-red-200 transition-colors cursor-pointer"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
                 </button>
               </div>
-            )}
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-md px-2 py-1 text-xs text-zinc-400">
-              <ArrowUpDown className="w-3 h-3 text-zinc-500" />
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value as SortOption)}
-                aria-label="Sort by"
-                className="bg-transparent text-[11px] text-zinc-300 focus:outline-none cursor-pointer"
-              >
-                <option value="newest" className="bg-zinc-950">Newest</option>
-                <option value="oldest" className="bg-zinc-950">Oldest</option>
-                <option value="name-asc" className="bg-zinc-950">Name (A-Z)</option>
-                <option value="name-desc" className="bg-zinc-950">Name (Z-A)</option>
-                <option value="size-desc" className="bg-zinc-950">Size (Largest)</option>
-                <option value="size-asc" className="bg-zinc-950">Size (Smallest)</option>
-              </select>
             </div>
+          )}
 
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-md p-0.5">
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
-                className={`p-1 rounded transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-zinc-800 text-white'
-                    : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-                title="Grid view"
-                aria-label="Grid view"
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('list')}
-                className={`p-1 rounded transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-zinc-800 text-white'
-                    : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-                title="List view"
-                aria-label="List view"
-              >
-                <ListIcon className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Refresh */}
-            <button
-              type="button"
-              onClick={refreshDocuments}
-              className="p-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
-              title="Refresh"
-              aria-label="Refresh"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
-        </div>
-
-        {/* Documents */}
-        {isLoading && documents.length === 0 ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-2">
-            <RefreshCw className="w-5 h-5 text-zinc-500 animate-spin" />
-            <p className="text-xs text-zinc-500">Loading resources...</p>
-          </div>
-        ) : filteredAndSortedDocs.length > 0 ? (
-          viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {filteredAndSortedDocs.map((doc) => (
-                <DocumentCard
-                  key={doc.id}
-                  document={doc}
-                  onPreview={(d) => setPreviewDoc(d)}
-                  onDelete={(d) => setDeleteDoc(d)}
-                  onToggleFavorite={handleToggleFavorite}
-                  isSelected={selectedIds.includes(doc.id)}
-                  onSelect={handleToggleSelect}
-                />
-              ))}
+          {/* Loading Indicator */}
+          {isLoading && documents.length === 0 ? (
+            <div className="py-24 flex flex-col items-center justify-center gap-3">
+              <RefreshCw className="w-6 h-6 text-zinc-500 animate-spin" />
+              <p className="text-xs text-zinc-400 font-mono">Organizing JEE Resources...</p>
             </div>
           ) : (
-            <DocumentList
-              documents={filteredAndSortedDocs}
-              onPreview={(d) => setPreviewDoc(d)}
-              onDelete={(d) => setDeleteDoc(d)}
-              onToggleFavorite={handleToggleFavorite}
-              selectedIds={selectedIds}
-              onToggleSelect={handleToggleSelect}
-              onToggleSelectAll={handleToggleSelectAll}
-            />
-          )
-        ) : (
-          /* Clean Minimal Empty State */
-          <div className="border border-zinc-850 rounded-xl p-10 text-center flex flex-col items-center justify-center max-w-sm mx-auto my-12 bg-zinc-900/20">
-            <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-3 text-zinc-500">
-              <FileQuestion className="w-5 h-5" />
+            <div className="space-y-6">
+              {/* SUBFOLDERS SECTION */}
+              {currentSubfolders.length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <FolderOpen className="w-3.5 h-3.5 text-zinc-400" />
+                      <span>Folders ({currentSubfolders.length})</span>
+                    </h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    {currentSubfolders.map((folder) => (
+                      <FolderCard
+                        key={folder.id}
+                        folder={folder}
+                        onClick={navigateToFolder}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* FILES SECTION */}
+              <div>
+                {/* Heading if there are both subfolders and files */}
+                {currentSubfolders.length > 0 && filteredAndSortedDocs.length > 0 && (
+                  <div className="flex items-center justify-between mb-3 pt-2">
+                    <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                      Files in this folder ({filteredAndSortedDocs.length})
+                    </h2>
+                  </div>
+                )}
+
+                {filteredAndSortedDocs.length > 0 ? (
+                  viewMode === 'grid' ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {filteredAndSortedDocs.map((doc) => (
+                        <DocumentCard
+                          key={doc.id}
+                          document={doc}
+                          onPreview={(d) => setPreviewDoc(d)}
+                          onDelete={(d) => setDeleteDoc(d)}
+                          onToggleFavorite={handleToggleFavorite}
+                          isSelected={selectedIds.includes(doc.id)}
+                          onSelect={handleToggleSelect}
+                          onNavigateFolder={navigateToFolder}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <DocumentList
+                      documents={filteredAndSortedDocs}
+                      onPreview={(d) => setPreviewDoc(d)}
+                      onDelete={(d) => setDeleteDoc(d)}
+                      onToggleFavorite={handleToggleFavorite}
+                      selectedIds={selectedIds}
+                      onToggleSelect={handleToggleSelect}
+                      onToggleSelectAll={handleToggleSelectAll}
+                      onNavigateFolder={navigateToFolder}
+                    />
+                  )
+                ) : currentSubfolders.length === 0 ? (
+                  <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
+                    <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
+                      <FileQuestion className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-sm font-medium text-zinc-200 mb-1">
+                      No documents found
+                    </h3>
+                    <p className="text-xs text-zinc-500 max-w-sm mb-4">
+                      {searchQuery
+                        ? 'Try refining your search keyword or check other categories.'
+                        : currentFolderPath
+                        ? 'This folder does not contain any direct PDFs.'
+                        : 'No documents have been uploaded yet.'}
+                    </p>
+                    {currentFolderPath && (
+                      <button
+                        type="button"
+                        onClick={() => navigateToFolder('')}
+                        className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                      >
+                        Return to Library
+                      </button>
+                    )}
+                  </div>
+                ) : null}
+              </div>
             </div>
+          )}
+        </main>
+      </div>
 
-            <p className="text-xs font-medium text-zinc-200 mb-1">
-              {searchQuery || selectedTag !== 'All'
-                ? 'No matching files'
-                : 'No PDFs uploaded yet'}
-            </p>
+      {/* PDF Viewer Modal */}
+      {previewDoc && (
+        <PDFViewerModal
+          document={previewDoc}
+          isOpen={!!previewDoc}
+          onClose={() => setPreviewDoc(null)}
+          onToggleFavorite={handleToggleFavorite}
+          onUpdateMetadata={handleUpdateMetadata}
+        />
+      )}
 
-            <p className="text-[11px] text-zinc-500 mb-4 max-w-xs">
-              {searchQuery || selectedTag !== 'All'
-                ? 'Try clearing the search or category filter.'
-                : 'Upload syllabus, notes, formulas, or PYQs to store and read here.'}
-            </p>
-
-            {searchQuery || selectedTag !== 'All' ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedTag('All');
-                }}
-                className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 rounded-md text-xs transition-colors"
-              >
-                Clear filter
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsUploadOpen(true)}
-                className="px-3.5 py-1.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded-md text-xs font-medium transition-colors"
-              >
-                Upload First File
-              </button>
-            )}
-          </div>
-        )}
-      </main>
-
-      {/* Modals */}
-      <PDFViewerModal
-        document={previewDoc}
-        isOpen={!!previewDoc}
-        onClose={() => setPreviewDoc(null)}
-        onToggleFavorite={handleToggleFavorite}
-        onUpdateMetadata={handleUpdateMetadata}
-      />
-
-      <DeleteConfirmModal
-        document={deleteDoc}
-        isOpen={!!deleteDoc}
-        onClose={() => setDeleteDoc(null)}
-        onConfirm={handleConfirmDelete}
-        isDeleting={isDeleting}
-      />
-
-      {/* Clean Footer */}
-      <footer className="border-t border-zinc-900 py-4 text-center text-[11px] text-zinc-500">
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
-          <span>JEE Resources</span>
-          <span>{stats.fileCount} files</span>
-        </div>
-      </footer>
+      {/* Delete Confirmation Modal */}
+      {deleteDoc && (
+        <DeleteConfirmModal
+          document={deleteDoc}
+          isOpen={!!deleteDoc}
+          isDeleting={isDeleting}
+          onConfirm={() => handleConfirmDelete(deleteDoc)}
+          onClose={() => setDeleteDoc(null)}
+        />
+      )}
     </div>
   );
 }
