@@ -58,9 +58,8 @@ const TYPE_ORDER: Record<string, number> = {
   'Short Notes': 2,
   'Formula Sheets': 3,
   'Teacher Kits': 4,
-  'Question Papers': 5,
-  'AI Generated Summary': 6,
-  'Syllabus': 7,
+  'AI Generated Summary': 5,
+  'Syllabus': 6,
 };
 
 const SUBJECT_ORDER: Record<string, number> = {
@@ -250,7 +249,6 @@ export default function Home() {
       'Short Notes',
       'Formula Sheets',
       'Teacher Kits',
-      'Question Papers',
       'AI Generated Summary',
       'Syllabus',
     ];

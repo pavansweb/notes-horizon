@@ -9,7 +9,6 @@ import {
   Calculator,
   BookOpen,
   FileText,
-  Award,
   Sparkles,
   GraduationCap,
 } from 'lucide-react';
@@ -48,9 +47,6 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onClick, isRootC
   } else if (folder.name === 'Teacher Kits' || folder.path.includes('Teacher Kits')) {
     icon = <GraduationCap className="w-4 h-4 text-purple-400" />;
     iconBg = 'bg-purple-500/10 border-purple-500/20 text-purple-300';
-  } else if (folder.name.includes('Question') || folder.name.includes('PYQ')) {
-    icon = <Award className="w-4 h-4 text-rose-400" />;
-    iconBg = 'bg-rose-500/10 border-rose-500/20 text-rose-300';
   } else if (folder.name.includes('AI') || folder.name.includes('Summary')) {
     icon = <Sparkles className="w-4 h-4 text-violet-400" />;
     iconBg = 'bg-violet-500/10 border-violet-500/20 text-violet-300';

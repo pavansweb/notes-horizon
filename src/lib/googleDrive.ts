@@ -292,6 +292,16 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
       relPath = cacheMap[f.id];
     }
 
+    // Exclude any PYQ or Question Paper files
+    if (
+      relPath.toLowerCase().includes('pyq') ||
+      relPath.startsWith('JEE Main 2026 Qs') ||
+      relPath.startsWith('Top 100 Qs') ||
+      (f.name || '').toLowerCase().includes('pyq')
+    ) {
+      continue;
+    }
+
     let folderPath = '';
     if (relPath) {
       const dir = path.dirname(relPath);

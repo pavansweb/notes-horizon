@@ -7,7 +7,6 @@ import {
   Clock,
   BookOpen,
   FlaskConical,
-  Award,
   ChevronRight,
   HardDrive,
   X,
@@ -124,12 +123,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       name: 'Teacher Kits',
       path: `${activeSubject}/Teacher Kits`,
       icon: <Folder className="w-3.5 h-3.5 text-purple-400" />,
-    },
-    {
-      id: 'question-papers',
-      name: 'Question Papers',
-      path: `${activeSubject}/Question Papers`,
-      icon: <Award className="w-3.5 h-3.5 text-rose-400" />,
     },
     {
       id: 'ai-summary',
