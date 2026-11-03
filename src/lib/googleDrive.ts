@@ -196,20 +196,23 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
   let pageToken: string | undefined = undefined;
 
   try {
-    do {
-      const response = await drive.files.list({
+    let hasMore = true;
+    while (hasMore) {
+      const response: any = await drive.files.list({
         q: query,
         fields: 'nextPageToken, files(id, name, size, webViewLink, webContentLink, createdTime, description)',
         orderBy: 'createdTime desc',
         pageSize: 100,
-        pageToken,
+        pageToken: pageToken,
       });
 
-      if (response.data.files) {
-        files.push(...response.data.files);
+      const listFiles = response.data?.files || [];
+      for (const item of listFiles) {
+        files.push(item);
       }
-      pageToken = response.data.nextPageToken || undefined;
-    } while (pageToken);
+      pageToken = response.data?.nextPageToken || undefined;
+      hasMore = !!pageToken;
+    }
   } catch (err) {
     console.error('Error querying Google Drive files:', err);
   }
