@@ -7,14 +7,13 @@ import {
   Clock,
   BookOpen,
   FlaskConical,
-  Atom,
-  Calculator,
   Award,
   GraduationCap,
   Sparkles,
   ChevronRight,
   HardDrive,
   X,
+  Bot,
 } from 'lucide-react';
 import { StorageInfo } from '@/types/document';
 import { formatBytes } from '@/lib/utils';
@@ -62,63 +61,59 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onClose,
   categoryCounts,
 }) => {
-  const sections: SidebarCategory[] = [
+  const isPWActive = currentPath === 'Physics Wallah Content' || currentPath.startsWith('Physics Wallah Content/');
+  const isAgyActive = currentPath === 'agy ai genrated' || currentPath.startsWith('agy ai genrated/');
+
+  const pwSections: SidebarCategory[] = [
     {
       id: 'short-notes',
       name: 'Short Notes',
-      path: 'Short Notes',
-      icon: <BookOpen className="w-4 h-4 text-emerald-400" />,
-      color: 'emerald',
+      path: 'Physics Wallah Content/Short Notes',
+      icon: <BookOpen className="w-3.5 h-3.5 text-emerald-400" />,
     },
     {
       id: 'formula-sheets',
       name: 'Formula Sheets',
-      path: 'Formula Sheets',
-      icon: <FlaskConical className="w-4 h-4 text-amber-400" />,
-      color: 'amber',
+      path: 'Physics Wallah Content/Formula Sheets',
+      icon: <FlaskConical className="w-3.5 h-3.5 text-amber-400" />,
     },
     {
       id: 'mindmaps',
       name: 'Mindmaps',
-      path: 'Mindmaps',
-      icon: <Sparkles className="w-4 h-4 text-cyan-400" />,
-      color: 'cyan',
+      path: 'Physics Wallah Content/Mindmaps',
+      icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
     },
     {
       id: 'jee-main-2026',
       name: 'JEE Main 2026 Qs',
-      path: 'JEE Main 2026 Qs',
-      icon: <Award className="w-4 h-4 text-indigo-400" />,
-      color: 'indigo',
+      path: 'Physics Wallah Content/JEE Main 2026 Qs',
+      icon: <Award className="w-3.5 h-3.5 text-indigo-400" />,
     },
     {
       id: 'top-100',
       name: 'Top 100 Qs for 2026',
-      path: 'Top 100 Qs for 2026',
-      icon: <Award className="w-4 h-4 text-rose-400" />,
-      color: 'rose',
+      path: 'Physics Wallah Content/Top 100 Qs for 2026',
+      icon: <Award className="w-3.5 h-3.5 text-rose-400" />,
     },
     {
       id: 'teacher-kits',
       name: 'Teacher Kits',
-      path: 'Teacher Kits',
-      icon: <GraduationCap className="w-4 h-4 text-violet-400" />,
-      color: 'violet',
+      path: 'Physics Wallah Content/Teacher Kits',
+      icon: <GraduationCap className="w-3.5 h-3.5 text-violet-400" />,
     },
     {
       id: 'syllabus',
       name: 'Syllabus',
-      path: 'Syllabus',
-      icon: <Folder className="w-4 h-4 text-zinc-400" />,
-      color: 'zinc',
+      path: 'Physics Wallah Content/Syllabus',
+      icon: <Folder className="w-3.5 h-3.5 text-zinc-400" />,
     },
   ];
 
   const teacherKits = [
-    { name: 'Ashish Sir (Maths)', path: 'Teacher Kits/Ashish Sirs Maths Kit' },
-    { name: 'Saleem Sir (Physics)', path: 'Teacher Kits/Saleem Sirs Physics Kit' },
-    { name: 'Pankaj Sir (Org Chem)', path: 'Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
-    { name: 'Rohit Sir (Org Chem)', path: 'Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
+    { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Teacher Kits/Ashish Sirs Maths Kit' },
+    { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Teacher Kits/Saleem Sirs Physics Kit' },
+    { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
+    { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
   ];
 
   const percentUsed = Math.min(
@@ -142,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Mobile close button */}
           <div className="flex items-center justify-between md:hidden pb-2 border-b border-zinc-900">
             <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
@@ -150,7 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </span>
             <button
               onClick={onClose}
-              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-900"
+              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -158,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Quick Access */}
           <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-2">
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
               Quick Views
             </div>
             <div className="space-y-0.5">
@@ -176,7 +171,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Folder className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>All Folders</span>
+                  <span>Library Root</span>
                 </div>
                 <span className="text-[11px] font-mono text-zinc-400">
                   {stats.fileCount}
@@ -218,57 +213,104 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Clock className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Recent</span>
+                  <span>Recent Uploads</span>
                 </div>
               </button>
             </div>
           </div>
 
-          {/* Core Categories */}
+          {/* Root Content Folders */}
           <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-2 flex items-center justify-between">
-              <span>Sections</span>
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
+              Root Folders
             </div>
-            <div className="space-y-0.5">
-              {sections.map((section) => {
-                const isActive =
-                  !isStarredView &&
-                  !isRecentView &&
-                  (currentPath === section.path || currentPath.startsWith(section.path + '/'));
-                const count = categoryCounts[section.name] || 0;
+            <div className="space-y-1">
+              {/* Physics Wallah Content Folder */}
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigatePath('Physics Wallah Content');
+                  onClose();
+                }}
+                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  isPWActive
+                    ? 'bg-amber-500/15 text-amber-200 font-semibold border border-amber-500/30'
+                    : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
+                }`}
+              >
+                <div className="flex items-center gap-2 truncate pr-1">
+                  <GraduationCap className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span className="truncate">Physics Wallah</span>
+                </div>
+                <span className="text-[10px] font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
+                  {stats.fileCount}
+                </span>
+              </button>
 
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => {
-                      onNavigatePath(section.path);
-                      onClose();
-                    }}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-zinc-800 text-white font-semibold border border-zinc-700/60 shadow-xs'
-                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 truncate pr-1">
-                      {section.icon}
-                      <span className="truncate">{section.name}</span>
-                    </div>
-                    {count > 0 && (
-                      <span className="text-[11px] font-mono text-zinc-400 shrink-0">
-                        {count}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+              {/* PW Sub-sections (Nested under PW Content) */}
+              <div className="pl-3 space-y-0.5 border-l border-zinc-900 ml-3">
+                {pwSections.map((section) => {
+                  const isActive =
+                    !isStarredView &&
+                    !isRecentView &&
+                    (currentPath === section.path || currentPath.startsWith(section.path + '/'));
+                  const count = categoryCounts[section.name] || 0;
+
+                  return (
+                    <button
+                      key={section.id}
+                      type="button"
+                      onClick={() => {
+                        onNavigatePath(section.path);
+                        onClose();
+                      }}
+                      className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
+                        isActive
+                          ? 'bg-zinc-800 text-white font-medium border border-zinc-700/60'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate pr-1">
+                        {section.icon}
+                        <span className="truncate">{section.name}</span>
+                      </div>
+                      {count > 0 && (
+                        <span className="text-[10px] font-mono text-zinc-500 shrink-0">
+                          {count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* AGY AI Generated Folder */}
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigatePath('agy ai genrated');
+                  onClose();
+                }}
+                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  isAgyActive
+                    ? 'bg-violet-500/15 text-violet-200 font-semibold border border-violet-500/30'
+                    : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
+                }`}
+              >
+                <div className="flex items-center gap-2 truncate pr-1">
+                  <Bot className="w-4 h-4 text-violet-400 shrink-0" />
+                  <span className="truncate">agy ai genrated</span>
+                </div>
+                <span className="text-[10px] font-mono text-violet-300 shrink-0 bg-violet-500/20 px-1.5 py-0.2 rounded border border-violet-500/30">
+                  AI
+                </span>
+              </button>
             </div>
           </div>
 
           {/* Quick Teacher Kits Access */}
           <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-2">
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
               Teacher Kits
             </div>
             <div className="space-y-0.5 pl-1">
@@ -298,7 +340,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Subject Pills Filter */}
           <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-2">
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
               Filter by Subject
             </div>
             <div className="grid grid-cols-2 gap-1 px-1">
@@ -327,7 +369,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Class Filter */}
           <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-2">
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
               Class Level
             </div>
             <div className="flex gap-1 px-1">

@@ -186,13 +186,38 @@ export default function Home() {
     const fMap = new Map<string, FolderNode>();
     const catCounts: Record<string, number> = {};
 
+    // Explicitly guarantee root folders exist
+    fMap.set('Physics Wallah Content', {
+      id: 'Physics Wallah Content',
+      name: 'Physics Wallah Content',
+      path: 'Physics Wallah Content',
+      depth: 0,
+      parentPath: '',
+      totalFileCount: 0,
+      directFileCount: 0,
+      subfolderCount: 0,
+      category: 'Physics Wallah',
+    });
+
+    fMap.set('agy ai genrated', {
+      id: 'agy ai genrated',
+      name: 'agy ai genrated',
+      path: 'agy ai genrated',
+      depth: 0,
+      parentPath: '',
+      totalFileCount: 0,
+      directFileCount: 0,
+      subfolderCount: 0,
+      category: 'AI Generated',
+    });
+
     documents.forEach((doc) => {
       const folderPath = doc.folderPath || '';
       if (!folderPath) return;
 
       const parts = folderPath.split('/').filter(Boolean);
-      const topCat = parts[0] || 'General';
-      catCounts[topCat] = (catCounts[topCat] || 0) + 1;
+      if (parts[0]) catCounts[parts[0]] = (catCounts[parts[0]] || 0) + 1;
+      if (parts[1]) catCounts[parts[1]] = (catCounts[parts[1]] || 0) + 1;
 
       for (let i = 0; i < parts.length; i++) {
         const subPath = parts.slice(0, i + 1).join('/');
@@ -274,10 +299,18 @@ export default function Home() {
       }
     });
 
-    // Natural sort subfolders
-    subfolders.sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-    );
+    // Order: at root, Physics Wallah first, then agy ai genrated
+    if (currentFolderPath === '') {
+      subfolders.sort((a, b) => {
+        if (a.path === 'Physics Wallah Content') return -1;
+        if (b.path === 'Physics Wallah Content') return 1;
+        return a.name.localeCompare(b.name);
+      });
+    } else {
+      subfolders.sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+      );
+    }
 
     return subfolders;
   }, [folderMap, currentFolderPath, isStarredView, isRecentView, searchQuery, selectedSubject, selectedClass]);
@@ -683,16 +716,27 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-3">
                     <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
                       <FolderOpen className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Folders ({currentSubfolders.length})</span>
+                      <span>
+                        {currentFolderPath === ''
+                          ? 'Repositories'
+                          : `Folders (${currentSubfolders.length})`}
+                      </span>
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  <div
+                    className={
+                      currentFolderPath === ''
+                        ? 'grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5'
+                        : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3'
+                    }
+                  >
                     {currentSubfolders.map((folder) => (
                       <FolderCard
                         key={folder.id}
                         folder={folder}
                         onClick={navigateToFolder}
+                        isRootCard={currentFolderPath === ''}
                       />
                     ))}
                   </div>
@@ -739,30 +783,65 @@ export default function Home() {
                     />
                   )
                 ) : currentSubfolders.length === 0 ? (
-                  <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
-                    <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
-                      <FileQuestion className="w-6 h-6" />
+                  currentFolderPath === 'agy ai genrated' ? (
+                    <div className="py-16 sm:py-24 flex flex-col items-center justify-center text-center p-6 sm:p-10 border border-dashed border-violet-500/30 rounded-2xl bg-linear-to-b from-violet-950/20 via-zinc-950/40 to-transparent">
+                      <div className="w-14 h-14 rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300 mb-4 shadow-lg shadow-violet-500/10">
+                        <Sparkles className="w-7 h-7" />
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-base sm:text-lg font-bold text-white">
+                          agy ai genrated
+                        </h3>
+                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 font-semibold">
+                          Empty
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 max-w-md mb-6 leading-relaxed">
+                        This workspace is currently empty. AI-generated notes, formula sheets, chapter summaries, and practice problem sets from Antigravity AI will be automatically saved and organized here.
+                      </p>
+                      <div className="flex items-center gap-3 flex-wrap justify-center">
+                        <button
+                          type="button"
+                          onClick={() => navigateToFolder('Physics Wallah Content')}
+                          className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-xs font-semibold text-amber-200 transition-colors cursor-pointer"
+                        >
+                          Explore Physics Wallah Content →
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => navigateToFolder('')}
+                          className="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          Return to Library Root
+                        </button>
+                      </div>
                     </div>
-                    <h3 className="text-sm font-medium text-zinc-200 mb-1">
-                      No documents found
-                    </h3>
-                    <p className="text-xs text-zinc-500 max-w-sm mb-4">
-                      {searchQuery
-                        ? 'Try refining your search keyword or check other categories.'
-                        : currentFolderPath
-                        ? 'This folder does not contain any direct PDFs.'
-                        : 'No documents have been uploaded yet.'}
-                    </p>
-                    {currentFolderPath && (
-                      <button
-                        type="button"
-                        onClick={() => navigateToFolder('')}
-                        className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
-                      >
-                        Return to Library
-                      </button>
-                    )}
-                  </div>
+                  ) : (
+                    <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
+                      <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
+                        <FileQuestion className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-sm font-medium text-zinc-200 mb-1">
+                        No documents found
+                      </h3>
+                      <p className="text-xs text-zinc-500 max-w-sm mb-4">
+                        {searchQuery
+                          ? 'Try refining your search keyword or check other categories.'
+                          : currentFolderPath
+                          ? 'This folder does not contain any direct PDFs.'
+                          : 'No documents have been uploaded yet.'}
+                      </p>
+                      {currentFolderPath && (
+                        <button
+                          type="button"
+                          onClick={() => navigateToFolder('')}
+                          className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          Return to Library
+                        </button>
+                      )}
+                    </div>
+                  )
                 ) : null}
               </div>
             </div>

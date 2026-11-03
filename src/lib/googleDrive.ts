@@ -300,8 +300,23 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
       }
     }
 
+    // Place PW resources under "Physics Wallah Content" root folder
+    if (folderPath) {
+      if (
+        !folderPath.startsWith('Physics Wallah Content') &&
+        !folderPath.startsWith('agy ai genrated')
+      ) {
+        folderPath = `Physics Wallah Content/${folderPath}`;
+      }
+    } else {
+      folderPath = 'Physics Wallah Content';
+    }
+
     const folderParts = folderPath ? folderPath.split('/').filter(Boolean) : [];
-    const category = folderParts[0] || (tags[0] ?? 'General');
+    const category =
+      folderParts.length > 1
+        ? folderParts[1]
+        : folderParts[0] || (tags[0] ?? 'General');
 
     // Infer subject
     let subject: 'Physics' | 'Chemistry' | 'Maths' | 'General' = 'General';
