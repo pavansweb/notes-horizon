@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡ HorizonVault — Next-Gen PDF Cloud Storage & Reader
 
-## Getting Started
+A modern, high-performance web application designed for storing, organizing, and reading PDF documents securely in the cloud. Powered by **Next.js 16**, **Vercel Blob Storage**, and **Tailwind CSS**.
 
-First, run the development server:
+---
 
+## ✨ Features
+
+- 🚀 **1 GB Free Cloud Storage**: Powered by Vercel Blob with zero credit card required.
+- 📁 **Smart Drag & Drop Uploader**: Multi-file queue, real-time progress indicators, and celebratory completion animations.
+- 🔍 **Live Search & Quick Shortcuts**: Filter documents by name, content tags, or notes. Press `/` or `Ctrl+K` to search instantly.
+- 🏷️ **Categorization & Custom Tags**: Organize documents with tags (`Work`, `Study`, `Finance`, `Personal`, `Invoices`, or custom tags).
+- ⭐ **Favorites & Pinning**: One-click star to bookmark important files.
+- 👁️ **Full-Screen PDF Viewer**: Native high-fidelity PDF reader with zoom controls, fullscreen mode, notes editor, and direct download.
+- 🔗 **Shareable Links**: One-click copy for direct sharing of document URLs.
+- 📊 **Real-time Storage Meter**: Interactive visual gauge of storage used, total files, and remaining quota.
+- 🗂️ **Grid & Table View Modes**: Switch seamlessly between visual cards and compact tabular layout.
+- 🛡️ **Hybrid Storage Fallback**: Runs 100% locally out-of-the-box (`data/uploads`) without requiring API keys, and automatically activates Vercel Blob when deployed!
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Language**: TypeScript
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Storage**: [@vercel/blob](https://vercel.com/docs/storage/vercel-blob)
+- **Effects**: canvas-confetti
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Run the Development Server
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> [!NOTE]
+> During local development, if `BLOB_READ_WRITE_TOKEN` is not set in `.env.local`, HorizonVault automatically activates **Local Storage Mode** (`data/uploads/`). You can upload, read, and manage PDFs right away!
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ☁️ Deploying to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Step 1: Push to GitHub or Deploy via Vercel CLI
+```bash
+git push origin main
+```
+or
+```bash
+npx vercel
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Step 2: Attach Vercel Blob Store (1-Click, Free)
+1. Go to your project on the [Vercel Dashboard](https://vercel.com/dashboard).
+2. Click on the **Storage** tab.
+3. Click **Create Database** and select **Blob**.
+4. Choose a name (e.g. `horizon-pdf-vault`) and click **Create**.
+5. Connect it to your project environment (`Production` and `Preview`).
 
-## Deploy on Vercel
+Vercel will automatically inject `BLOB_READ_WRITE_TOKEN` into your deployment. Any PDF uploaded will now be stored in Vercel Blob!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 License
+MIT
