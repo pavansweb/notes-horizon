@@ -113,6 +113,7 @@ export async function uploadToDrive(
       mimeType: 'application/pdf',
       parents: folderId ? [folderId] : undefined,
       description: metaPayload,
+      appProperties: { app: 'jee-resources' },
     },
     media: {
       mimeType: 'application/pdf',
@@ -177,17 +178,42 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
 
   let query = "trashed = false and mimeType = 'application/pdf'";
   if (folderId) {
-    query = `'${folderId}' in parents and ${query}`;
+    query = `(appProperties has { key='app' and value='jee-resources' } or '${folderId}' in parents) and ${query}`;
+  } else {
+    query = `appProperties has { key='app' and value='jee-resources' } and ${query}`;
   }
 
-  const response = await drive.files.list({
-    q: query,
-    fields: 'files(id, name, size, webViewLink, webContentLink, createdTime, description)',
-    orderBy: 'createdTime desc',
-    pageSize: 100,
-  });
+  const files: Array<{
+    id?: string | null;
+    name?: string | null;
+    size?: string | null;
+    webViewLink?: string | null;
+    webContentLink?: string | null;
+    createdTime?: string | null;
+    description?: string | null;
+  }> = [];
 
-  const files = response.data.files || [];
+  let pageToken: string | undefined = undefined;
+
+  try {
+    do {
+      const response = await drive.files.list({
+        q: query,
+        fields: 'nextPageToken, files(id, name, size, webViewLink, webContentLink, createdTime, description)',
+        orderBy: 'createdTime desc',
+        pageSize: 100,
+        pageToken,
+      });
+
+      if (response.data.files) {
+        files.push(...response.data.files);
+      }
+      pageToken = response.data.nextPageToken || undefined;
+    } while (pageToken);
+  } catch (err) {
+    console.error('Error querying Google Drive files:', err);
+  }
+
   const docs: PDFDocument[] = [];
 
   for (const f of files) {
