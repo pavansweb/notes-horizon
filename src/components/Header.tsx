@@ -3,7 +3,7 @@
 import React from 'react';
 import { Search, Plus, FolderOpen, Menu } from 'lucide-react';
 import { formatBytes } from '@/lib/utils';
-import { StorageInfo, BrowseMode } from '@/types/document';
+import { StorageInfo } from '@/types/document';
 
 interface HeaderProps {
   searchQuery: string;
@@ -11,8 +11,6 @@ interface HeaderProps {
   onOpenUpload: () => void;
   stats: StorageInfo;
   onToggleSidebar?: () => void;
-  browseMode?: BrowseMode;
-  onBrowseModeChange?: (mode: BrowseMode) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,8 +19,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenUpload,
   stats,
   onToggleSidebar,
-  browseMode = 'subject',
-  onBrowseModeChange,
 }) => {
   const percentUsed = Math.min(
     100,
@@ -53,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="hidden xs:block">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold tracking-tight text-zinc-100">
-                  JEE Horizon
+                  Notes Horizon
                 </span>
                 <span className="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded">
                   {stats.fileCount}
@@ -80,36 +76,6 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Headbar Toggle: Subject vs Format */}
-          {onBrowseModeChange && (
-            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 text-xs shrink-0">
-              <button
-                type="button"
-                onClick={() => onBrowseModeChange('subject')}
-                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-xs font-medium ${
-                  browseMode === 'subject'
-                    ? 'bg-zinc-800 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-                title="Arrange by Subject"
-              >
-                Subject
-              </button>
-              <button
-                type="button"
-                onClick={() => onBrowseModeChange('type')}
-                className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-xs font-medium ${
-                  browseMode === 'type'
-                    ? 'bg-zinc-800 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-                title="Arrange by Format"
-              >
-                Format
-              </button>
-            </div>
-          )}
 
           {/* Right Controls: Storage Pill & Upload */}
           <div className="flex items-center gap-2.5 shrink-0">

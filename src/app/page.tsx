@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { PDFDocument, StorageInfo, SortOption, ViewMode, FolderNode, BrowseMode } from '@/types/document';
+import { PDFDocument, StorageInfo, SortOption, ViewMode, FolderNode } from '@/types/document';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { BreadcrumbNav } from '@/components/BreadcrumbNav';
@@ -11,7 +11,6 @@ import { DocumentCard } from '@/components/DocumentCard';
 import { DocumentList } from '@/components/DocumentList';
 import { PDFViewerModal } from '@/components/PDFViewerModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
-import { BrowseModeModal } from '@/components/BrowseModeModal';
 import { useToast } from '@/components/Toast';
 import {
   FileQuestion,
@@ -22,101 +21,54 @@ import {
   Search,
   Star,
   Clock,
+  Sparkles,
 } from 'lucide-react';
 
-// Maps a document's relative path based on user's preferred browse arrangement
-function getDocFolderPath(doc: PDFDocument, mode: BrowseMode): string {
-  const raw = doc.folderPath || '';
-  if (!raw || raw.startsWith('agy ai genrated')) return raw;
+// Maps a document's relative path based on the clean Subject-first structure
+function getDocFolderPath(doc: PDFDocument): string {
+  let raw = doc.folderPath || '';
+  // Strip legacy prefixes
+  raw = raw.replace(/^Physics Wallah Content\/?/i, '').replace(/^agy ai genrated\/?/i, '');
 
-  // Strip 'Physics Wallah Content/' prefix if present for clean restructuring
-  const cleanPath = raw.replace(/^Physics Wallah Content\/?/, '');
-  if (!cleanPath) return 'Physics Wallah Content';
-
-  const parts = cleanPath.split('/').filter(Boolean);
-  const rawType = parts[0] || 'Notes';
-
-  // Normalize category / resource format
-  let type = rawType;
-  if (rawType === 'Mindmaps' || rawType.toLowerCase().includes('mindmap')) {
-    type = 'Mindmaps & Flowcharts';
-  } else if (rawType.includes('2026 Qs') || rawType.includes('Top 100') || rawType.toLowerCase().includes('question')) {
-    type = 'Question Papers';
-  } else if (rawType === 'Formula Sheets') {
-    type = 'Formula Sheets';
-  } else if (rawType === 'Short Notes') {
-    type = 'Short Notes';
+  if (!raw) {
+    const subj = doc.subject && doc.subject !== 'General' ? doc.subject : 'Physics';
+    const cat = doc.category || 'Short Notes';
+    return `${subj}/${cat}`;
   }
 
-  // Subject detection
-  let subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'General';
-  if (subject === 'General') {
-    const checkStr = (cleanPath + ' ' + doc.name + ' ' + (doc.tags || []).join(' ')).toLowerCase();
-    if (checkStr.includes('physics') || checkStr.includes('phy')) {
-      subject = 'Physics';
-    } else if (
-      checkStr.includes('chemistry') ||
-      checkStr.includes('chem') ||
-      checkStr.includes('organic')
-    ) {
-      subject = 'Chemistry';
-    } else if (
-      checkStr.includes('maths') ||
-      checkStr.includes('mathematics') ||
-      checkStr.includes('math')
-    ) {
-      subject = 'Maths';
-    }
+  // Check if it already starts with a subject
+  const parts = raw.split('/').filter(Boolean);
+  let subject = parts[0];
+
+  if (!['Physics', 'Chemistry', 'Maths'].includes(subject)) {
+    subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'Physics';
+    raw = `${subject}/${raw}`;
   }
 
-  // Class level detection
-  let classLevel = doc.classLevel;
-  if (!classLevel || classLevel === 'General') {
-    if (cleanPath.includes('Class 11')) classLevel = 'Class 11';
-    else if (cleanPath.includes('Class 12')) classLevel = 'Class 12';
-    else if (cleanPath.includes('JEE Advance')) classLevel = 'JEE Advance';
-    else if (cleanPath.includes('JEE Mains')) classLevel = 'JEE Mains';
-    else classLevel = 'Class 11';
-  }
+  // Normalize category naming
+  raw = raw
+    .replace(/\/Mindmaps(\/|$)/i, '/Mind Maps & Flowcharts$1')
+    .replace(/\/(JEE Main 2026 Qs|Top 100 Qs for 2026)(\/|$)/i, '/Question Papers$2');
 
-  if (mode === 'subject') {
-    // Subject mode: Physics Wallah Content -> Subject (Physics | Chemistry | Maths) -> Class (Class 11 | Class 12) -> Type
-    if (type === 'Teacher Kits') {
-      const kitName = parts[1] || 'Lakshya JEE';
-      const sub = parts.slice(2).join('/');
-      return `Physics Wallah Content/${subject}/Teacher Kits/${kitName}${sub ? '/' + sub : ''}`;
-    }
-    if (type === 'Syllabus') {
-      return `Physics Wallah Content/${subject}/Syllabus`;
-    }
-    return `Physics Wallah Content/${subject}/${classLevel}/${type}`;
-  } else {
-    // Format mode: Physics Wallah Content -> Type (Mindmaps & Flowcharts | Short Notes | ...) -> Class -> Subject
-    if (type === 'Teacher Kits') {
-      const kitName = parts[1] || 'Lakshya JEE';
-      const sub = parts.slice(2).join('/');
-      return `Physics Wallah Content/Teacher Kits/${subject}/${kitName}${sub ? '/' + sub : ''}`;
-    }
-    if (type === 'Syllabus') {
-      return `Physics Wallah Content/Syllabus/${subject}`;
-    }
-    return `Physics Wallah Content/${type}/${classLevel}/${subject}`;
-  }
+  return raw;
 }
 
 const TYPE_ORDER: Record<string, number> = {
-  'Mindmaps & Flowcharts': 1,
+  'Mind Maps & Flowcharts': 1,
   'Short Notes': 2,
   'Formula Sheets': 3,
-  'Question Papers': 4,
-  'Teacher Kits': 5,
-  'Syllabus': 6,
+  'Teacher Kits': 4,
+  'Question Papers': 5,
+  'AI Generated Summary': 6,
+  'Syllabus': 7,
 };
+
 const SUBJECT_ORDER: Record<string, number> = {
   Physics: 1,
   Chemistry: 2,
   Maths: 3,
 };
+
 const CLASS_ORDER: Record<string, number> = {
   'Class 11': 1,
   'Class 12': 2,
@@ -139,9 +91,18 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Navigation states
-  const [currentFolderPath, setCurrentFolderPath] = useState<string>('');
-  const [browseMode, setBrowseMode] = useState<BrowseMode>('subject');
-  const [isModeModalOpen, setIsModeModalOpen] = useState<boolean>(false);
+  const [currentFolderPath, setCurrentFolderPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const folderParam = params.get('folder');
+      if (folderParam) {
+        return folderParam
+          .replace(/^Physics Wallah Content\/?/i, '')
+          .replace(/^agy ai genrated\/?/i, '');
+      }
+    }
+    return '';
+  });
   const [isStarredView, setIsStarredView] = useState<boolean>(false);
   const [isRecentView, setIsRecentView] = useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
@@ -151,41 +112,6 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [showAllNested, setShowAllNested] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-
-  // Load saved arrangement mode on mount & trigger welcome modal on first visit
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('jee_browse_mode') as BrowseMode | null;
-      if (saved === 'subject' || saved === 'type') {
-        setBrowseMode(saved);
-      }
-      const asked = localStorage.getItem('jee_mode_asked');
-      if (!asked) {
-        setIsModeModalOpen(true);
-      }
-    }
-  }, []);
-
-  const handleBrowseModeChange = useCallback((mode: BrowseMode) => {
-    setBrowseMode(mode);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('jee_browse_mode', mode);
-      localStorage.setItem('jee_mode_asked', 'true');
-    }
-    // If inside a deep PW folder, reset back to 'Physics Wallah Content'
-    setCurrentFolderPath((prev) => {
-      if (prev.startsWith('Physics Wallah Content/')) {
-        return 'Physics Wallah Content';
-      }
-      return prev;
-    });
-    showToast(
-      mode === 'subject'
-        ? 'Arranged by Subject'
-        : 'Arranged by Format',
-      'info'
-    );
-  }, [showToast]);
 
   // Modal & Selection states
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
@@ -230,22 +156,15 @@ export default function Home() {
     };
   }, [refreshTrigger, showToast]);
 
-  // Read initial folder path from URL params
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const folderParam = params.get('folder');
-      if (folderParam) {
-        setCurrentFolderPath(folderParam);
-      }
-    }
-  }, []);
+
 
   // Handle browser Back / Forward buttons
   useEffect(() => {
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
-      const folderParam = params.get('folder') || '';
+      const folderParam = (params.get('folder') || '')
+        .replace(/^Physics Wallah Content\/?/i, '')
+        .replace(/^agy ai genrated\/?/i, '');
       setCurrentFolderPath(folderParam);
       setIsStarredView(false);
       setIsRecentView(false);
@@ -255,27 +174,11 @@ export default function Home() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Synchronize URL when folder path changes with smart mode resolution
+  // Synchronize URL when folder path changes
   const navigateToFolder = useCallback((rawPath: string) => {
-    // Normalize legacy aliases
-    let targetPath = rawPath
-      .replace(/\/Mindmaps(\/|$)/, '/Mindmaps & Flowcharts$1')
-      .replace(/\/(JEE Main 2026 Qs|Top 100 Qs for 2026)(\/|$)/, '/Question Papers$2');
-
-    // Auto-detect mode if navigating to a specific top-level branch
-    if (targetPath.startsWith('Physics Wallah Content/')) {
-      const secondPart = targetPath.split('/')[1];
-      if (['Physics', 'Chemistry', 'Maths'].includes(secondPart) && browseMode !== 'subject') {
-        setBrowseMode('subject');
-        if (typeof window !== 'undefined') localStorage.setItem('jee_browse_mode', 'subject');
-      } else if (
-        ['Mindmaps & Flowcharts', 'Short Notes', 'Formula Sheets', 'Question Papers'].includes(secondPart) &&
-        browseMode !== 'type'
-      ) {
-        setBrowseMode('type');
-        if (typeof window !== 'undefined') localStorage.setItem('jee_browse_mode', 'type');
-      }
-    }
+    const targetPath = rawPath
+      .replace(/^Physics Wallah Content\/?/i, '')
+      .replace(/^agy ai genrated\/?/i, '');
 
     setCurrentFolderPath(targetPath);
     setIsStarredView(false);
@@ -291,12 +194,11 @@ export default function Home() {
       }
       window.history.pushState({ folder: targetPath }, '', url.toString());
     }
-  }, [browseMode]);
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Focus search with '/' or 'Cmd+K'
       if (
         (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key === 'k')) &&
         window.document.activeElement?.tagName !== 'INPUT'
@@ -309,7 +211,6 @@ export default function Home() {
         return;
       }
 
-      // Backspace to go up one folder level
       if (
         e.key === 'Backspace' &&
         window.document.activeElement?.tagName !== 'INPUT' &&
@@ -327,7 +228,6 @@ export default function Home() {
         }
       }
 
-      // Escape to clear search or close preview
       if (e.key === 'Escape') {
         if (searchQuery) setSearchQuery('');
         if (isSidebarOpen) setIsSidebarOpen(false);
@@ -338,38 +238,57 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentFolderPath, previewDoc, deleteDoc, searchQuery, isSidebarOpen, navigateToFolder]);
 
-  // Build Folder Hierarchy from documents
+  // Build Folder Hierarchy: strictly Physics, Chemistry, Maths at root
   const { folderMap, categoryCounts } = useMemo(() => {
     const fMap = new Map<string, FolderNode>();
     const catCounts: Record<string, number> = {};
 
-    // Explicitly guarantee root folders exist
-    fMap.set('Physics Wallah Content', {
-      id: 'Physics Wallah Content',
-      name: 'Physics Wallah Content',
-      path: 'Physics Wallah Content',
-      depth: 0,
-      parentPath: '',
-      totalFileCount: 0,
-      directFileCount: 0,
-      subfolderCount: 0,
-      category: 'Physics Wallah',
-    });
+    // 1. Initial 3 Root Subject Folders ONLY
+    const ROOT_SUBJECTS: Array<'Physics' | 'Chemistry' | 'Maths'> = ['Physics', 'Chemistry', 'Maths'];
+    const STANDARD_CATEGORIES = [
+      'Mind Maps & Flowcharts',
+      'Short Notes',
+      'Formula Sheets',
+      'Teacher Kits',
+      'Question Papers',
+      'AI Generated Summary',
+      'Syllabus',
+    ];
 
-    fMap.set('agy ai genrated', {
-      id: 'agy ai genrated',
-      name: 'agy ai genrated',
-      path: 'agy ai genrated',
-      depth: 0,
-      parentPath: '',
-      totalFileCount: 0,
-      directFileCount: 0,
-      subfolderCount: 0,
-      category: 'AI Generated',
-    });
+    for (const subj of ROOT_SUBJECTS) {
+      fMap.set(subj, {
+        id: subj,
+        name: subj,
+        path: subj,
+        depth: 0,
+        parentPath: '',
+        totalFileCount: 0,
+        directFileCount: 0,
+        subfolderCount: 0,
+        subject: subj,
+        category: subj,
+      });
+
+      // Ensure standard categories exist for each subject
+      for (const cat of STANDARD_CATEGORIES) {
+        const catPath = `${subj}/${cat}`;
+        fMap.set(catPath, {
+          id: catPath,
+          name: cat,
+          path: catPath,
+          depth: 1,
+          parentPath: subj,
+          totalFileCount: 0,
+          directFileCount: 0,
+          subfolderCount: 0,
+          subject: subj,
+          category: cat,
+        });
+      }
+    }
 
     documents.forEach((doc) => {
-      const folderPath = getDocFolderPath(doc, browseMode);
+      const folderPath = getDocFolderPath(doc);
       if (!folderPath) return;
 
       const parts = folderPath.split('/').filter(Boolean);
@@ -383,12 +302,10 @@ export default function Home() {
         const name = parts[i];
 
         if (!fMap.has(subPath)) {
-          // Infer subject & classLevel for this folder
           let subject: 'Physics' | 'Chemistry' | 'Maths' | 'General' | undefined = undefined;
-          const lower = subPath.toLowerCase();
-          if (lower.includes('physics')) subject = 'Physics';
-          else if (lower.includes('chemistry') || lower.includes('organic')) subject = 'Chemistry';
-          else if (lower.includes('maths') || lower.includes('math')) subject = 'Maths';
+          if (parts[0] === 'Physics' || parts[0] === 'Chemistry' || parts[0] === 'Maths') {
+            subject = parts[0];
+          }
 
           let classLevel: string | undefined = undefined;
           if (subPath.includes('Class 11')) classLevel = 'Class 11';
@@ -407,7 +324,7 @@ export default function Home() {
             subfolderCount: 0,
             subject,
             classLevel,
-            category: parts[0],
+            category: parts[1] || parts[0],
           });
         }
 
@@ -434,7 +351,7 @@ export default function Home() {
     });
 
     return { folderMap: fMap, categoryCounts: catCounts };
-  }, [documents, browseMode]);
+  }, [documents]);
 
   // Subfolders in current view
   const currentSubfolders = useMemo(() => {
@@ -445,11 +362,9 @@ export default function Home() {
     const subfolders: FolderNode[] = [];
     folderMap.forEach((node) => {
       if (node.parentPath === currentFolderPath) {
-        // Filter by subject if chosen
         if (selectedSubject !== 'All' && node.subject && node.subject !== selectedSubject) {
           return;
         }
-        // Filter by class if chosen
         if (selectedClass !== 'All' && node.classLevel && node.classLevel !== selectedClass) {
           return;
         }
@@ -457,26 +372,18 @@ export default function Home() {
       }
     });
 
-    // Order: at root, Physics Wallah first, then agy ai genrated
+    // Root ordering: Physics -> Chemistry -> Maths
     if (currentFolderPath === '') {
-      subfolders.sort((a, b) => {
-        if (a.path === 'Physics Wallah Content') return -1;
-        if (b.path === 'Physics Wallah Content') return 1;
-        return a.name.localeCompare(b.name);
-      });
+      subfolders.sort((a, b) => (SUBJECT_ORDER[a.name] ?? 99) - (SUBJECT_ORDER[b.name] ?? 99));
     } else {
       subfolders.sort((a, b) => {
-        const subOrderA = SUBJECT_ORDER[a.name];
-        const subOrderB = SUBJECT_ORDER[b.name];
-        if (subOrderA !== undefined && subOrderB !== undefined) return subOrderA - subOrderB;
+        const typeOrderA = TYPE_ORDER[a.name];
+        const typeOrderB = TYPE_ORDER[b.name];
+        if (typeOrderA !== undefined && typeOrderB !== undefined) return typeOrderA - typeOrderB;
 
         const classOrderA = CLASS_ORDER[a.name];
         const classOrderB = CLASS_ORDER[b.name];
         if (classOrderA !== undefined && classOrderB !== undefined) return classOrderA - classOrderB;
-
-        const typeOrderA = TYPE_ORDER[a.name];
-        const typeOrderB = TYPE_ORDER[b.name];
-        if (typeOrderA !== undefined && typeOrderB !== undefined) return typeOrderA - typeOrderB;
 
         return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
       });
@@ -489,7 +396,6 @@ export default function Home() {
   const filteredAndSortedDocs = useMemo(() => {
     let result = [...documents];
 
-    // Search query takes precedence for discovery across library
     if (searchQuery.trim().length > 0) {
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
@@ -511,28 +417,22 @@ export default function Home() {
     } else if (isStarredView) {
       result = result.filter((d) => d.isFavorite);
     } else if (isRecentView) {
-      // All files sorted by uploadedAt
+      // recent files
     } else {
-      // Normal Folder Navigation
       if (showAllNested) {
-        // Include everything in this folder and deeper
         if (currentFolderPath) {
           result = result.filter((d) => {
-            const p = getDocFolderPath(d, browseMode);
+            const p = getDocFolderPath(d);
             return p === currentFolderPath || p.startsWith(currentFolderPath + '/');
           });
         }
       } else {
-        // Only direct files in this exact folder
-        result = result.filter((d) => getDocFolderPath(d, browseMode) === currentFolderPath);
+        result = result.filter((d) => getDocFolderPath(d) === currentFolderPath);
       }
 
-      // Subject filter
       if (selectedSubject !== 'All') {
         result = result.filter((d) => d.subject === selectedSubject || d.tags?.includes(selectedSubject));
       }
-
-      // Class filter
       if (selectedClass !== 'All') {
         result = result.filter(
           (d) => d.classLevel === selectedClass || d.folderPath?.includes(selectedClass)
@@ -540,7 +440,6 @@ export default function Home() {
       }
     }
 
-    // Sorting
     result.sort((a, b) => {
       if (sortOption === 'chapter-asc' || sortOption === 'name-asc') {
         return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
@@ -574,7 +473,6 @@ export default function Home() {
     selectedSubject,
     selectedClass,
     sortOption,
-    browseMode,
   ]);
 
   // Toggle favorite
@@ -708,8 +606,6 @@ export default function Home() {
         onOpenUpload={() => setIsUploadOpen((prev) => !prev)}
         stats={stats}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
-        browseMode={browseMode}
-        onBrowseModeChange={handleBrowseModeChange}
       />
 
       {/* Main Layout: Sidebar + Explorer */}
@@ -739,8 +635,6 @@ export default function Home() {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           categoryCounts={categoryCounts}
-          browseMode={browseMode}
-          onBrowseModeChange={handleBrowseModeChange}
         />
 
         {/* Explorer Content */}
@@ -836,8 +730,6 @@ export default function Home() {
               showAllNested={showAllNested}
               onToggleShowAllNested={setShowAllNested}
               hasSubfolders={currentSubfolders.length > 0}
-              browseMode={browseMode}
-              onBrowseModeChange={handleBrowseModeChange}
             />
           )}
 
@@ -884,7 +776,7 @@ export default function Home() {
           {isLoading && documents.length === 0 ? (
             <div className="py-24 flex flex-col items-center justify-center gap-3">
               <RefreshCw className="w-6 h-6 text-zinc-500 animate-spin" />
-              <p className="text-xs text-zinc-400 font-mono">Organizing JEE Resources...</p>
+              <p className="text-xs text-zinc-400 font-mono">Loading JEE Notes...</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -896,7 +788,7 @@ export default function Home() {
                       <FolderOpen className="w-3.5 h-3.5 text-zinc-400" />
                       <span>
                         {currentFolderPath === ''
-                          ? 'Repositories'
+                          ? 'Subjects'
                           : `Folders (${currentSubfolders.length})`}
                       </span>
                     </h2>
@@ -905,7 +797,7 @@ export default function Home() {
                   <div
                     className={
                       currentFolderPath === ''
-                        ? 'grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5'
+                        ? 'grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5'
                         : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3'
                     }
                   >
@@ -923,7 +815,6 @@ export default function Home() {
 
               {/* FILES SECTION */}
               <div>
-                {/* Heading if there are both subfolders and files */}
                 {currentSubfolders.length > 0 && filteredAndSortedDocs.length > 0 && (
                   <div className="flex items-center justify-between mb-3 pt-2">
                     <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
@@ -938,7 +829,7 @@ export default function Home() {
                       {filteredAndSortedDocs.map((doc) => {
                         const activeDoc = {
                           ...doc,
-                          folderPath: getDocFolderPath(doc, browseMode),
+                          folderPath: getDocFolderPath(doc),
                         };
                         return (
                           <DocumentCard
@@ -958,7 +849,7 @@ export default function Home() {
                     <DocumentList
                       documents={filteredAndSortedDocs.map((doc) => ({
                         ...doc,
-                        folderPath: getDocFolderPath(doc, browseMode),
+                        folderPath: getDocFolderPath(doc),
                       }))}
                       onPreview={(d) => setPreviewDoc(d)}
                       onDelete={(d) => setDeleteDoc(d)}
@@ -970,23 +861,26 @@ export default function Home() {
                     />
                   )
                 ) : currentSubfolders.length === 0 ? (
-                  currentFolderPath === 'agy ai genrated' ? (
+                  currentFolderPath.includes('AI Generated Summary') ? (
                     <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-xl bg-zinc-950/40">
-                      <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
-                        <FolderOpen className="w-5 h-5 text-zinc-400" />
+                      <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 mb-3">
+                        <Sparkles className="w-5 h-5 text-violet-400" />
                       </div>
                       <h3 className="text-sm font-medium text-zinc-200 mb-1">
-                        agy ai genrated
+                        AI Generated Summary
                       </h3>
                       <p className="text-xs text-zinc-500 max-w-sm mb-4">
-                        This folder is currently empty.
+                        No AI summaries generated yet for this subject.
                       </p>
                       <button
                         type="button"
-                        onClick={() => navigateToFolder('Physics Wallah Content')}
-                        className="px-3.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                        onClick={() => {
+                          const parts = currentFolderPath.split('/');
+                          navigateToFolder(parts[0] || '');
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
                       >
-                        Open Physics Wallah Content
+                        Back to {currentFolderPath.split('/')[0] || 'Library'}
                       </button>
                     </div>
                   ) : (
@@ -999,7 +893,7 @@ export default function Home() {
                       </h3>
                       <p className="text-xs text-zinc-500 max-w-sm mb-4">
                         {searchQuery
-                          ? 'Try refining your search keyword or check other categories.'
+                          ? 'Try refining your search keyword.'
                           : currentFolderPath
                           ? 'This folder does not contain any direct PDFs.'
                           : 'No documents have been uploaded yet.'}
@@ -1021,19 +915,6 @@ export default function Home() {
           )}
         </main>
       </div>
-
-      {/* First-Visit / Change Browse Mode Prompt Dialog */}
-      <BrowseModeModal
-        isOpen={isModeModalOpen}
-        currentMode={browseMode}
-        onSelect={handleBrowseModeChange}
-        onClose={() => {
-          setIsModeModalOpen(false);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('jee_mode_asked', 'true');
-          }
-        }}
-      />
 
       {/* PDF Viewer Modal */}
       {previewDoc && (

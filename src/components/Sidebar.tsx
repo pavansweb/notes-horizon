@@ -43,8 +43,6 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   categoryCounts: Record<string, number>;
-  browseMode?: 'subject' | 'type';
-  onBrowseModeChange?: (mode: 'subject' | 'type') => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -62,86 +60,97 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   onClose,
   categoryCounts,
-  browseMode = 'subject',
-  onBrowseModeChange,
 }) => {
-  const isPWActive = currentPath === 'Physics Wallah Content' || currentPath.startsWith('Physics Wallah Content/');
-  const isAgyActive = currentPath === 'agy ai genrated' || currentPath.startsWith('agy ai genrated/');
+  // Determine active subject from path or selected filter
+  let activeSubject: 'Physics' | 'Chemistry' | 'Maths' = 'Physics';
+  if (currentPath.startsWith('Chemistry')) activeSubject = 'Chemistry';
+  else if (currentPath.startsWith('Maths')) activeSubject = 'Maths';
+  else if (currentPath.startsWith('Physics')) activeSubject = 'Physics';
+  else if (selectedSubject === 'Chemistry' || selectedSubject === 'Maths') {
+    activeSubject = selectedSubject;
+  }
 
-  const subjectSections: SidebarCategory[] = [
+  const subjects: Array<{
+    id: 'Physics' | 'Chemistry' | 'Maths';
+    name: string;
+    path: string;
+    icon: React.ReactNode;
+    color: string;
+  }> = [
     {
-      id: 'physics',
+      id: 'Physics',
       name: 'Physics',
-      path: 'Physics Wallah Content/Physics',
-      icon: <Atom className="w-3.5 h-3.5 text-zinc-400" />,
+      path: 'Physics',
+      icon: <Atom className="w-3.5 h-3.5 text-sky-400" />,
+      color: 'sky',
     },
     {
-      id: 'chemistry',
+      id: 'Chemistry',
       name: 'Chemistry',
-      path: 'Physics Wallah Content/Chemistry',
-      icon: <FlaskConical className="w-3.5 h-3.5 text-zinc-400" />,
+      path: 'Chemistry',
+      icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-400" />,
+      color: 'emerald',
     },
     {
-      id: 'maths',
+      id: 'Maths',
       name: 'Maths',
-      path: 'Physics Wallah Content/Maths',
-      icon: <Calculator className="w-3.5 h-3.5 text-zinc-400" />,
+      path: 'Maths',
+      icon: <Calculator className="w-3.5 h-3.5 text-indigo-400" />,
+      color: 'indigo',
     },
   ];
 
-  const pwSections: SidebarCategory[] = [
+  const resourceSections: SidebarCategory[] = [
     {
       id: 'mindmaps',
-      name: 'Mindmaps & Flowcharts',
-      path: 'Physics Wallah Content/Mindmaps & Flowcharts',
-      icon: <BookOpen className="w-3.5 h-3.5 text-zinc-400" />,
+      name: 'Mind Maps & Flowcharts',
+      path: `${activeSubject}/Mind Maps & Flowcharts`,
+      icon: <BookOpen className="w-3.5 h-3.5 text-amber-400" />,
     },
     {
       id: 'short-notes',
       name: 'Short Notes',
-      path: 'Physics Wallah Content/Short Notes',
-      icon: <FileText className="w-3.5 h-3.5 text-zinc-400" />,
+      path: `${activeSubject}/Short Notes`,
+      icon: <FileText className="w-3.5 h-3.5 text-cyan-400" />,
     },
     {
       id: 'formula-sheets',
       name: 'Formula Sheets',
-      path: 'Physics Wallah Content/Formula Sheets',
+      path: `${activeSubject}/Formula Sheets`,
       icon: <FlaskConical className="w-3.5 h-3.5 text-zinc-400" />,
-    },
-    {
-      id: 'question-papers',
-      name: 'Question Papers',
-      path: 'Physics Wallah Content/Question Papers',
-      icon: <Award className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'teacher-kits',
       name: 'Teacher Kits',
-      path: 'Physics Wallah Content/Teacher Kits',
-      icon: <Folder className="w-3.5 h-3.5 text-zinc-400" />,
+      path: `${activeSubject}/Teacher Kits`,
+      icon: <Folder className="w-3.5 h-3.5 text-purple-400" />,
+    },
+    {
+      id: 'question-papers',
+      name: 'Question Papers',
+      path: `${activeSubject}/Question Papers`,
+      icon: <Award className="w-3.5 h-3.5 text-rose-400" />,
+    },
+    {
+      id: 'ai-summary',
+      name: 'AI Generated Summary',
+      path: `${activeSubject}/AI Generated Summary`,
+      icon: <Folder className="w-3.5 h-3.5 text-violet-400" />,
     },
     {
       id: 'syllabus',
       name: 'Syllabus',
-      path: 'Physics Wallah Content/Syllabus',
+      path: `${activeSubject}/Syllabus`,
       icon: <Folder className="w-3.5 h-3.5 text-zinc-400" />,
     },
   ];
 
-  const teacherKits =
-    browseMode === 'subject'
-      ? [
-          { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Maths/Teacher Kits/Ashish Sirs Maths Kit' },
-          { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Physics/Teacher Kits/Saleem Sirs Physics Kit' },
-          { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Chemistry/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
-          { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Chemistry/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
-        ]
-      : [
-          { name: 'Ashish Sir (Maths)', path: 'Physics Wallah Content/Teacher Kits/Maths/Ashish Sirs Maths Kit' },
-          { name: 'Saleem Sir (Physics)', path: 'Physics Wallah Content/Teacher Kits/Physics/Saleem Sirs Physics Kit' },
-          { name: 'Pankaj Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Chemistry/Pankaj Sirs Organic Chemistry Kit' },
-          { name: 'Rohit Sir (Org Chem)', path: 'Physics Wallah Content/Teacher Kits/Chemistry/Rohit Sirs Organic Chemistry Kit' },
-        ];
+  const teacherKits = [
+    { name: 'Saleem Sir (Physics)', path: 'Physics/Teacher Kits/Saleem Sirs Physics Kit' },
+    { name: 'Pankaj Sir (Chemistry)', path: 'Chemistry/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
+    { name: 'Rohit Sir (Chemistry)', path: 'Chemistry/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
+    { name: 'Ashish Sir (Maths)', path: 'Maths/Teacher Kits/Ashish Sirs Maths Kit' },
+  ];
 
   const percentUsed = Math.min(
     100,
@@ -246,107 +255,87 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          {/* Root Content Folders */}
+          {/* Subjects (Root Folders) */}
           <div>
             <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
-              Root Folders
+              Subjects
             </div>
             <div className="space-y-1">
-              {/* Physics Wallah Content Folder */}
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigatePath('Physics Wallah Content');
-                  onClose();
-                }}
-                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  isPWActive
-                    ? 'bg-amber-500/15 text-amber-200 font-semibold border border-amber-500/30'
-                    : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
-                }`}
-              >
-                <div className="flex items-center gap-2 truncate pr-1">
-                  <Folder className="w-4 h-4 text-zinc-300 shrink-0" />
-                  <span className="truncate">Physics Wallah</span>
-                </div>
-                <span className="text-[10px] font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
-                  {stats.fileCount}
-                </span>
-              </button>
+              {subjects.map((subj) => {
+                const isActive =
+                  !isStarredView &&
+                  !isRecentView &&
+                  (currentPath === subj.path || currentPath.startsWith(subj.path + '/'));
+                const count = categoryCounts[subj.name] || 0;
 
-              {/* PW Sub-sections (Nested under PW Content) */}
-              <div className="pl-3 space-y-0.5 border-l border-zinc-900 ml-3">
-                {/* Arrangement Toggle Link */}
-                {onBrowseModeChange && (
-                  <div className="flex items-center justify-between text-[10px] text-zinc-500 pb-1 mb-1 border-b border-zinc-900 px-1">
-                    <span>Arranged by:</span>
-                    <button
-                      type="button"
-                      onClick={() => onBrowseModeChange(browseMode === 'subject' ? 'type' : 'subject')}
-                      className="text-zinc-300 hover:text-white transition-colors font-medium cursor-pointer"
-                      title="Toggle between Subject view and Format view"
-                    >
-                      {browseMode === 'subject' ? 'Subject' : 'Format'} ⇄
-                    </button>
-                  </div>
-                )}
+                return (
+                  <button
+                    key={subj.id}
+                    type="button"
+                    onClick={() => {
+                      onNavigatePath(subj.path);
+                      onClose();
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-zinc-800 text-white font-medium border border-zinc-700/80 shadow-xs'
+                        : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate pr-1">
+                      {subj.icon}
+                      <span className="truncate">{subj.name}</span>
+                    </div>
+                    {count > 0 && (
+                      <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded">
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-                {(browseMode === 'subject' ? subjectSections : pwSections).map((section) => {
-                  const isActive =
-                    !isStarredView &&
-                    !isRecentView &&
-                    (currentPath === section.path || currentPath.startsWith(section.path + '/'));
-                  const count = categoryCounts[section.name] || 0;
+          {/* Resources within Selected Subject */}
+          <div>
+            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5 flex items-center justify-between">
+              <span>{activeSubject} Resources</span>
+            </div>
+            <div className="space-y-0.5 pl-1">
+              {resourceSections.map((section) => {
+                const isActive =
+                  !isStarredView &&
+                  !isRecentView &&
+                  (currentPath === section.path || currentPath.startsWith(section.path + '/'));
+                const count = categoryCounts[section.name] || 0;
 
-                  return (
-                    <button
-                      key={section.id}
-                      type="button"
-                      onClick={() => {
-                        onNavigatePath(section.path);
-                        onClose();
-                      }}
-                      className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
-                        isActive
-                          ? 'bg-zinc-800 text-white font-medium border border-zinc-700/60'
-                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate pr-1">
-                        {section.icon}
-                        <span className="truncate">{section.name}</span>
-                      </div>
-                      {count > 0 && (
-                        <span className="text-[10px] font-mono text-zinc-500 shrink-0">
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* AGY AI Generated Folder */}
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigatePath('agy ai genrated');
-                  onClose();
-                }}
-                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  isAgyActive
-                    ? 'bg-zinc-800 text-white font-medium border border-zinc-700'
-                    : 'text-zinc-300 hover:text-white hover:bg-zinc-900/60'
-                }`}
-              >
-                <div className="flex items-center gap-2 truncate pr-1">
-                  <Folder className="w-4 h-4 text-zinc-400 shrink-0" />
-                  <span className="truncate">agy ai genrated</span>
-                </div>
-                <span className="text-[10px] font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
-                  Empty
-                </span>
-              </button>
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    onClick={() => {
+                      onNavigatePath(section.path);
+                      onClose();
+                    }}
+                    className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
+                      isActive
+                        ? 'bg-zinc-800 text-white font-medium border border-zinc-700/60'
+                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate pr-1">
+                      {section.icon}
+                      <span className="truncate">{section.name}</span>
+                    </div>
+                    {count > 0 && (
+                      <span className="text-[10px] font-mono text-zinc-500 shrink-0">
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

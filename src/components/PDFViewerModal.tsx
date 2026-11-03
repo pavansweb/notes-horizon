@@ -242,18 +242,27 @@ const ViewerContent: React.FC<ViewerContentProps> = ({
         </div>
 
         {/* Tags */}
-        {document.tags && document.tags.length > 0 && (
-          <div className="flex items-center gap-1 shrink-0">
-            {document.tags.map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-1 shrink-0 flex-wrap">
+          {(document.isPhysicsWallah ||
+            document.tags?.some(
+              (t) => t.toLowerCase().includes('physics wallah') || t.toLowerCase() === 'pw'
+            )) && (
+            <span className="text-[10px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+              Physics Wallah
+            </span>
+          )}
+          {document.tags &&
+            document.tags
+              .filter((t) => !t.toLowerCase().includes('physics wallah') && t.toLowerCase() !== 'pw')
+              .map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-[10px] text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+        </div>
       </div>
     </div>
   );

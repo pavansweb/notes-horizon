@@ -159,8 +159,20 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
           </p>
         )}
 
-        {/* Tags / Subject */}
-        <div className="flex flex-wrap gap-1 mb-2">
+        {/* Tags / Subject / Physics Wallah tag */}
+        <div className="flex flex-wrap items-center gap-1 mb-2">
+          {/* Physics Wallah Tag */}
+          {(document.isPhysicsWallah ||
+            document.tags?.some(
+              (t) => t.toLowerCase().includes('physics wallah') || t.toLowerCase() === 'pw'
+            ) ||
+            document.folderPath?.toLowerCase().includes('physics wallah') ||
+            document.notes?.toLowerCase().includes('physics wallah')) && (
+            <span className="text-[10px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+              Physics Wallah
+            </span>
+          )}
+
           {document.subject && document.subject !== 'General' && (
             <span
               className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${subjectBadgeColor}`}
@@ -168,15 +180,23 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
               {document.subject}
             </span>
           )}
+
           {document.classLevel && (
             <span className="text-[10px] text-zinc-400 bg-zinc-800/80 border border-zinc-700/50 px-1.5 py-0.5 rounded">
               {document.classLevel}
             </span>
           )}
+
           {document.tags &&
             document.tags
-              .filter((t) => t !== document.subject && t !== document.classLevel)
-              .slice(0, 2)
+              .filter(
+                (t) =>
+                  t !== document.subject &&
+                  t !== document.classLevel &&
+                  !t.toLowerCase().includes('physics wallah') &&
+                  t.toLowerCase() !== 'pw'
+              )
+              .slice(0, 1)
               .map((tag, idx) => (
                 <span
                   key={idx}

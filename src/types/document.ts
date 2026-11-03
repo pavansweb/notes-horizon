@@ -15,6 +15,7 @@ export interface PDFDocument {
   category?: string;
   subject?: 'Physics' | 'Chemistry' | 'Maths' | 'General';
   classLevel?: string;
+  isPhysicsWallah?: boolean;
 }
 
 export type SortOption =
@@ -27,8 +28,6 @@ export type SortOption =
   | 'size-asc';
 
 export type ViewMode = 'grid' | 'list';
-
-export type BrowseMode = 'subject' | 'type';
 
 export interface StorageInfo {
   totalBytes: number;

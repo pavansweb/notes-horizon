@@ -135,20 +135,37 @@ export const DocumentList: React.FC<DocumentListProps> = ({
                   </td>
 
                   <td className="py-2.5 px-3 hidden md:table-cell">
-                    <div className="flex flex-wrap gap-1">
-                      {doc.tags?.slice(0, 2).map((t, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[10px] text-zinc-400 bg-zinc-800 border border-zinc-700/50 px-1.5 py-0.5 rounded"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                      {doc.tags && doc.tags.length > 2 && (
-                        <span className="text-[10px] text-zinc-400">
-                          +{doc.tags.length - 2}
+                    <div className="flex flex-wrap items-center gap-1">
+                      {(doc.isPhysicsWallah ||
+                        doc.tags?.some(
+                          (t) => t.toLowerCase().includes('physics wallah') || t.toLowerCase() === 'pw'
+                        ) ||
+                        doc.folderPath?.toLowerCase().includes('physics wallah')) && (
+                        <span className="text-[10px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+                          Physics Wallah
                         </span>
                       )}
+                      {doc.subject && doc.subject !== 'General' && (
+                        <span className="text-[10px] text-zinc-300 bg-zinc-800/80 border border-zinc-700/50 px-1.5 py-0.5 rounded">
+                          {doc.subject}
+                        </span>
+                      )}
+                      {doc.tags
+                        ?.filter(
+                          (t) =>
+                            t !== doc.subject &&
+                            !t.toLowerCase().includes('physics wallah') &&
+                            t.toLowerCase() !== 'pw'
+                        )
+                        .slice(0, 1)
+                        .map((t, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[10px] text-zinc-400 bg-zinc-800/60 border border-zinc-800 px-1.5 py-0.5 rounded"
+                          >
+                            {t}
+                          </span>
+                        ))}
                     </div>
                   </td>
 

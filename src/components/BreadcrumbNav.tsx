@@ -17,8 +17,6 @@ interface BreadcrumbNavProps {
   showAllNested: boolean;
   onToggleShowAllNested: (show: boolean) => void;
   hasSubfolders: boolean;
-  browseMode?: 'subject' | 'type';
-  onBrowseModeChange?: (mode: 'subject' | 'type') => void;
 }
 
 export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
@@ -34,8 +32,6 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
   showAllNested,
   onToggleShowAllNested,
   hasSubfolders,
-  browseMode = 'subject',
-  onBrowseModeChange,
 }) => {
   const parts = currentPath ? currentPath.split('/').filter(Boolean) : [];
 
@@ -104,36 +100,6 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
 
       {/* Right: Controls & Toggles */}
       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center flex-wrap">
-        {/* Browse Mode Switcher */}
-        {onBrowseModeChange && (
-          <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-md p-0.5 text-[11px]">
-            <button
-              type="button"
-              onClick={() => onBrowseModeChange('subject')}
-              className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                browseMode === 'subject'
-                  ? 'bg-zinc-800 text-white font-medium'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-              title="Organize by Subject"
-            >
-              Subject
-            </button>
-            <button
-              type="button"
-              onClick={() => onBrowseModeChange('type')}
-              className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                browseMode === 'type'
-                  ? 'bg-zinc-800 text-white font-medium'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-              title="Organize by Format"
-            >
-              Format
-            </button>
-          </div>
-        )}
-
         {/* Toggle recursive flat view vs folder view if in subfolder */}
         {hasSubfolders && (
           <label className="flex items-center gap-1.5 text-[11px] text-zinc-400 cursor-pointer bg-zinc-900/60 border border-zinc-800/80 px-2 py-1 rounded-md hover:text-zinc-300 transition-colors">

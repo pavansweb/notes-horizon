@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google, drive_v3 } from 'googleapis';
 import { Readable } from 'stream';
 import fs from 'fs';
 import path from 'path';
@@ -6,7 +6,7 @@ import { PDFDocument } from '@/types/document';
 import { saveMetadata, updateMetadata, removeMetadata, getAllMetadata } from './metadata';
 
 export interface DriveConfig {
-  drive: ReturnType<typeof google.drive>;
+  drive: drive_v3.Drive;
   folderId?: string;
 }
 
@@ -30,7 +30,7 @@ function getUploadCacheMap(): Record<string, string> {
     if (fs.existsSync(cachePath)) {
       const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
       if (data && data.files) {
-        for (const item of Object.values(data.files) as any[]) {
+        for (const item of Object.values(data.files) as Array<{ id?: string; relPath?: string }>) {
           if (item?.id && item?.relPath) {
             uploadCacheMap[item.id] = item.relPath;
           }
@@ -239,7 +239,7 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
   try {
     let hasMore = true;
     while (hasMore) {
-      const response: any = await drive.files.list({
+      const res: { data: drive_v3.Schema$FileList } = await drive.files.list({
         q: query,
         fields: 'nextPageToken, files(id, name, size, webViewLink, webContentLink, createdTime, description)',
         orderBy: 'createdTime desc',
@@ -247,11 +247,11 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
         pageToken: pageToken,
       });
 
-      const listFiles = response.data?.files || [];
+      const listFiles = res.data?.files || [];
       for (const item of listFiles) {
         files.push(item);
       }
-      pageToken = response.data?.nextPageToken || undefined;
+      pageToken = res.data?.nextPageToken || undefined;
       hasMore = !!pageToken;
     }
   } catch (err) {
@@ -300,42 +300,98 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
       }
     }
 
-    // Place PW resources under "Physics Wallah Content" root folder
-    if (folderPath) {
-      if (
-        !folderPath.startsWith('Physics Wallah Content') &&
-        !folderPath.startsWith('agy ai genrated')
-      ) {
-        folderPath = `Physics Wallah Content/${folderPath}`;
-      }
-    } else {
-      folderPath = 'Physics Wallah Content';
-    }
+    // Determine subject accurately
+    const cleanLowerPath = folderPath.replace(/^Physics Wallah Content\/?/i, '').toLowerCase();
+    const fileNameLower = (f.name || '').toLowerCase();
 
-    const folderParts = folderPath ? folderPath.split('/').filter(Boolean) : [];
-    const category =
-      folderParts.length > 1
-        ? folderParts[1]
-        : folderParts[0] || (tags[0] ?? 'General');
-
-    // Infer subject
     let subject: 'Physics' | 'Chemistry' | 'Maths' | 'General' = 'General';
-    const checkStr = (folderPath + ' ' + (f.name || '') + ' ' + tags.join(' ')).toLowerCase();
-    if (checkStr.includes('physics') || checkStr.includes('phy')) {
+    if (cleanLowerPath.includes('saleem sir')) {
       subject = 'Physics';
-    } else if (
-      checkStr.includes('chemistry') ||
-      checkStr.includes('chem') ||
-      checkStr.includes('organic')
-    ) {
-      subject = 'Chemistry';
-    } else if (
-      checkStr.includes('maths') ||
-      checkStr.includes('mathematics') ||
-      checkStr.includes('math')
-    ) {
+    } else if (cleanLowerPath.includes('ashish sir')) {
       subject = 'Maths';
+    } else if (cleanLowerPath.includes('pankaj sir') || cleanLowerPath.includes('rohit sir')) {
+      subject = 'Chemistry';
+    } else {
+      const rawParts = cleanLowerPath.split('/');
+      for (const part of rawParts) {
+        if (part === 'physics' || part === 'phy') {
+          subject = 'Physics';
+          break;
+        }
+        if (part === 'chemistry' || part === 'chem') {
+          subject = 'Chemistry';
+          break;
+        }
+        if (part === 'maths' || part === 'mathematics' || part === 'math') {
+          subject = 'Maths';
+          break;
+        }
+      }
+
+      if (subject === 'General') {
+        const fullCheck = `${cleanLowerPath} ${fileNameLower} ${tags.join(' ').toLowerCase()}`;
+        if (/(\bchemistry\b|\bchem\b|\borganic\b|\binorganic\b)/i.test(fullCheck)) {
+          subject = 'Chemistry';
+        } else if (/(\bphysics\b|\bphy\b)/i.test(fullCheck)) {
+          subject = 'Physics';
+        } else if (/(\bmaths\b|\bmathematics\b|\bcalculus\b|\balgebra\b|\btrigonometry\b)/i.test(fullCheck)) {
+          subject = 'Maths';
+        } else {
+          subject = 'Physics'; // Default safe fallback
+        }
+      }
     }
+
+    // Determine resource category
+    const cleanParts = folderPath
+      .replace(/^Physics Wallah Content\/?/i, '')
+      .split('/')
+      .filter(Boolean);
+    const rawType = cleanParts[0] || 'Short Notes';
+
+    let category = 'Short Notes';
+    if (rawType.toLowerCase().includes('mindmap')) {
+      category = 'Mind Maps & Flowcharts';
+    } else if (rawType === 'Teacher Kits') {
+      category = 'Teacher Kits';
+    } else if (rawType === 'Formula Sheets') {
+      category = 'Formula Sheets';
+    } else if (
+      rawType.includes('2026 Qs') ||
+      rawType.includes('Top 100') ||
+      rawType.toLowerCase().includes('question') ||
+      rawType.toLowerCase().includes('pyq')
+    ) {
+      category = 'Question Papers';
+    } else if (rawType === 'Syllabus') {
+      category = 'Syllabus';
+    } else if (rawType.toLowerCase().includes('summary') || rawType.toLowerCase().includes('ai')) {
+      category = 'AI Generated Summary';
+    }
+
+    // Construct clean structured path: Subject / Category / [Class or Subfolder]
+    let structuredPath = `${subject}/${category}`;
+    if (category === 'Teacher Kits') {
+      const kitName = cleanParts[1] || 'General Kit';
+      const sub = cleanParts.slice(2).join('/');
+      structuredPath = sub
+        ? `${subject}/Teacher Kits/${kitName}/${sub}`
+        : `${subject}/Teacher Kits/${kitName}`;
+    } else if (category === 'Syllabus') {
+      const exam = cleanParts[1] || '';
+      structuredPath = exam ? `${subject}/Syllabus/${exam}` : `${subject}/Syllabus`;
+    } else {
+      const remainingParts = cleanParts.slice(1).filter((p) => {
+        const pl = p.toLowerCase();
+        return pl !== 'physics' && pl !== 'chemistry' && pl !== 'maths' && pl !== 'math';
+      });
+      if (remainingParts.length > 0) {
+        structuredPath = `${subject}/${category}/${remainingParts.join('/')}`;
+      }
+    }
+
+    folderPath = structuredPath;
+    const folderParts = folderPath.split('/').filter(Boolean);
 
     // Infer classLevel
     let classLevel: string | undefined = undefined;
@@ -343,6 +399,15 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
     else if (folderPath.includes('Class 12')) classLevel = 'Class 12';
     else if (folderPath.includes('JEE Advance')) classLevel = 'JEE Advance';
     else if (folderPath.includes('JEE Mains')) classLevel = 'JEE Mains';
+
+    // Physics Wallah tag verification
+    const isPhysicsWallah =
+      !cleanLowerPath.startsWith('ai gen') &&
+      !cleanLowerPath.startsWith('user upload') &&
+      !fileNameLower.includes('custom_note');
+    if (isPhysicsWallah && !tags.includes('Physics Wallah')) {
+      tags = ['Physics Wallah', ...tags];
+    }
 
     docs.push({
       id: docId,
@@ -361,6 +426,7 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
       category,
       subject,
       classLevel,
+      isPhysicsWallah,
     });
   }
 
