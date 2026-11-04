@@ -7,7 +7,6 @@ import {
   Clock,
   BookOpen,
   FlaskConical,
-  ChevronRight,
   HardDrive,
   X,
   Atom,
@@ -31,10 +30,10 @@ export interface SidebarCategory {
 interface SidebarProps {
   currentPath: string;
   onNavigatePath: (path: string) => void;
-  selectedSubject: string;
-  onSelectSubject: (subject: string) => void;
-  selectedClass: string;
-  onSelectClass: (className: string) => void;
+  selectedSubject?: string;
+  onSelectSubject?: (subject: string) => void;
+  selectedClass?: string;
+  onSelectClass?: (className: string) => void;
   stats: StorageInfo;
   isStarredView: boolean;
   onSelectStarredView: () => void;
@@ -49,9 +48,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentPath,
   onNavigatePath,
   selectedSubject,
-  onSelectSubject,
-  selectedClass,
-  onSelectClass,
   stats,
   isStarredView,
   onSelectStarredView,
@@ -137,13 +133,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       path: `${activeSubject}/agy`,
       icon: <Sparkles className="w-3.5 h-3.5 text-violet-400" />,
     },
-  ];
-
-  const teacherKits = [
-    { name: 'Saleem Sir (Physics)', path: 'Physics/Physics Wallah/Teacher Kits/Saleem Sirs Physics Kit' },
-    { name: 'Pankaj Sir (Chemistry)', path: 'Chemistry/Physics Wallah/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
-    { name: 'Rohit Sir (Chemistry)', path: 'Chemistry/Physics Wallah/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
-    { name: 'Ashish Sir (Maths)', path: 'Maths/Physics Wallah/Teacher Kits/Ashish Sirs Maths Kit' },
   ];
 
   const percentUsed = Math.min(
@@ -330,82 +319,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </button>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Quick Teacher Kits Access */}
-          <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
-              Teacher Kits
-            </div>
-            <div className="space-y-0.5 pl-1">
-              {teacherKits.map((kit) => {
-                const isActive = currentPath === kit.path || currentPath.startsWith(kit.path + '/');
-                return (
-                  <button
-                    key={kit.path}
-                    type="button"
-                    onClick={() => {
-                      onNavigatePath(kit.path);
-                      onClose();
-                    }}
-                    className={`w-full flex items-center justify-between px-2 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
-                      isActive
-                        ? 'bg-zinc-800 text-white font-medium border border-zinc-700'
-                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
-                    }`}
-                  >
-                    <span className="truncate">{kit.name}</span>
-                    <ChevronRight className="w-3 h-3 text-zinc-600" />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Subject Pills Filter */}
-          <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
-              Filter by Subject
-            </div>
-            <div className="grid grid-cols-2 gap-1 px-1">
-              {['All', 'Physics', 'Chemistry', 'Maths'].map((subj) => (
-                <button
-                  key={subj}
-                  type="button"
-                  onClick={() => onSelectSubject(subj)}
-                  className={`flex items-center justify-center py-1 px-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
-                    selectedSubject === subj
-                      ? 'bg-zinc-200 text-zinc-950 font-semibold shadow-xs'
-                      : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
-                  }`}
-                >
-                  <span>{subj}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Class Filter */}
-          <div>
-            <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider px-2 mb-1.5">
-              Class Level
-            </div>
-            <div className="flex gap-1 px-1">
-              {['All', 'Class 11', 'Class 12'].map((cls) => (
-                <button
-                  key={cls}
-                  type="button"
-                  onClick={() => onSelectClass(cls)}
-                  className={`flex-1 py-1 px-2 rounded-md text-[11px] font-medium transition-colors text-center cursor-pointer ${
-                    selectedClass === cls
-                      ? 'bg-zinc-200 text-zinc-950 font-semibold'
-                      : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
-                  }`}
-                >
-                  {cls}
-                </button>
-              ))}
             </div>
           </div>
         </div>
