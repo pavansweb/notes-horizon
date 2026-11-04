@@ -38,6 +38,14 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, onClick, isRootC
     icon = <Calculator className="w-4 h-4 text-indigo-400" />;
     iconBg = 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300';
     accentBorder = 'border-zinc-800 hover:border-indigo-500/30';
+  } else if (folder.name === 'Physics Wallah' || folder.path.endsWith('/Physics Wallah')) {
+    icon = <Folder className="w-4 h-4 text-amber-400" />;
+    iconBg = 'bg-amber-500/10 border-amber-500/20 text-amber-300';
+    accentBorder = 'border-zinc-800 hover:border-amber-500/30';
+  } else if (folder.name === 'agy' || folder.path.endsWith('/agy')) {
+    icon = <Sparkles className="w-4 h-4 text-violet-400" />;
+    iconBg = 'bg-violet-500/10 border-violet-500/20 text-violet-300';
+    accentBorder = 'border-zinc-800 hover:border-violet-500/30';
   } else if (folder.name.includes('Mind Map') || folder.name.includes('Flowchart')) {
     icon = <BookOpen className="w-4 h-4 text-amber-400" />;
     iconBg = 'bg-amber-500/10 border-amber-500/20 text-amber-300';

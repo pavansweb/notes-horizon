@@ -355,48 +355,60 @@ export async function listDriveFiles(): Promise<PDFDocument[]> {
     // Determine resource category
     const cleanParts = folderPath
       .replace(/^Physics Wallah Content\/?/i, '')
+      .replace(/^agy ai genrated\/?/i, '')
       .split('/')
       .filter(Boolean);
     const rawType = cleanParts[0] || 'Short Notes';
 
     let category = 'Short Notes';
-    if (rawType.toLowerCase().includes('mindmap')) {
+    let isAI = false;
+
+    if (
+      rawType.toLowerCase().includes('summary') ||
+      rawType.toLowerCase().includes('ai') ||
+      rawType.toLowerCase() === 'agy'
+    ) {
+      isAI = true;
+      category = 'AI Generated Summary';
+    } else if (rawType.toLowerCase().includes('mindmap')) {
       category = 'Mind Maps & Flowcharts';
     } else if (rawType === 'Teacher Kits') {
       category = 'Teacher Kits';
     } else if (rawType === 'Formula Sheets') {
       category = 'Formula Sheets';
-    } else if (
-      rawType.includes('2026 Qs') ||
-      rawType.includes('Top 100') ||
-      rawType.toLowerCase().includes('question') ||
-      rawType.toLowerCase().includes('pyq')
-    ) {
-      category = 'Question Papers';
     } else if (rawType === 'Syllabus') {
       category = 'Syllabus';
-    } else if (rawType.toLowerCase().includes('summary') || rawType.toLowerCase().includes('ai')) {
-      category = 'AI Generated Summary';
     }
 
-    // Construct clean structured path: Subject / Category / [Class or Subfolder]
-    let structuredPath = `${subject}/${category}`;
-    if (category === 'Teacher Kits') {
-      const kitName = cleanParts[1] || 'General Kit';
-      const sub = cleanParts.slice(2).join('/');
-      structuredPath = sub
-        ? `${subject}/Teacher Kits/${kitName}/${sub}`
-        : `${subject}/Teacher Kits/${kitName}`;
-    } else if (category === 'Syllabus') {
-      const exam = cleanParts[1] || '';
-      structuredPath = exam ? `${subject}/Syllabus/${exam}` : `${subject}/Syllabus`;
+    // Construct 2-folder structure inside Subject: Physics Wallah vs agy
+    let structuredPath = '';
+    if (isAI) {
+      const remainingParts = cleanParts.slice(1);
+      structuredPath = remainingParts.length > 0
+        ? `${subject}/agy/${remainingParts.join('/')}`
+        : `${subject}/agy`;
     } else {
-      const remainingParts = cleanParts.slice(1).filter((p) => {
-        const pl = p.toLowerCase();
-        return pl !== 'physics' && pl !== 'chemistry' && pl !== 'maths' && pl !== 'math';
-      });
-      if (remainingParts.length > 0) {
-        structuredPath = `${subject}/${category}/${remainingParts.join('/')}`;
+      if (category === 'Teacher Kits') {
+        const kitName = cleanParts[1] || 'General Kit';
+        const sub = cleanParts.slice(2).join('/');
+        structuredPath = sub
+          ? `${subject}/Physics Wallah/Teacher Kits/${kitName}/${sub}`
+          : `${subject}/Physics Wallah/Teacher Kits/${kitName}`;
+      } else if (category === 'Syllabus') {
+        const exam = cleanParts[1] || '';
+        structuredPath = exam
+          ? `${subject}/Physics Wallah/Syllabus/${exam}`
+          : `${subject}/Physics Wallah/Syllabus`;
+      } else {
+        const remainingParts = cleanParts.slice(1).filter((p) => {
+          const pl = p.toLowerCase();
+          return pl !== 'physics' && pl !== 'chemistry' && pl !== 'maths' && pl !== 'math';
+        });
+        if (remainingParts.length > 0) {
+          structuredPath = `${subject}/Physics Wallah/${category}/${remainingParts.join('/')}`;
+        } else {
+          structuredPath = `${subject}/Physics Wallah/${category}`;
+        }
       }
     }
 

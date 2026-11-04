@@ -13,6 +13,7 @@ import {
   Atom,
   Calculator,
   FileText,
+  Sparkles,
 } from 'lucide-react';
 import { StorageInfo } from '@/types/document';
 import { formatBytes } from '@/lib/utils';
@@ -103,46 +104,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'mindmaps',
       name: 'Mind Maps & Flowcharts',
-      path: `${activeSubject}/Mind Maps & Flowcharts`,
+      path: `${activeSubject}/Physics Wallah/Mind Maps & Flowcharts`,
       icon: <BookOpen className="w-3.5 h-3.5 text-amber-400" />,
     },
     {
       id: 'short-notes',
       name: 'Short Notes',
-      path: `${activeSubject}/Short Notes`,
+      path: `${activeSubject}/Physics Wallah/Short Notes`,
       icon: <FileText className="w-3.5 h-3.5 text-cyan-400" />,
     },
     {
       id: 'formula-sheets',
       name: 'Formula Sheets',
-      path: `${activeSubject}/Formula Sheets`,
+      path: `${activeSubject}/Physics Wallah/Formula Sheets`,
       icon: <FlaskConical className="w-3.5 h-3.5 text-zinc-400" />,
     },
     {
       id: 'teacher-kits',
       name: 'Teacher Kits',
-      path: `${activeSubject}/Teacher Kits`,
+      path: `${activeSubject}/Physics Wallah/Teacher Kits`,
       icon: <Folder className="w-3.5 h-3.5 text-purple-400" />,
-    },
-    {
-      id: 'ai-summary',
-      name: 'AI Generated Summary',
-      path: `${activeSubject}/AI Generated Summary`,
-      icon: <Folder className="w-3.5 h-3.5 text-violet-400" />,
     },
     {
       id: 'syllabus',
       name: 'Syllabus',
-      path: `${activeSubject}/Syllabus`,
+      path: `${activeSubject}/Physics Wallah/Syllabus`,
       icon: <Folder className="w-3.5 h-3.5 text-zinc-400" />,
+    },
+    {
+      id: 'agy',
+      name: 'agy (AI)',
+      path: `${activeSubject}/agy`,
+      icon: <Sparkles className="w-3.5 h-3.5 text-violet-400" />,
     },
   ];
 
   const teacherKits = [
-    { name: 'Saleem Sir (Physics)', path: 'Physics/Teacher Kits/Saleem Sirs Physics Kit' },
-    { name: 'Pankaj Sir (Chemistry)', path: 'Chemistry/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
-    { name: 'Rohit Sir (Chemistry)', path: 'Chemistry/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
-    { name: 'Ashish Sir (Maths)', path: 'Maths/Teacher Kits/Ashish Sirs Maths Kit' },
+    { name: 'Saleem Sir (Physics)', path: 'Physics/Physics Wallah/Teacher Kits/Saleem Sirs Physics Kit' },
+    { name: 'Pankaj Sir (Chemistry)', path: 'Chemistry/Physics Wallah/Teacher Kits/Pankaj Sirs Organic Chemistry Kit' },
+    { name: 'Rohit Sir (Chemistry)', path: 'Chemistry/Physics Wallah/Teacher Kits/Rohit Sirs Organic Chemistry Kit' },
+    { name: 'Ashish Sir (Maths)', path: 'Maths/Physics Wallah/Teacher Kits/Ashish Sirs Maths Kit' },
   ];
 
   const percentUsed = Math.min(
@@ -301,7 +302,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   !isStarredView &&
                   !isRecentView &&
                   (currentPath === section.path || currentPath.startsWith(section.path + '/'));
-                const count = categoryCounts[section.name] || 0;
+                const count = categoryCounts[section.path] ?? categoryCounts[section.name] ?? 0;
 
                 return (
                   <button

@@ -24,33 +24,47 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-// Maps a document's relative path based on the clean Subject-first structure
+// Maps a document's relative path based on the clean Subject / (Physics Wallah | agy) structure
 function getDocFolderPath(doc: PDFDocument): string {
   let raw = doc.folderPath || '';
-  // Strip legacy prefixes
   raw = raw.replace(/^Physics Wallah Content\/?/i, '').replace(/^agy ai genrated\/?/i, '');
 
+  let subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'Physics';
+
   if (!raw) {
-    const subj = doc.subject && doc.subject !== 'General' ? doc.subject : 'Physics';
-    const cat = doc.category || 'Short Notes';
-    return `${subj}/${cat}`;
+    return `${subject}/Physics Wallah/Short Notes`;
   }
 
-  // Check if it already starts with a subject
   const parts = raw.split('/').filter(Boolean);
-  let subject = parts[0];
-
-  if (!['Physics', 'Chemistry', 'Maths'].includes(subject)) {
-    subject = doc.subject && doc.subject !== 'General' ? doc.subject : 'Physics';
-    raw = `${subject}/${raw}`;
+  if (['Physics', 'Chemistry', 'Maths'].includes(parts[0])) {
+    subject = parts[0] as 'Physics' | 'Chemistry' | 'Maths';
+  } else {
+    parts.unshift(subject);
   }
 
-  // Normalize category naming
-  raw = raw
-    .replace(/\/Mindmaps(\/|$)/i, '/Mind Maps & Flowcharts$1')
-    .replace(/\/(JEE Main 2026 Qs|Top 100 Qs for 2026)(\/|$)/i, '/Question Papers$2');
+  // parts is now [Subject, ...]
+  if (parts[1] === 'Physics Wallah' || parts[1] === 'agy') {
+    return parts.join('/');
+  }
 
-  return raw;
+  let category = parts[1] || 'Short Notes';
+  if (category.toLowerCase().includes('mindmap')) {
+    category = 'Mind Maps & Flowcharts';
+  }
+
+  if (
+    category.toLowerCase().includes('summary') ||
+    category.toLowerCase().includes('ai') ||
+    category.toLowerCase() === 'agy'
+  ) {
+    const sub = parts.slice(2).join('/');
+    return sub ? `${subject}/agy/${sub}` : `${subject}/agy`;
+  }
+
+  const rest = parts.slice(2).join('/');
+  return rest
+    ? `${subject}/Physics Wallah/${category}/${rest}`
+    : `${subject}/Physics Wallah/${category}`;
 }
 
 const TYPE_ORDER: Record<string, number> = {
@@ -237,19 +251,18 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentFolderPath, previewDoc, deleteDoc, searchQuery, isSidebarOpen, navigateToFolder]);
 
-  // Build Folder Hierarchy: strictly Physics, Chemistry, Maths at root
+  // Build Folder Hierarchy: strictly Physics, Chemistry, Maths at root -> (Physics Wallah, agy) inside each subject
   const { folderMap, categoryCounts } = useMemo(() => {
     const fMap = new Map<string, FolderNode>();
     const catCounts: Record<string, number> = {};
 
     // 1. Initial 3 Root Subject Folders ONLY
     const ROOT_SUBJECTS: Array<'Physics' | 'Chemistry' | 'Maths'> = ['Physics', 'Chemistry', 'Maths'];
-    const STANDARD_CATEGORIES = [
+    const PW_CATEGORIES = [
       'Mind Maps & Flowcharts',
       'Short Notes',
       'Formula Sheets',
       'Teacher Kits',
-      'AI Generated Summary',
       'Syllabus',
     ];
 
@@ -267,15 +280,44 @@ export default function Home() {
         category: subj,
       });
 
-      // Ensure standard categories exist for each subject
-      for (const cat of STANDARD_CATEGORIES) {
-        const catPath = `${subj}/${cat}`;
+      // Exactly 2 subfolders inside each subject: Physics Wallah and agy
+      const pwPath = `${subj}/Physics Wallah`;
+      fMap.set(pwPath, {
+        id: pwPath,
+        name: 'Physics Wallah',
+        path: pwPath,
+        depth: 1,
+        parentPath: subj,
+        totalFileCount: 0,
+        directFileCount: 0,
+        subfolderCount: 0,
+        subject: subj,
+        category: 'Physics Wallah',
+      });
+
+      const agyPath = `${subj}/agy`;
+      fMap.set(agyPath, {
+        id: agyPath,
+        name: 'agy',
+        path: agyPath,
+        depth: 1,
+        parentPath: subj,
+        totalFileCount: 0,
+        directFileCount: 0,
+        subfolderCount: 0,
+        subject: subj,
+        category: 'AI Generated',
+      });
+
+      // Inside Subject/Physics Wallah: standard PW categories
+      for (const cat of PW_CATEGORIES) {
+        const catPath = `${pwPath}/${cat}`;
         fMap.set(catPath, {
           id: catPath,
           name: cat,
           path: catPath,
-          depth: 1,
-          parentPath: subj,
+          depth: 2,
+          parentPath: pwPath,
           totalFileCount: 0,
           directFileCount: 0,
           subfolderCount: 0,
@@ -293,6 +335,12 @@ export default function Home() {
       if (parts[0]) catCounts[parts[0]] = (catCounts[parts[0]] || 0) + 1;
       if (parts[1]) catCounts[parts[1]] = (catCounts[parts[1]] || 0) + 1;
       if (parts[2]) catCounts[parts[2]] = (catCounts[parts[2]] || 0) + 1;
+
+      // Key by subject path prefixes for precise scoped sidebar counts
+      for (let pIdx = 1; pIdx <= Math.min(parts.length, 3); pIdx++) {
+        const pKey = parts.slice(0, pIdx).join('/');
+        catCounts[pKey] = (catCounts[pKey] || 0) + 1;
+      }
 
       for (let i = 0; i < parts.length; i++) {
         const subPath = parts.slice(0, i + 1).join('/');
@@ -373,6 +421,15 @@ export default function Home() {
     // Root ordering: Physics -> Chemistry -> Maths
     if (currentFolderPath === '') {
       subfolders.sort((a, b) => (SUBJECT_ORDER[a.name] ?? 99) - (SUBJECT_ORDER[b.name] ?? 99));
+    } else if (['Physics', 'Chemistry', 'Maths'].includes(currentFolderPath)) {
+      // Inside a subject: Physics Wallah first, then agy
+      subfolders.sort((a, b) => {
+        if (a.name === 'Physics Wallah') return -1;
+        if (b.name === 'Physics Wallah') return 1;
+        if (a.name === 'agy') return 1;
+        if (b.name === 'agy') return -1;
+        return a.name.localeCompare(b.name);
+      });
     } else {
       subfolders.sort((a, b) => {
         const typeOrderA = TYPE_ORDER[a.name];
@@ -796,6 +853,8 @@ export default function Home() {
                     className={
                       currentFolderPath === ''
                         ? 'grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5'
+                        : ['Physics', 'Chemistry', 'Maths'].includes(currentFolderPath)
+                        ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
                         : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3'
                     }
                   >
@@ -804,7 +863,10 @@ export default function Home() {
                         key={folder.id}
                         folder={folder}
                         onClick={navigateToFolder}
-                        isRootCard={currentFolderPath === ''}
+                        isRootCard={
+                          currentFolderPath === '' ||
+                          ['Physics', 'Chemistry', 'Maths'].includes(currentFolderPath)
+                        }
                       />
                     ))}
                   </div>
@@ -859,16 +921,19 @@ export default function Home() {
                     />
                   )
                 ) : currentSubfolders.length === 0 ? (
+                  currentFolderPath.endsWith('/agy') ||
+                  currentFolderPath === 'agy' ||
+                  currentFolderPath.includes('/agy/') ||
                   currentFolderPath.includes('AI Generated Summary') ? (
                     <div className="py-20 flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-xl bg-zinc-950/40">
                       <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 mb-3">
                         <Sparkles className="w-5 h-5 text-violet-400" />
                       </div>
                       <h3 className="text-sm font-medium text-zinc-200 mb-1">
-                        AI Generated Summary
+                        agy
                       </h3>
                       <p className="text-xs text-zinc-500 max-w-sm mb-4">
-                        No AI summaries generated yet for this subject.
+                        No AI generated summaries or notes yet for this subject.
                       </p>
                       <button
                         type="button"
